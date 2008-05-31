@@ -1,0 +1,84 @@
+<project name="CFMeetup -- ANT" default="init" basedir=".">
+
+	<target name="init" depends="defSVNTask">
+		<property name="version.file" value="buildprops/version.properties" />
+
+		<property name="unames.file" value="buildprops/unames.properties" />
+
+
+		<!-- reads this properties file and adds all properties therein as ant properties -->
+		<property file="${unames.file}" />
+	</target>
+
+
+	<target name="testVersion" depends="init">
+		<propertyfile file="${version.file}" comment="Build version info">
+			<entry key="build.date" type="date" value="now" pattern="MM/dd/yyyy" />
+			<entry key="build.major" type="int" operation="=" value="1" />
+			<entry key="build.minor" type="int" operation="=" value="0" />
+			<entry key="build.notation" operation="=" value="" />
+			<!-- this is autoincremented -->
+			<entry key="build.buildnum" type="int" operation="+" value="1" />
+		</propertyfile>
+
+		<property file="${version.file}" />
+		<property name="dist" value="dist" />
+
+		<!-- here's how you'd use this to create a zip file name -->
+		<property name="build.version" value="${build.major}.${build.minor}.${build.buildnum}${build.notation}" />
+		<property name="zipfile" location="${dist}${file.separator}mxunit-${build.version}.zip" />
+		<echo message="build.version is ${build.version} -- zipfile is ${zipfile}" />
+
+	</target>
+
+	<target name="testFTP" depends="init">
+		<ftp server="${ftp.site}" userid="${ftp.username}" password="${ftp.password}" action="list" listing="ftp.listing">
+			<fileset>
+				<include name="**/*.jar" />
+			</fileset>
+		</ftp>
+	</target>
+
+	<target name="testMail" depends="init">
+		<mail from="${email.from}" tolist="${email.to}" mailhost="${email.host}" subject="MXUnit Build Results" charset="UTF-8" messagemimetype="text/html">
+
+			<message>
+				&lt;h1&gt;Test Successful&lt;/h1&gt;				
+			</message>
+		</mail>
+	</target>
+
+
+	<target name="testSVN" depends="init">
+		<svn username="${gc.username}" password="${gc.password}">
+			<checkout url="${svn.server}/mxunit-cfmeetups/AntWired/buildprops" destPath="buildprops" />
+		</svn>
+	</target>
+
+	<target name="testVSS" depends="init">
+		<vssget localpath="DOCS" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vss.login}" vsspath="$/DOCS" serverPath="${vss.server}" />
+	</target>
+
+
+
+
+	<target name="defSVNTask">
+		<path id="project.classpath">
+			<pathelement location="${ant.home}\lib\svnant.jar" />
+			<pathelement location="${ant.home}\lib\svnClientAdapter.jar" />
+			<pathelement location="${ant.home}\lib\svnjavahl.jar" />
+		</path>
+		<taskdef resource="svntask.properties" classpathref="project.classpath" />
+
+	</target>
+
+
+	<target name="zipThisPresentation" depends="init">
+		<zip destfile="dist/CFMeetup_AntWired.zip" casesensitive="false">
+			<zipfileset dir="." includes="**/*" excludes="**/*.svn,**/dist/**,*.cfm,**/unames_real.properties,**/version.properties" prefix="CFMeetupAntWired" casesensitive="false" />
+		</zip>
+	</target>
+
+
+
+</project>
