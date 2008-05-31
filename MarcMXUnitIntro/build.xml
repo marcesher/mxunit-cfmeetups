@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="MXUnit Intro Presentation" basedir="." default="all">
+
+	<!-- change these two values depending on your environment  -->
+	<!--<property name="component.path" value="C:\ColdFusion8\wwwroot" />
+	  <property name="runner.port" value="8500" />  
+	  -->
+	<property name="component.path" value="C:\inetpub\wwwroot" />
+	<property name="runner.port" value="80" />
+
+	<property name="mxunit.jar" value="${component.path}/mxunit/ant/lib/mxunit-ant.jar" />
+	<property name="junit.out.dir.xml" value="tests/testresults" />
+	<property name="junit.out.dir.html" value="tests/testresults/html" />
+	<property name="results.url" value="http://localhost:${runner.port}/mxunit-cfmeetups/MarcMXUnitIntro/tests/testresults/html/index.html" />
+	<property name="output.dir" location="tmp" />
+	<property name="style.dir" value="${component.path}/mxunit/ant/xsl/" />
+	<echo message="output.dir is ${output.dir}" />
+
+
+	<target name="all" depends="runtests,junitreport,browse" description="runs tests, outputs junitreport html, and opens that in the browser">
+	</target>
+
+
+	<target name="runtests" description="Make output directories and run the MXUnit task">
+
+		<mkdir dir="${junit.out.dir.html}" />
+		<mkdir dir="${output.dir}" />
+
+		<taskdef name="mxunittask" classname="org.mxunit.ant.MXUnitAntTask" classpath="${mxunit.jar}" />
+		<mxunittask server="localhost" port="${runner.port}" defaultrunner="/mxunit/runner/HttpAntRunner.cfc" verbose="true" haltonfailure="false" haltonerror="false" outputdir="${output.dir}">
+			<directory runner="/mxunit/runner/HttpAntRunner.cfc" remoteMethod="run" path="${component.path}\mxunit-cfmeetups\MarcMXUnitIntro\tests\" packageName="mxunit-cfmeetups.MarcMXUnitIntro.tests" componentPath="mxunit-cfmeetups.MarcMXUnitIntro.tests" recurse="false" excludes="" />
+		</mxunittask>
+
+	</target>
+
+
+	<target name="junitreport" depends="runtests" description="Create a report for the rest result">
+		<delete dir="${junit.out.dir.html}" />
+		<mkdir dir="${junit.out.dir.html}" />
+		<junitreport todir="${junit.out.dir.html}">
+			<fileset dir="${output.dir}">
+				<include name="*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.out.dir.html}" styledir="${style.dir}" />
+		</junitreport>
+		<!-- <delete dir="${output.dir}" /> -->
+	</target>
+
+
+	<!-- To fire up a browser with the test results. May not work on your machine -->
+
+	<target name="browse" depends="junitreport" description="Opens junitreport output in the browser">
+		<exec executable="C:\Program Files\Internet Explorer\iexplore.exe">
+			<arg value="${results.url}" />
+		</exec>
+	</target>
+
+
+	<!---->
+	
+	<target name="publishThisPresentation">
+		<property file="unames.properties" />
+		<mkdir dir="dist" />
+		<zip destfile="dist/BaltimoreAUGMXUnitIntro.zip" casesensitive="false">
+			<zipfileset dir="." includes="**/*" excludes="**/*.svn,**/dist/**,**/unames.properties,**/pics/**,**/testresults/**,tmp/**" prefix="MXUnitIntro" casesensitive="false" />
+		</zip>
+		<ftp server="${ftp.site}" userid="${ftp.username}" password="${ftp.password}" remotedir="doc/zip">
+			<fileset dir="dist">
+				<include name="*.zip" />
+			</fileset>
+		</ftp>
+	</target>
+
+
+
+</project>
