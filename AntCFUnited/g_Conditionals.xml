@@ -1,0 +1,110 @@
+<project name="CFUnited (g): Zipping your app With Conditionals" basedir="." default="packageWithConditionalsToChangePrefixAttempt1">
+
+	<target name="init">
+
+		<property name="app.name" value="Client1App" />
+
+		<property name="test.root" location="TESTSERVER" />
+		<property name="locations.test.clientroot" location="${test.root}\${app.name}" />
+
+		<property name="locations.test.customtags" location="${test.root}\CustomTags" />
+
+		<!-- define two new properties: a directory for a zip file and the name of our zip file -->
+		<property name="locations.test.deploy" location="${locations.test.clientroot}\deploy" />
+		<property name="locations.test.deployzip" location="${locations.test.deploy}\${app.name}.zip" />
+
+		<echoproperties prefix="locations" />
+	</target>
+
+	<target name="clean" depends="init">
+		<!-- ensure our deployment folder exists -->
+		<mkdir dir="${locations.test.deploy}" />
+		<!-- delete any old files -->
+		<delete file="${locations.test.deployzip}" />
+	</target>
+
+
+	<target name="packageWithConditionalsToChangePrefixAttempt1" depends="init,clean">
+
+
+		<!--
+		SCENARIO:
+		
+		You want to run these build scripts on dev to build a zip to deploy to staging.
+		
+		You want to run these SAME build scripts on staging to build a zip of staging to deploy to Prod
+		
+		Your Prod file system is slightly different than dev and staging:
+			
+			eg: Code on prod is at the root of the D: drive and not in a wwwroot directory
+		-->
+
+
+		<!-- define the IP of a server that will only be reachable when we're in staging and not in dev -->
+		<property name="env.stagingwebserver" value="10.0.236.55" />
+
+
+		<condition property="zip.clientPrefixInZip" value="${app.name}" else="inetpub\wwwroot\${app.name}">
+			<available file="\\SomeSanShare\NotVisibleToMeOnDev\ButVisibleOnStaging" type="dir" property="instaging" />
+			<!-- <isreachable host="${env.stagingwebserver}" timeout="2" /> -->
+		</condition>
+
+		<condition property="zip.CustomTagPrefixInZip" value="SharedResources\CustomTags" else="ColdFusion8\CustomTags">
+			<isreachable host="${env.stagingwebserver}" timeout="2" />
+		</condition>
+
+		<echoproperties prefix="env" />
+		<echoproperties prefix="zip" />
+
+		<zip destfile="${locations.test.deployzip}">
+			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="${zip.clientPrefixInZip}" casesensitive="false">
+			</zipfileset>
+
+			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="${zip.CustomTagPrefixInZip}" casesensitive="false">
+			</zipfileset>
+		</zip>
+
+	</target>
+
+
+	<target name="packageWithConditionalsToChangePrefixBetterVersion" depends="init,clean">
+
+		<!-- define the IP of a server that will only be reachable when we're in staging and not in dev -->
+		<property name="env.stagingwebserver" value="10.0.236.55" />
+
+		<!-- set a property named env.isstaging ONLY if a staging server is reachable -->
+		<condition property="env.isstaging">
+			<isreachable host="${env.stagingwebserver}" timeout="2" />
+		</condition>
+
+
+		<!-- this basically says: if we're deploying from staging to 
+			prod (i.e. isstaging is set in our condition above), then always use
+			just the appname as the prefix in the zip; otherwise, use inetpub\wwwroot\${app.name} -->
+		<condition property="zip.clientPrefixInZip" value="${app.name}" else="inetpub\wwwroot\${app.name}">
+			<isset property="env.isstaging" />
+		</condition>
+
+		<condition property="zip.CustomTagPrefixInZip" value="SharedResources\CustomTags" else="ColdFusion8\CustomTags">
+			<isset property="env.isstaging" />
+		</condition>
+
+		<echoproperties prefix="env" />
+		<echoproperties prefix="zip" />
+
+		<zip destfile="${locations.test.deployzip}">
+			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="${zip.clientPrefixInZip}" casesensitive="false">
+			</zipfileset>
+
+			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="${zip.CustomTagPrefixInZip}" casesensitive="false">
+			</zipfileset>
+		</zip>
+
+	</target>
+
+
+
+
+</project>

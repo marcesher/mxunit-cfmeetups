@@ -1,0 +1,143 @@
+<project name="CFUnited (b):  Copying Files From Dev To Test" basedir="." default="CopyToTest">
+
+	<target name="init">
+
+		<property name="app.name" value="Client1App" />
+
+		<!-- paths to dev and test server locations -->
+		<property name="dev.root" location="DEVSERVER" />
+		<property name="test.root" location="TESTSERVER" />
+
+		<!-- paths to this client's application on dev and test -->
+		<property name="locations.dev.clientroot" location="${dev.root}\${app.name}" />
+		<property name="locations.test.clientroot" location="${test.root}\${app.name}" />
+
+		<!-- dev location for com, customtags, and sharedcodebase-->
+		<property name="locations.dev.customtags" location="${dev.root}\CustomTags" />
+		<property name="locations.dev.codebase" location="${dev.root}\SharedCodebase" />
+		<property name="locations.dev.com" location="${dev.root}\com" />
+
+		<!-- testlocation for com, customtags, and sharedcodebase -->
+		<property name="locations.test.customtags" location="${test.root}\CustomTags" />
+		<property name="locations.test.codebase" location="${locations.test.clientroot}\codebase" />
+		<property name="locations.test.com" location="${locations.test.clientroot}\com" />
+
+		<echoproperties prefix="locations" />
+	</target>
+
+	<target name="clean" depends="init">
+		<!-- delete our client app from test -->
+		<delete dir="${locations.test.clientroot}" />
+
+		<!-- ensure necessary directories are created... these won't be overwritten if they exist -->
+		<mkdir dir="${locations.test.clientroot}" />
+		<mkdir dir="${locations.test.customtags}" />
+	</target>
+
+
+	<target name="CopyToTest" depends="init,clean" description="copies from dev to test using a single fileset per copy">
+
+		<!-- copy files into our client app -->
+		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.clientroot}" />
+			<!-- exclude raw, tmp, and requirements -->
+		</copy>
+
+		<copy toDir="${locations.test.com}" preserveLastModified="true" includeEmptyDirs="false">
+			<!-- copy the root "com" directory INSIDE our client app; NOTE: now would be a good time to look at Application.cfc -->
+			<fileset dir="${locations.dev.com}" />
+		</copy>
+
+		<copy toDir="${locations.test.codebase}" preserveLastModified="true" includeEmptyDirs="false">
+			<!-- copy the SharedCodebase directory INSIDE our client app; note that it's being copied as "codebase" and not "SharedCodebase" -->
+			<fileset dir="${locations.dev.codebase}" />
+		</copy>
+
+		<copy toDir="${locations.test.customtags}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.customtags}">
+				<!-- use a date filter to get just the files modified after 1/1/2005 -->
+				<date datetime="01/01/2005 12:00 AM" when="after" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="CopyToTestWithDifferentDateFilter" depends="init,clean" description="copies from dev to test using a single fileset per copy; uses a variable date filter instead of a hard-coded one">
+
+		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.clientroot}" />
+		</copy>
+
+		<copy toDir="${locations.test.com}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.com}" />
+		</copy>
+
+		<copy toDir="${locations.test.codebase}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.codebase}" />
+		</copy>
+
+		<!--note the change to our date filter... we're now picking everything newer than 5 years old instead of a hard-coded date-->
+		<tstamp>
+			<format pattern="MM/dd/yyyy hh:mm aa" offset="-5" unit="year" property="customtagfilter" />
+		</tstamp>
+		<copy toDir="${locations.test.customtags}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.customtags}">
+				<!-- use the property we set in the tstamp. this date tag is a 'selector' -->
+				<date datetime="${customtagfilter}" when="after" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="CopyToTestMultipleFilesets" depends="init,clean" description="Copies from dev to test using multiple filesets per copy task">
+
+		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
+			<!-- note how we filter out junk we don't need on test -->
+			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,**tmp/,**/requirements/" />
+			<!-- add com by using dev.root as source and just including com/** -->
+			<fileset dir="${dev.root}" includes="com/**" />
+		</copy>
+
+		<copy toDir="${locations.test.codebase}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.codebase}" />
+		</copy>
+
+		<tstamp>
+			<format pattern="MM/dd/yyyy hh:mm aa" offset="-5" unit="year" property="customtagfilter" />
+		</tstamp>
+		<copy toDir="${locations.test.customtags}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.customtags}">
+				<date datetime="${customtagfilter}" when="after" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="CopyToTestUsingFilterMapper" depends="init,clean" description="copies files from dev to test using a single copy tag for everything under the 'client' app. Uses a filtermapper to change SharedCodebase to codebase">
+
+		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,**tmp/,**/requirements/" />
+			<!-- added SharedCodebase to our includes, and we change the name by 
+			using a filtermapper with replacestring -->
+			<fileset dir="${dev.root}" includes="com/**,SharedCodebase/**" />
+			<!--<filtermapper>
+				<replacestring from="SharedCodebase" to="codebase" />
+			</filtermapper>
+			-->
+		</copy>
+
+		<tstamp>
+			<format pattern="MM/dd/yyyy hh:mm aa" offset="-5" unit="year" property="customtagfilter" />
+		</tstamp>
+		<copy toDir="${locations.test.customtags}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.customtags}">
+				<date datetime="${customtagfilter}" when="after" />
+			</fileset>
+		</copy>
+
+	</target>
+
+
+
+
+</project>

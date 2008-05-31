@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Jun 16, 2006 6:58:59 AM                                                        
+
+     doh   
+     build file for moving all files into a directory structure easily zippable and deployable
+                   
+     mesher                                                                
+     ====================================================================== -->
+<project name="POLAOptimizer" default="package">
+    <description>
+            build file for moving all files into a directory structure easily zippable and deployable
+    </description>
+
+	
+    <!-- ================================= 
+          target: setProps              
+         ================================= -->
+    <target name="setProps"  description="--> setusup the properties">
+    	<property name="projectname" value="POLAOptimizer"/>
+    	<property name="parent" value="\\XXXXX-nas3\alpha\XXXXX\DOH-Java\"/>
+    	<property name="root" value="${parent}\${projectname}"/>
+    	<property name="classesroot" value="${root}\classes"/>
+    	<property name="libroot" value="${root}\lib"/>
+    	<property name="outdir" value="${root}\"/>
+    	<property name="zipfile" value="${root}\dist\POLAOptimizer.zip"/>
+    	
+    </target>
+
+	
+	
+    <!-- ================================= 
+          target: package              
+         ================================= -->
+    <target name="package" depends="setProps" description="--> packages the copied files into the deployment-ready zip file. this creates a zip that can be unzipped directly to c:">
+    	<delete file="${zipfile}"/>
+    	
+    	<zip destfile="${zipfile}">    		
+    		
+	    	<zipfileset dir="classes" prefix="${projectname}/classes" excludes="**/EnvironmentSettings*.properties"/>    		
+	    	<zipfileset dir="lib" prefix="${projectname}/lib"/>    
+	    	<zipfileset dir="testpdfs" prefix="${projectname}/testpdfs"/>  
+	    	
+	    	<!-- we need to selectively deal with the environmentsettings files -->
+    		<zipfileset dir="classes" includes="**/EnvironmentSettings_PROD.properties" fullpath="polaoptimizer/classes/com/XXXXX/pola/application/props/EnvironmentSettings.properties"/>
+    		<zipfileset dir="classes" includes="**/EnvironmentSettings_STAGING.properties" fullpath="polaoptimizer/classes/com/XXXXX/pola/application/props/EnvironmentSettings_STAGING.properties"/>
+	    	
+	    	<zipfileset dir="" prefix="${projectname}" includes="JMX*.bat"/>  
+	    	<zipfileset dir="" prefix="${projectname}" includes="*.policy"/>      		
+    		<zipfileset dir="" includes="runPOLA.bat" fullpath="${projectname}/runPOLA.bat"/>
+    		
+	    	<!-- we'll only deploy this one the first time around -->
+    		<zipfileset dir="logprops" prefix="${projectname}/logprops"/>	    			
+	    </zip>
+
+    </target>
+</project>
+

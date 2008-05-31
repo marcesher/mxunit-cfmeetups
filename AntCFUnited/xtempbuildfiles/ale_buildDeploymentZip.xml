@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+                                                           
+
+     ALE 
+     
+                   
+     mesher                                                                
+     ====================================================================== -->
+<project name="ALE" default="package">
+    <description>
+            build file for moving all files into a directory structure easily zippable and deployable
+    </description>
+
+	
+    <!-- ================================= 
+          target: setProps              
+         ================================= -->
+    <target name="setProps"  description="--> setusup the properties">    	
+    	<property name="projectname" value="ALE"/>
+    	<property name="root" value="\\XXXXX-nas3\alpha"/>
+    	<property name="srcdir" value="${root}\XXXXX\ALE"/>
+    	<property name="comparedir" value="${root}\CurrentProductionCode\${projectname}"/>    	
+    	<property name="zipfile" value="${srcdir}\deploy\${projectname}.zip"/>
+    </target>
+
+	
+	
+    <!-- ================================= 
+          target: package              
+         ================================= -->
+    <target name="package" depends="setProps" description="--> packages the appropriate files into the deployment-ready zip file. this creates a zip that can be unzipped directly to D:">
+    	<delete file="${zipfile}"/>
+    	<zip destfile="${zipfile}">    					
+    		<zipfileset dir="" includes="**/*.cf*,**/*.afm,**/*.pfm,**/*.pfb,**/*.inf" 
+    			excludes="**/tst/,**/demostuff/,**/scribble.cfm,**/documentation/,**/PDFLibTestCases/,**/StraightPDFLIB/"
+    			prefix="${projectname}"
+    			casesensitive="false">
+    			<different targetdir="${comparedir}"/>
+    		</zipfileset>
+    	</zip>
+    </target>
+</project>
+

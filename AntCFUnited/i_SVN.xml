@@ -1,0 +1,116 @@
+<project name="CFUnited (i): SVN" basedir="." default="package">
+
+	<target name="init">
+
+		<property name="app.name" value="Client1App" />
+
+		<property name="dev.root" location="DEVSERVER" />
+		<property name="test.root" location="TESTSERVER" />
+		<property name="locations.dev.clientroot" location="${dev.root}\${app.name}" />
+		<property name="locations.test.clientroot" location="${test.root}\${app.name}" />
+
+		<property name="locations.dev.customtags" location="${dev.root}\CustomTags" />
+		<property name="locations.test.customtags" location="${test.root}\CustomTags" />
+
+		<property name="locations.test.deploy" location="${locations.test.clientroot}\deploy" />
+		<property name="locations.test.deployzip" location="${locations.test.deploy}\${app.name}.zip" />
+
+		<echoproperties prefix="locations" />
+
+		<!-- read all our 'secure' properties from this file; this defines the svn.username, svn.password, and svn.server properties -->
+		<property file="unames.properties" />
+
+		<!-- create a classpath for ANT to use for finding and running the SVN task -->
+		<property name="svnlibdir" location="lib" />
+		<path id="project.classpath">
+			<fileset dir="${svnlibdir}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<!-- define the SVN task; it'll find the svntask.properties file in a jar file in 
+		the classpath we defined above -->
+		<taskdef resource="svntask.properties" classpathref="project.classpath" />
+
+
+
+	</target>
+
+	<target name="clean" depends="init">
+		<mkdir dir="${locations.test.deploy}" />
+		<delete file="${locations.test.deployzip}" />
+	</target>
+
+
+	<!--
+	SVNANT is here: http://subclipse.tigris.org/svnant.html
+	
+	PPT with all instructions for setting it up is here: http://mxunit.org/doc/zip/CFMeetup_AntWired.zip
+	
+	CFMeetup (connect presentation) demonstrating setup for SVN, FTP, and other things is here: http://coldfusion.meetup.com/17/calendar/7386772/
+	-->
+
+	<target name="updateDevFromSVN" depends="init">
+		<svn username="${svn.username}" password="${svn.password}">
+			<checkout url="${svn.server}/mxunit-cfmeetups/AntCFUnited/DEVSERVER/${app.name}" destPath="DEVSERVER/${app.name}" />
+		</svn>
+
+		<!-- OR, you can use update if know that your "target" directory is already 
+		a 'working copy', i.e. it's been checked out to before. THIS IS PREFERABLE! -->
+		<svn username="${svn.username}" password="${svn.password}">
+			<update dir="DEVSERVER\${app.name}" />
+		</svn>
+	</target>
+
+	<target name="commitToSVN" depends="init">
+		<svn username="${svn.username}" password="${svn.password}">
+			<commit dir="." message="Committing my changes" />
+		</svn>
+	</target>
+
+	<!-- now, copyToTest depends on updating our working copy from SVN -->
+	<target name="copyToTest" depends="init,updateDevFromSVN" description="copies files from dev to test using a single copy tag for everything under the 'client' app. Uses a filtermapper to change SharedCodebase to codebase">
+
+		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,**tmp/,**/requirements/" />
+			<fileset dir="${dev.root}" includes="com/**,SharedCodebase/**" />
+			<filtermapper>
+				<replacestring from="SharedCodebase" to="codebase" />
+			</filtermapper>
+		</copy>
+
+		<tstamp>
+			<format pattern="MM/dd/yyyy hh:mm aa" offset="-5" unit="year" property="customtagfilter" />
+		</tstamp>
+		<copy toDir="${locations.test.customtags}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.customtags}">
+				<date datetime="${customtagfilter}" when="after" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="tagVersion" depends="init">
+		<tstamp>
+			<format property="tag.versionStamp" pattern="MM_dd_yyyy_hh_mm_ss_aa" />
+		</tstamp>
+		<property name="tag.srcURL" value="${svn.server}/mxunit-cfmeetups/AntCFUnited/DEVSERVER/${app.name}" />
+		<property name="tag.destURL" value="${svn.server}/mxunit-cfmeetups/AntCFUnited/tags/${app.name}/${tag.versionStamp}" />
+		<property name="tag.message" value="AutoTagging from package target" />
+		<echoproperties prefix="tag" />
+		<svn username="${svn.username}" password="${svn.password}">
+			<copy srcURL="${tag.srcURL}" destURL="${tag.destURL}" message="${tag.message}" />
+		</svn>
+
+	</target>
+
+	<!-- now package can invoke tagVersion, so every time we do a package we have a record,
+	in SVN, of exactly what we put into the zip -->
+	<target name="package" depends="init,clean,tagVersion">
+		<zip destfile="${locations.test.deployzip}">
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="inetpub\wwwroot\${app.name}" casesensitive="false" />
+
+			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="ColdFusion8\CustomTags" casesensitive="false" />
+		</zip>
+	</target>
+
+</project>

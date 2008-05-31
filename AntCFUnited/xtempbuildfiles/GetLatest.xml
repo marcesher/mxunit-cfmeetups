@@ -1,0 +1,95 @@
+<project name="buildenvironment" basedir="." default="build">
+
+	<!-- HOW TO RUN FROM COMMAND LINE -->
+
+	<!--
+	*** if you haven't put eclipse on your machine, you must complete this step ***
+	1) install eclipse by unzipping eclipse-rcp-europa-win32.zip from \\XXXXX-nas3\programs\Eclipse. You're installing eclipse so that you can easily get all the ant stuff... plus, you'll need eclipse anyway for your job.
+	
+	*** you need to do these to add ANT and VSS to your "path" variable in windows
+	2) When eclipse is installed, you'll have a directory something like this: c:\eclipse\plugins\org.apache.ant_1.7.XXXX (whatever that path is).
+	3) go into that ant directory in your eclipse plugins directory
+	4) go into the bin directory. copy the entire path to that bin directory
+	5) add that path to your system's "Path" environment variable. while you're at it, add C:\Program Files\Microsoft Visual Studio\VSS\win32 to your path variable, too.
+	6) back out of the ant directory into your plugins directory.
+	
+	*** you need to do these if you want to GET the SVN projects ***
+	5) copy all the jars from \\XXXXX-nas3\programs\Eclipse\Subversion ANT Jars into c:\eclipse\plugins\org.apache.ant_1.7.XXXX (whatever that path is)
+	7) toward the bottom of your eclipse plugins directory, find a directory starting with org.tigris.subversion...., something like this: C:\eclipse\plugins\org.tigris.subversion.javahl.win32_1.2.4
+	8) go into that directory, and copy the full path, and add it to your system's Path environment variable
+
+	*** ready to run ***
+	9a) open a command line, cd to that directory, and type 
+	ant -file s:\docs\global\buildscripts\GetLatest.xml -Dusername=???? -Dpassword=??? -Dsrc=???? -logfile c:\inetpub\wwwroot\GetLatest.log 
+	where the username, password, and srcdir are your own vss/svn username, password, and your webroot (like c:\inetpub\wwwroot). 
+	
+	DON'T HIT ENTER YET!
+	
+	9b)	If you didn't set yourself up to get the SVN stuff, 
+	then you need to add this to the end of that string you just typed: build.vss
+	
+	That tells ant to run the build.vss target instead of the default target. the build.vss
+	target just connects to VSS and doesn't bother with the SVN stuff
+	
+	Otherwise, you don't need to add anything else. just hit enter.
+	
+	10) You can then create yourself a little bat file, like so, and set the bat file as a scheduled task so that when you come in 
+	in the morning, all your code is updated
+	
+	**** my bat file; this writes a file named GetLatest.log to c:\inetpub\wwwroot ****
+	ant -file s:\docs\global\buildscripts\GetLatest.xml -Dusername=mesher -Dpassword=mesher -Dsrc=c:\inetpub\wwwroot -logfile c:\inetpub\wwwroot\GetLatest.log
+	*****
+	
+	Again, if you didn't hook up SVN, then add build.vss to the end of that string in your bat file and you'll be all set.
+	
+	-->
+
+	<target name="init">
+		<input message="enter username" addproperty="username" defaultvalue="mesher" />
+		<input message="enter password" addproperty="password" defaultvalue="${username}" />
+		<input message="enter full path to webroot (like c:\inetpub\wwwroot)" addproperty="src" defaultvalue="c:\inetpub\wwwroot" />
+
+		<property name="vsslogin" value="${username},${password}" />
+		<property name="svnlogin" value="${username}" />
+		<property name="svnpass" value="${password}" />
+		<property name="vssserver" value="R:" />
+		<property name="svnserver" value="http://xxxx.com/svnrepos" />
+	</target>
+
+	<target name="build" depends="init,build.svn,build.vss" />
+
+	<target name="build.vss" depends="init">
+		<vssget localpath="${src}\DOCS" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/DOCS" serverPath="${vssserver}" />
+
+		<vssget localpath="${src}\DOCSJava" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/DOCSJava" serverPath="${vssserver}" />
+
+		<vssget localpath="${src}\com\XXXXX" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/com/XXXXX" serverPath="${vssserver}" />
+
+		<vssget localpath="${src}\!SharedResources\CustomTags" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/!SharedResources/CustomTags" serverPath="${vssserver}" />
+		
+		<vssget localpath="${src}\!SharedResources\global\functions" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/!SharedResources/CustomTags/global/functions" serverPath="${vssserver}" />
+
+		<vssget localpath="${src}\XXXXX\sandbox" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/XXXXX/sandbox" serverPath="${vssserver}" />
+
+		<vssget localpath="${src}Client\Enrollment" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/client/enrollment" serverPath="${vssserver}" />
+
+	</target>
+
+	<target name="build.svn" depends="init">
+		<path id="project.classpath">
+			<pathelement location="${ant.home}\lib\svnant.jar" />
+			<pathelement location="${ant.home}\lib\svnClientAdapter.jar" />
+		</path>
+		<taskdef resource="svntask.properties" classpathref="project.classpath" />
+
+		<svn username="${svnlogin}" password="${svnpass}">
+			<checkout url="${svnserver}/client/trunk/Enrollment" destPath="${src}\client\Enrollment" />
+			<checkout url="${svnserver}/com/trunk/XXXXX/framework/retail" destPath="${src}\com\XXXXX\framework\retail" />
+			<checkout url="${svnserver}/com/trunk/XXXXX/retail" destPath="${src}\com\XXXXX\retail" />
+			
+			
+		</svn>
+	</target>
+</project>
+
+

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Jun 16, 2006 6:58:59 AM                                                        
+
+     XXXXXcfx    
+     build file for moving all files into a directory structure easily zippable and deployable
+                   
+     mesher                                                                
+     ====================================================================== -->
+<project name="XXXXXcfx" default="package">
+    <description>
+            build file for moving all files into a directory structure easily zippable and deployable
+    </description>
+
+	
+    <!-- ================================= 
+          target: setProps              
+         ================================= -->
+    <target name="setProps"  description="--> setusup the properties">
+    	<property name="root" value="\\XXXXX-nas3\alpha\DOCSJava\CFX\"/>    	
+    	<property name="zipfile" value="${root}\cfusionmx.zip"/>
+    	<path id="classpath">
+	        <fileset dir="${root}lib" includes="**/*.jar"/>
+    		<fileset dir="c:\cfusionmx\lib\" includes="cfx.jar"/>
+	    </path>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: prepare                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="prepare" depends="setProps" description="-->prepare the output directory">   		
+    	<delete file="${zipfile}"/>    	
+    	<delete dir="${root}classes"/>    
+    	<mkdir dir="${root}classes"/>
+    </target>
+	
+	<target name="compile">        
+        <javac srcdir="src" excludes="com/XXXXX/tst/**" destdir="${root}classes" classpathref="classpath" target="1.4" source="1.4"/>
+    </target>
+
+	
+    <!-- ================================= 
+          target: package              
+         ================================= -->
+    <target name="package" depends="prepare,compile" description="--> packages the files into the cfusionmx zip file. we start at the base dir and just include the cfusionmx dir so that the zip file starts at cfusionmx and thus can be unzipped over top of the c: drive">
+        <zip destfile="${zipfile}">        
+        	<zipfileset dir="${root}" 
+        		includes="classes/**,lib/*.jar"
+        		prefix="cfusionmx/wwwroot/web-inf"/>        	 
+        </zip>
+    </target>
+</project>
+

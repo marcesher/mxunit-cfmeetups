@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Jun 16, 2006 6:58:59 AM                                                        
+
+     doh   
+     build file for moving all files into a directory structure easily zippable and deployable
+                   
+     mesher                                                                
+     ====================================================================== -->
+<project name="DOHv2" default="package">
+    <description>
+            build file for moving all files into a directory structure easily zippable and deployable
+    </description>
+
+	
+    <!-- ================================= 
+          target: setProps              
+         ================================= -->
+    <target name="setProps"  description="--> setusup the properties">
+    	<property name="projectname" value="DOHv2"/>
+    	<property name="parent" value="\\XXXXX-nas3\alpha\XXXXX\DOH-Java\"/>
+    	<property name="root" value="${parent}\${projectname}"/>
+    	<property name="classesroot" value="${root}\classes"/>
+    	<property name="libroot" value="${root}\lib"/>
+    	<property name="outdir" value="${root}\"/>
+    	<property name="zipfile" value="${root}\dist\DOH.zip"/>
+    	
+    </target>
+
+	
+	
+    <!-- ================================= 
+          target: package              
+         ================================= -->
+    <target name="package" depends="setProps" description="--> packages the copied files into the deployment-ready zip file. this creates a zip that can be unzipped directly to c:">
+    	<delete file="${zipfile}"/>
+    	
+    	<zip destfile="${zipfile}">    		
+    	
+    		<zipfileset dir="classes" prefix="DOH/classes" excludes="**/EnvironmentSettings*.properties"/>     		
+    		<zipfileset dir="lib" prefix="DOH/lib"/>  
+    		
+    		<!-- we need to selectively deal with the environmentsettings files -->
+    		<zipfileset dir="classes" includes="**/EnvironmentSettings_PROD.properties" fullpath="doh/classes/com/XXXXX/doh/application/props/EnvironmentSettings.properties"/>
+    		<zipfileset dir="classes" includes="**/EnvironmentSettings_STAGING.properties"  fullpath="doh/classes/com/XXXXX/doh/application/props/EnvironmentSettings_STAGING.properties"/>
+    		
+    		<zipfileset dir="" prefix="DOH" includes="JMX*.bat"/>
+    		<zipfileset dir="" includes="runRequestManager.bat" fullpath="DOH/runRequestManager.bat"/>
+    		<zipfileset dir="" includes="runOptimizationManager.bat" fullpath="DOH/runOptimizationManager.bat"/>
+    		
+    		
+    		<!-- we'll only deploy this one the first time around -->
+    		<zipfileset dir="logprops" prefix="DOH/logprops"/>
+    	</zip>    	
+    </target>
+</project>
+

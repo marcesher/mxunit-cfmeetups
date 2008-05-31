@@ -1,0 +1,27 @@
+<project name="CFUNITED -- Presentation" basedir="." default="package">
+
+
+	<target name="init">
+		<property file="unames.properties" />
+
+	</target>
+
+	<target name="package" depends="init">
+		<mkdir dir="dist" />
+		<delete file="dist/CFUnitedANT.zip"/>
+		<zip destfile="dist/CFUnitedANT.zip" casesensitive="false">
+			<zipfileset dir="." includes="**/*" excludes="**/dist/**,**/tags/**,**/unames.properties,*.txt,cache.properties,xtempbuildfiles/**" prefix="CFUnitedANT" casesensitive="false" />
+		</zip>
+	</target>
+
+	<target name="publishThisPresentation" depends="init,package">
+
+		<ftp server="${ftp.site}" userid="${ftp.username}" password="${ftp.password}" remotedir="doc/zip">
+			<fileset dir="dist">
+				<include name="*.zip" />
+			</fileset>
+		</ftp>
+	</target>
+
+
+</project>

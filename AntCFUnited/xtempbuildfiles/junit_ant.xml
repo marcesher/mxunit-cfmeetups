@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+
+<project name="DOCS WebTests" default="testRunner">
+
+	<description>
+		runs junit tests
+	</description>
+
+	<target name="getsystemlocation" unless="systemlocation">
+		<echo>=== Prompting for systemlocation ===</echo>
+		<input message="local, dev, test, staging, or prod?" addproperty="systemlocation" defaultvalue="local" validargs="local,dev,test,staging,prod">
+		</input>
+	</target>
+
+	<target name="compile">
+		<delete dir="classes" />
+		<mkdir dir="classes" />
+		<path id="classpath">
+			<pathelement location="classes" />
+			<fileset dir="lib">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<javac srcdir="src" destdir="classes" classpathref="classpath" />
+
+	</target>
+
+	<target name="deleteusersettings">
+		<!-- because this is too dangerous to even consider letting be in the place where the automatic test runners will run -->
+		<delete file="\\XXXXX-nas3\alpha\DocsJava\WEBTESTS\properties\usersettings.properties" />
+	</target>
+
+	<target name="testRunner" description="Runs JUnit Tests" depends="getsystemlocation,compile,deleteusersettings">
+		<echo>=== Running JUnit Tests ===</echo>
+
+		<property name="emailfrom" value="DOCSWebTests@myco.com" />
+		<property name="emailto" value="marc.esher@myco.com" />
+		<property name="emailreplyto" value="marc.esher@myco.com" />
+		<property name="fullreporturl" value="http://aidsarg04/DOCSJava/WebTests/testreports/${systemlocation}/html/index.html" />
+
+
+		<echo message="SystemLocation is ${systemlocation}" />
+
+		<!--load the existing file to make quick visual day-to-day comparison easier in the email -->
+		<loadfile property="currentresultshtml" srcFile="testreports/${systemlocation}/html/client/package-summary.html" />
+
+
+		<echo>=== Starting tests===</echo>
+		<junit printsummary="yes" haltonfailure="no" showoutput="true">
+			<sysproperty key="systemlocation" value="${systemlocation}" />
+			<classpath>
+				<pathelement location="classes" />
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+
+			<formatter type="xml" />
+
+			<batchtest fork="no" todir="testreports/${systemlocation}">
+				<fileset dir="src">
+					<include name="**/client/*Test.java" />
+					<exclude name="**/AllTests.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<echo>=== Tests Finished. Building Report ===</echo>
+		<junitreport todir="testreports">
+			<fileset dir="testreports/${systemlocation}">
+				<include name="TEST-client*.xml" />
+			</fileset>
+			<report format="frames" todir="testreports/${systemlocation}/html" />
+		</junitreport>
+
+		<loadfile property="resultshtml" srcFile="testreports/${systemlocation}/html/client/package-summary.html" />
+		<loadfile property="resultscss" srcFile="testreports/${systemlocation}/html/stylesheet.css" />
+		<mail from="${emailfrom}" tolist="${emailto}" replyto="{emailreplyto}" mailhost="my.mail.host" subject="Docs WebTests results: ${systemlocation}" charset="UTF-8" messagemimetype="text/html">
+
+			<message>
+				&lt;style&gt;${resultscss}&lt;/style&gt;
+				&lt;h1 align='center'&gt;LATEST ${systemlocation} Test Results&lt;/h1&gt;
+				&lt;p&gt;
+				Access the full report here: &lt;a href='${fullreporturl}'&gt;${fullreporturl}&lt;/a&gt;
+				&lt;/p&gt;
+				&lt;hr&gt;
+				${resultshtml}
+				
+				&lt;p&gt;&lt;/p&gt;
+				&lt;hr&gt;
+				&lt;h1 align='center'&gt;PREVIOUS ${systemlocation} Test Results&lt;/h1&gt;
+				${currentresultshtml}
+				
+			</message>
+		</mail>
+	</target>
+
+</project>

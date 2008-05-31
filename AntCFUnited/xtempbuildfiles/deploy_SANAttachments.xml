@@ -1,0 +1,103 @@
+<project name="SAN - Attachments and SourcePDFs" default="package">
+
+	<target name="setenv" description="--> Determine environment from which code is gathered">
+		<condition property="localenv" value="alpha" else="beta">
+			<isset property="usealpha" />
+		</condition>
+		<echo message="setenv: localenvironment is ${localenv}" />
+	</target>
+
+	<target name="setprops" depends="setenv">
+		<property name="parent" value="App1" />
+		<property name="prodparent" value="App_1" />
+		<property name="projectname" value="NewEnrollment" />
+		<property name="stagingwebserver" value="10.0.209.251" />
+		<property name="stagingsan" value="\\epssargd01" />
+		<!-- figure out if we're in dev or staging -->
+		<!-- when deploying to staging from local, we use the projectname ("NewEnrollment", in this case) because
+		staging is set up to mirror the dev environment. however, when we package this from
+		staging to prod, we need to use "Enrollment", not "NewEnrollment", since that's how prod
+		is set up. So by testing for the existence of a staging directory, we know when to use the
+		prod deployment path -->
+		<condition property="isstaging">
+			<available file="${stagingsan}\${prodparent}" type="dir" property="instaging" />
+		</condition>
+		<condition property="networkroot" value="${stagingsan}" else="\\XXXXX-nas3\${localenv}">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="coderoot" value="D:" else="\\XXXXX-nas3\${localenv}">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="sanroot" value="${networkroot}" else="${networkroot}\SAN">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="parentnameonnetwork" value="${prodparent}" else="${parent}">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="prefixinzipfile" value="Enrollment" else="${projectname}">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="httphost" value="${stagingwebserver}" else="aidsarg04">
+			<isset property="isstaging" />
+		</condition>
+
+		<property name="srcdir" value="${coderoot}\${parent}\${projectname}\" />
+
+		<property name="fullsanroot" value="${sanroot}\${parentnameonnetwork}\${projectname}" />
+
+		<property name="filesroot" value="${fullsanroot}\files" />
+		<property name="attroot" value="${filesroot}\attachments" />
+		<property name="mainpdfroot" value="${fullsanroot}\PDF" />
+		<property name="sourcepdfroot" value="${mainpdfroot}\sourcepdfs" />
+		<property name="zipfile" value="${srcdir}deploy\${parent}_${projectname}_SAN.zip" />
+		<property name="buildscriptroot" value="${coderoot}\docs\global\buildscripts" />
+
+		<echo message="networkroot is ${networkroot}. CodeRoot is ${coderoot}. FullSanRoot is ${fullsanroot}. prefixinzipfile is ${prefixinzipfile}" />
+
+	</target>
+
+
+	<target name="getfilelist" depends="setprops">
+		<property name="url" value="http://${httphost}/docs/global/buildscripts/buildFileListString.cfm?dsn=${parent}_${projectname}" />
+		<echo message="Getting filelist by executing URL: ${url}" />
+		<echo message="append showsql=true to the URL and run it in the browser to see the sql being executed" />
+		<loadresource property="filelist">
+			<url url="${url}" />
+		</loadresource>
+		<echo message="filtering on filelist: ${filelist}" />
+	</target>
+
+
+	<target name="clean" depends="setprops">
+		<delete file="${zipfile}" />
+	</target>
+
+	<target name="package" depends="clean,getfilelist">
+		<echo message="${attroot}" />
+		<zip destfile="${zipfile}">
+			<!-- get the attachments 	-->
+			<zipfileset dir="${attroot}" includes="${filelist}" prefix="${prefixinzipfile}/files/attachments" casesensitive="false" />
+
+			<!-- get the sourcepdfs -->
+			<zipfileset dir="${sourcepdfroot}" includes="*.pdf" prefix="${prefixinzipfile}/pdf/sourcepdfs"  casesensitive="false"/>
+
+			<!-- get the few generic fundsheets we need. only for AFD -->
+			<zipfileset dir="${sourcepdfroot}\fundsheets" includes="*STBLX*,*Self*,*COST*,*CASH*,*Employer*,*Stable*,*Money*" excludes="*xxx*" prefix="${prefixinzipfile}/pdf/sourcepdfs/fundsheets"  casesensitive="false"/>
+			
+			<!-- get any pdfs in the root of the pdf directory -->
+			<zipfileset dir="${mainpdfroot}" includes="*.pdf" prefix="${prefixinzipfile}/PDF"  casesensitive="false"/>
+
+
+		</zip>
+	</target>
+
+	<target name="copytotest" description="unzips the deployment files onto test">
+
+		<property name="testsanroot" value="\\XXXXX-nas3\beta\SAN" />
+		<echo message="unzipping ${zipfile} to ${testsanroot}\${parent}" />
+		<!--
+		<unzip src="${zipfile}" dest="${testsanroot}/${parent}" />
+		-->
+
+	</target>
+</project>

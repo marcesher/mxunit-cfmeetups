@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+                                                           
+
+          
+	 HOW TO RUN: 
+	 1) open eclipse
+	 2) navigate to this xml file
+	 3) right click, select "Run As - Ant Build"
+	 
+	 It'll create a zip file for deployment in the client's "deploy" directory containing
+	 all client, com, docs global, and shared resources code 
+                   
+     mesher                                                                
+     ====================================================================== -->
+<project name="Unified code" default="packageCode">
+	<description>
+            build file for moving all files into a directory structure easily zippable and deployable
+    </description>
+
+	<target name="setenv" description="--> Determine environment from which code is gathered">
+		<condition property="localenv" value="alpha" else="beta">
+			<isset property="usealpha" />
+		</condition>
+		<echo message="setenv: Your operation will be using code from ${localenv} as its source code!" />
+	</target>
+
+	<!-- ================================= 
+          target: setProps              
+         ================================= -->
+	<target name="setProps" description="--> setusup the properties" depends="setenv">
+		<property name="stagingwebserver" value="10.0.209.251" />
+
+		<condition property="isstaging">
+			<!-- <available file="${stagingsan}\${prodparent}" type="dir" property="instaging" /> -->
+			<isreachable host="${stagingwebserver}" timeout="2" />
+		</condition>
+		<condition property="networkroot" value="${stagingsan}" else="\\XXXXX-nas3\${localenv}">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="coderoot" value="D:" else="\\XXXXX-nas3\${localenv}">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="parentnameonnetwork" value="${prodparent}" else="${parent}">
+			<isset property="isstaging" />
+		</condition>
+
+		<!-- this basically says: if we're deploying from staging to prod (i.e. isstaging), then always use
+		'enrollment' as the path inside the zipfile since all production directories are 'enrollment',
+		even if the local and staging directories are 'newenrollment' (i.e. the projectname) -->
+		<condition property="pathonmachine" value="Enrollment" else="${projectname}">
+			<isset property="isstaging" />
+		</condition>
+
+
+		<!-- client source code -->
+		<property name="srcdir" value="${coderoot}\${parent}\${projectname}\" />
+		<echo message="Coderoot is ${coderoot}. Client directory is ${srcdir}" />
+
+		<!-- for DOCS Global -->
+		<property name="docsroot" value="${coderoot}\docs\" />
+		<property name="globalroot" value="${docsroot}\global" />
+		<property name="customtags" value="${coderoot}\!sharedresources\customtags" />
+		<property name="sharedfunctions" value="${coderoot}\!sharedresources\global\functions" />
+
+		<!-- root of our test environment -->
+		<property name="testroot" value="\\XXXXX-nas3\beta" />
+
+		<!-- the zip file of code we'll build -->
+		<property name="zipfile" value="${testroot}\${parent}\${projectname}\deploy\${parent}_${projectname}.zip" />
+
+		<!-- for the SAN attachments zip -->
+
+		<condition property="sanroot" value="${networkroot}" else="${networkroot}\SAN">
+			<isset property="isstaging" />
+		</condition>
+		<condition property="httphost" value="${stagingwebserver}" else="aidsarg01">
+			<isset property="isstaging" />
+		</condition>
+
+		<!-- which codebase to use -->
+		<condition property="sharedcodebase" value="EnrollmentCodebase" else="RetailCodebase">
+			<equals arg1="${frameworktype}" arg2="Enrollment" casesensitive="false" />
+		</condition>
+		<!-- which framework to use -->
+		<condition property="com" value="enrollmentv2" else="retail">
+			<equals arg1="${frameworktype}" arg2="Enrollment" casesensitive="false" />
+		</condition>
+
+		<!-- source code repository locations -->
+		<property name="vssserver" value="R:" />
+		<property name="svnserver" value="http://XXXXX.com/svnrepos" />
+		<property name="svnuser" value="mesher" />
+		<property name="svnpass" value="mesher" />
+
+
+		<!-- build some root strings -->
+		<property name="fullsanroot" value="${sanroot}\${parentnameonnetwork}\${projectname}" />
+		<property name="filesroot" value="${fullsanroot}\files" />
+		<property name="attroot" value="${filesroot}\attachments" />
+		<property name="mainpdfroot" value="${fullsanroot}\PDF" />
+		<property name="sourcepdfroot" value="${mainpdfroot}\sourcepdfs" />
+		<property name="prefixinzipfile" value="${projectname}" />
+		<property name="sanzipfile" value="${srcdir}deploy\${parent}_${projectname}_SAN.zip" />
+		<property name="buildscriptroot" value="${coderoot}\docs\global\buildscripts" />
+
+		<echo message="frameworktype, set in the client ant file, is ${frameworktype}" />
+		<echo message="networkroot is ${networkroot}. CodeRoot is ${coderoot}. Codebase is ${sharedcodebase}. Framework is ${com}. FullSanRoot is ${fullsanroot}. prefixinzipfile is ${prefixinzipfile}" />
+
+
+	</target>
+
+	<target name="clean" depends="setProps">
+		<delete file="${zipfile}" />
+	</target>
+	<target name="cleanSanZip" depends="setProps">
+		<delete file="${sanzipfile}" />
+	</target>
+
+	<!-- ================================= 
+          target: packageCode             
+         ================================= -->
+	<target name="packageCode" depends="clean" description="--> packages the appropriate files into the deployment-ready zip file. this creates a zip that can be unzipped directly to D:">
+		<echo message="NOTE!!!   This is zipping TEST. It did not copy any files from DEV. If you need to do that, run the copytotest task first!" />
+
+		<echo message="srcdir is ${srcdir}" />
+		<mkdir dir="${srcdir}\deploy\" />
+		<zip destfile="${zipfile}">
+
+			<!-- get all from the main client directory directory -->
+			<zipfileset dir="${srcdir}" includes="**/*" excludes="**/*.exe,**/*.pdf,**/*.tif,**/*.apf,**/*.scc,**/*.zip,**/*.tmp,**/_mmServerScripts/**,**/spry15/**, **/spry/**,**/PDF/Fonts/**,**codebasex**" prefix="${parent}/${pathonmachine}/" casesensitive="false" />
+			<!-- docs global -->
+			<zipfileset dir="${globalroot}" includes="act/**,functions/**,modules/**,xstandard/**,components/**/*.cfc" prefix="docs/global" casesensitive="false" />
+			<zipfileset dir="${coderoot}\Activedit40\inc" includes="**/*" excludes="**/*.scc,**/*.log" prefix="Activedit40/inc" casesensitive="false" />
+			<zipfileset dir="${customtags}" includes="*.cfm,spry/**,activedit/**" excludes="**/*.scc" prefix="!SharedResources/CustomTags" casesensitive="false">
+				<!-- because we know there's nothing used in DOCS systems before this date -->
+				<date datetime="01/01/2005 12:00 AM" when="after" />
+			</zipfileset>
+			<!-- this is a known (but annoying) dependency in SendToDoh custom tag -->
+			<zipfileset dir="${sharedfunctions}" includes="MXLib.cfm" prefix="!SharedResources/Global/Functions" />
+
+		</zip>
+	</target>
+
+
+
+	<target name="copyCodeToTest" depends="setProps" description="copies dev test">
+		<property name="systemroot" value="${testroot}\${parent}\${projectname}" />
+		<property name="testclientcodebase" value="${systemroot}\codebase" />
+		<property name="sharedcodebaselocation" value="\\XXXXX-nas3\alpha\docs\${sharedcodebase}" />
+
+		<!-- copy the client system -->
+		<echo message="copying system ${srcdir} to ${systemroot}. com is ${com}" />
+		<copy todir="${systemroot}" preservelastmodified="true" includeEmptyDirs="false">
+			<fileset dir="${srcdir}" excludes="deploy/**,fonts/**" />
+			<!-- bring the com directories into the system root -->
+			<fileset dir="${coderoot}" includes="com/XXXXX/${frameworktype}/${parent}/**, com/XXXXX/framework/${com}/**" />
+			<fileset dir="${coderoot}" includes="com/XXXXX/framework/statements/**, com/XXXXX/statements/${parent}/**" />
+		</copy>
+
+		<!-- delete the codebase directory inside the client system if it exists -->
+		<echo message="copying ${sharedcodebaselocation} into it" />
+
+		<!-- copy the Shared Codebase into the system codebase -->
+		<mkdir dir="${testclientcodebase}" />
+		<copy todir="${testclientcodebase}" preservelastmodified="true" includeEmptyDirs="false">
+			<fileset dir="${sharedcodebaselocation}" includes="**/*.*" />
+		</copy>
+
+		<!-- copy docs/global -->
+		<echo message="copying ${globalroot} into ${testroot}\DOCS\Global\" />
+		<copy todir="${testroot}\DOCS\Global" preservelastmodified="true" includeEmptyDirs="false">
+			<fileset dir="${globalroot}" includes="act/**,functions/**,modules/**,xstandard/**,components/**/*.cfc" />
+		</copy>
+
+		<!-- copy activedit40 -->
+		<copy todir="${testroot}\Activedit40" preservelastmodified="true" includeEmptyDirs="false">
+			<fileset dir="${coderoot}\Activedit40" includes="inc/**" excludes="**/*.log" casesensitive="false" />
+		</copy>
+
+		<!-- copy custom tags -->
+		<echo message="copying some custom tags" />
+		<copy todir="${testroot}" preservelastmodified="true" includeEmptyDirs="false">
+			<!-- this is a known (but annoying) dependency in SendToDoh custom tag -->
+			<fileset dir="${coderoot}" includes="!SharedResources/Global/functions/MXLib.cfm" />
+			<fileset dir="${coderoot}" includes="!SharedResources/CustomTags/**/*.cfm">
+				<!-- because we know there's nothing used in DOCS systems before this date -->
+				<date datetime="01/01/2005 12:00 AM" when="after" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="getfilelist" depends="setProps">
+		<property name="url" value="http://${httphost}/docs/global/buildscripts/buildFileListString.cfm?dsn=${parent}_${projectname}" />
+		<echo message="Getting filelist by executing URL: ${url}" />
+		<echo message="append showsql=true to the URL and run it in the browser to see the sql being executed" />
+		<loadresource property="filelist">
+			<url url="${url}" />
+		</loadresource>
+		<echo message="filtering on filelist: ${filelist}" />
+	</target>
+
+	<target name="packageSan" depends="cleanSanZip,getfilelist">
+		<echo message="AttachmentRoot is ${attroot}. Building san zip file at ${sanzipfile}" />
+		<zip destfile="${sanzipfile}">
+			<!-- get the attachments 	-->
+			<zipfileset dir="${attroot}" includes="${filelist}" prefix="${prefixinzipfile}/files/attachments" casesensitive="false" />
+
+			<!-- get the sourcepdfs -->
+			<zipfileset dir="${sourcepdfroot}" includes="*.pdf" prefix="${prefixinzipfile}/pdf/sourcepdfs" casesensitive="false" />
+
+			<!-- get the few generic fundsheets we need. only for AFD -->
+			<zipfileset dir="${sourcepdfroot}\fundsheets" includes="*STBLX*,*Self*,*COST*,*CASH*,*Employer*,*Stable*,*Money*" excludes="*xxx*" prefix="${prefixinzipfile}/pdf/sourcepdfs/fundsheets" casesensitive="false" />
+
+			<!-- get any pdfs in the root of the pdf directory -->
+			<zipfileset dir="${mainpdfroot}" includes="*.pdf" prefix="${prefixinzipfile}/PDF" casesensitive="false" />
+
+
+		</zip>
+	</target>
+
+	<target name="copySanToTest" depends="setProps">
+		<copy todir="\\XXXXX-nas3\beta\san\${parent}\${projectname}" preservelastmodified="true" includeEmptyDirs="false">
+			<fileset dir="${sanroot}\${parent}\${projectname}" includes="files/**,PDF/**" excludes="PDF/temp/**,PDF/orderpdfs/**,**/*.scc" />
+		</copy>
+	</target>
+
+	<!-- client files (Prudential_Statements.xml uses this) can set a property named "nosvn" and this update will be skipped! -->
+	<target name="UpdateDevFromSVN" depends="setProps" unless="nosvn">
+		<!--
+			to get this to run on your machine:
+			1) go to your eclipse plugins directory on your local machine
+			2) check to see if you have the directory \org.apache.ant_1.7.0.v200706080842
+				2a) if not copy go to \\XXXXX-nas3\programs\eclipse\org.apache.ant_1.7.0 directory
+				2b) paste it into your own eclipse plugins directory (like c:\eclipse\plugins or c:\eclipse32\plugins or whatever)
+			3) check to see if you have the directory \org.tigris.subversion.javahl.win32_1.2.4
+				3a) if not from that programs directory, copy the org.tigris.subversion.javahl.win32_1.2.2 directory
+				3b) paste it into your own eclipse plugins directory (like c:\eclipse\plugins or c:\eclipse32\plugins or whatever)
+			4) from your windows start menu, click that and right click "my computer". go to "advanced". open the "environment variables"
+			5) go to the "path" variable. click the "edit" button
+			6) add ;C:\eclipse32\plugins\org.tigris.subversion.javahl.win32_1.2.4 (or c:\eclipse...whatever your eclipse install is, or javahl.win32_1.2.2 if you copied that)
+			7) start or restart eclipse
+			8) Go to \\XXXXX-nas3\programs\eclipse\Subversion ANT Jars and copy all files beginning with svn into your eclipse\plugins\org.apache.ant_1.7.0\lib directory
+			8) in Window - -  preferences, filter for "ant"
+			9) click on "runtime"
+			10) click on the "add external jars" button
+			11) navigate to your eclipse\plugins\org.apache.ant_1.7.0\lib directory
+			12) select the 3 jar files that start with "svn" and click "OK"
+			13) potentially restart Windows to get Path definitions added. If it's saying something 
+			like "can't run javahl", then either you didn't add the javahl directory to your path 
+			variable or, if you did and you copied it correctly, then you need to restart windows.
+			
+			you should now be able to run this task.
+			
+			
+			-->
+
+		<path id="project.classpath">
+			<pathelement location="${ant.home}\lib\svnant.jar" />
+			<pathelement location="${ant.home}\lib\svnClientAdapter.jar" />
+			<pathelement location="${ant.home}\lib\svnjavahl.jar" />
+		</path>
+		<taskdef resource="svntask.properties" classpathref="project.classpath" />
+
+
+		<property name="src" value="\\XXXXX-nas3\alpha" />
+
+		<svn username="${svnuser}" password="${svnpass}">
+			<status path="\\XXXXX-nas3\alpha\${parent}\${projectname}" urlProperty="sysurl" />
+			<status path="\\XXXXX-nas3\alpha\com\XXXXX\${com}\${parent}" urlProperty="comurl" />
+
+
+			<update dir="${src}\${parent}\${projectname}" />
+
+			<update dir="${src}\docs\${sharedcodebase}" />
+			<!-- <checkout url="${svnserver}/docs/trunk/${sharedcodebase}" destPath="${src}\docs\${sharedcodebase}" /> -->
+
+			<update dir="${src}\com\XXXXX\framework\${frameworktype}" />
+			<update dir="${src}\com\XXXXX\${frameworktype}\${parent}" />
+			<update dir="${src}\docs\TestManager2" />
+
+		</svn>
+		<echo message="\\XXXXX-nas3\alpha\${parent}\${projectname} SVN URL is ${sysurl}" />
+		<echo message="\\XXXXX-nas3\alpha\com\XXXXX\${frameworktype}\${parent} SVN URL is ${comurl}" />
+
+	</target>
+
+	<target name="testIsReachable">
+		<condition property="stagingresult" value="yes" else="no">
+			<isreachable host="10.0.209.251" timeout="1" />
+		</condition>
+		<echo message="${stagingresult}" />
+
+		<condition property="devresult" value="yes" else="no">
+			<isreachable host="aidsarg04" timeout="1" />
+		</condition>
+		<echo message="${devresult}" />
+
+	</target>
+
+
+</project>
+

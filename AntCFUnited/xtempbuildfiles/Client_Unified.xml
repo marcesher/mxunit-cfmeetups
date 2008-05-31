@@ -1,0 +1,55 @@
+<project name="AmericanFunds Enrollment code deployment" default="packageCode">
+
+	<!-- YOU should only ever need to change these two values when copying
+		this build file for a new client -->
+	<target name="setProps">
+		<property name="parent" value="AmericanFunds" />
+		<property name="projectname" value="Enrollment" />
+		<property name="prodparent" value="Enrollment" />
+		<property name="stagingsan" value="\\epssargd01" />
+		<property name="frameworktype" value="retail" />
+	</target>
+
+	<target name="testCoreSetProps" depends="setProps">
+		<ant inheritAll="true" antfile="deploy_Unified.xml" target="setProps" />
+	</target>
+
+	<target name="packageCode" depends="setProps">
+
+		<!--  now do the hard work -->
+		<ant inheritAll="true" antfile="deploy_Unified.xml" target="packageCode" />
+	</target>
+
+	<target name="packageSan" depends="setProps">
+
+		<!--  now do the hard work -->
+		<ant inheritAll="true" antfile="deploy_Unified.xml" target="packageSan" />
+	</target>
+
+
+	<target name="testGetFileList" depends="setProps">
+		<ant inheritAll="true" antfile="deploy_Unified.xml" target="getfilelist" />
+	</target>
+
+
+	<target name="copyCodeToTest" depends="UpdateDevFromSVN">
+		<property name="usealpha" value="true" />
+		<ant inheritAll="true" antfile="deploy_Unified.xml" target="copyCodeToTest" />
+	</target>
+
+	<target name="copySanToTest" depends="setProps">
+		<property name="usealpha" value="true" />
+		<ant inheritAll="true" antfile="deploy_Unified.xml" target="copySanToTest" />
+	</target>
+
+	
+	<target name="UpdateDevFromSVN" depends="setProps">
+		<ant inheritAll="true" antfile="deploy_Unified.xml" target="UpdateDevFromSVN" />
+	</target>
+
+	<target name="TestSVNSetup">
+		<svn username="mesher" password="mesher">
+
+		</svn>
+	</target>
+</project>

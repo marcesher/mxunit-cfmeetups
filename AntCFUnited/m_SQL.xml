@@ -1,0 +1,104 @@
+<project name="CFUnited (m): SQL, MacroDef, and exec" basedir="." default="getServers">
+
+	<target name="init">
+
+		<property name="app.name" value="Client1App" />
+
+		<property name="dev.root" location="DEVSERVER" />
+		<property name="test.root" location="TESTSERVER" />
+		<property name="locations.dev.clientroot" location="${dev.root}\${app.name}" />
+		<property name="locations.test.clientroot" location="${test.root}\${app.name}" />
+
+		<property name="locations.dev.customtags" location="${dev.root}\CustomTags" />
+		<property name="locations.test.customtags" location="${test.root}\CustomTags" />
+
+		<property name="locations.test.deploy" location="${locations.test.clientroot}\deploy" />
+		<property name="locations.test.deployzip" location="${locations.test.deploy}\${app.name}.zip" />
+
+		
+
+		<!-- read all our 'secure' properties from this file; this defines the sql.userid and sql.password properties -->
+		<property file="unames.properties" />
+
+		<!-- create a classpath for ANT to use for finding and running the jdbc driver task -->
+		<property name="jdbclibdir" location="lib" />
+		<path id="jdbc.classpath">
+			<fileset dir="${jdbclibdir}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+
+		<property name="db.driver" value="net.sourceforge.jtds.jdbc.Driver" />
+		<property name="db.url" value="jdbc:jtds:sqlserver://localhost:1436/ANT;instance=NetSDK" />
+		<property name="db.output" value="serverslist.txt" />
+
+		<!-- http://sourceforge.net/projects/ant-contrib -->
+		<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="jdbc.classpath" />
+
+	</target>
+
+
+	<target name="getServers" depends="init" description="Queries a db for a list of servers">
+
+		<sql driver="${db.driver}" url="${db.url}" userid="${sql.userid}" password="${sql.password}" classpathref="jdbc.classpath" print="yes" output="${db.output}" showheaders="false" showtrailers="false">
+		select ServerIP from servers						
+		</sql>
+
+	</target>
+
+	<target name="loopOverServers" depends="init,getServers">
+		<loadfile srcFile="${db.output}" property="serverlist" />
+		<for list="${serverlist}" param="server" delimiter="${line.separator}">
+			<sequential>
+
+				<echo>Copying to @{server}\Apps\${app.name}</echo>
+
+
+				<copy toDir="@{server}\Apps\${app.name}" preserveLastModified="true" includeEmptyDirs="false">
+					<fileset dir="${locations.test.clientroot}" />
+				</copy>
+
+				<tstamp>
+					<format pattern="MM/dd/yyyy hh:mm aa" offset="-5" unit="year" property="customtagfilter" />
+				</tstamp>
+				<copy toDir="@{server}\CustomTags" preserveLastModified="true" includeEmptyDirs="false">
+					<fileset dir="${locations.test.customtags}">
+						<date datetime="${customtagfilter}" when="after" />
+					</fileset>
+				</copy>
+
+			</sequential>
+		</for>
+
+	</target>
+
+	<target name="deployToAllServers" depends="init,getServers">
+		<OpenOrCloseConnections action="open" />
+
+		<antcall target="loopOverServers"/>
+
+		<OpenOrCloseConnections action="close" />
+	</target>
+
+	<macrodef name="OpenOrCloseConnections">
+		<attribute name="action" default="close" />
+		<!-- imagine: this OpenOrClose.bat is provided to you by your network people to open 
+		up the appropriate connections, and then close them, for the life of your script. 
+		In this way, you can directly copy files across the network during a brief window of 
+		access and then automatically remove that access once the deployment is over -->
+		<sequential>
+			<exec executable="cmd">
+				<arg value="/c" />
+				<arg value="OpenOrClose.bat" />
+				<arg value="-@{action}" />
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+
+
+
+
+</project>

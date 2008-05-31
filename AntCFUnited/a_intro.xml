@@ -1,0 +1,53 @@
+<!--  <project> kind of like cfcomponent -->
+<!-- use "." as basedir for relative paths. means 'this current directory' -->
+<project name="CFUnited (a): 5_Minute_Intro" basedir="." default="main">
+
+
+	<!-- <target> kind of like cffunction -->
+	<target name="main" description="the big enchilada">
+
+		<!-- <property> kind of like a once-and-done cfset (although i'll show you later how you can, in fact, re-set a property) -->
+		<property name="dev.root" value="DEVSERVER" />
+
+		<!-- when using location attribute, creates a path relative to basedir in project element -->
+		<property name="test.root" location="TESTSERVER" />
+
+
+		<!-- <echo> is a "task". Tasks are like functions you call. ANT has LOTS of built-in tasks! -->
+		<echo>
+		dev.root = ${dev.root}
+		test.root = ${test.root}		
+		basedir = ${basedir}
+		</echo>
+
+
+		<!--
+		<echoproperties prefix="dev" />
+		<echo message=" " />
+		<echoproperties regex=".*root" />
+		-->
+
+		<!-- note what happens when a property is NOT set 
+		<echo>
+		src.dir = ${src.dir}
+		</echo>
+		-->
+	</target>
+
+	<target name="init" description="If I have a description attribute, it's known as an external task" depends="">
+		<!-- use properties files to set a bunch of properties at once;
+		 also used for keeping properties out of build files so that you 
+		 can swap out a properties file (think: different developers, different properties)
+		 and keep your build files stable
+		 -->
+		<property file="a.properties" />
+		<echoproperties prefix="cfunited" />
+	</target>
+
+	<target name="getinput">
+		<input message="Username:" addproperty="unames.username" defaultvalue="" />
+		<input message="Password:" addproperty="unames.password" defaultvalue="" />
+		<echoproperties prefix="unames" />
+	</target>
+
+</project>

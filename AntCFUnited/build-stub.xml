@@ -1,0 +1,27 @@
+<project name="Getting Started" basedir="." default="main">
+
+	<target name="init">
+		<!-- this file doesn't exist, but you can create it and put your properties in there -->
+		<property file="build-stub.properties"/>
+		<echoproperties/>
+	</target>
+
+	<target name="main" depends="init">
+
+	</target>
+
+	<!-- remember:
+	
+	filesets are your friend
+	
+	the .xml files in this presentation have comments to help you
+	
+	the ant manual is separated into Concepts and Types, Core Tasks, and Optional Tasks. If you can't
+	find a "tag" (like "<fileset>") in the "Tasks" sections, then it's probably in the Concepts and Types section
+	
+	There is nothing to be afraid of! Practice with ANT in a directory outside your webroot,
+	on dummy files or files you copy from your real apps, and you don't have to worry
+	about bustin' your apps.
+	-->
+
+</project>
