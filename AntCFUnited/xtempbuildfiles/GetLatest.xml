@@ -4,7 +4,7 @@
 
 	<!--
 	*** if you haven't put eclipse on your machine, you must complete this step ***
-	1) install eclipse by unzipping eclipse-rcp-europa-win32.zip from \\argus-nas3\programs\Eclipse. You're installing eclipse so that you can easily get all the ant stuff... plus, you'll need eclipse anyway for your job.
+	1) install eclipse
 	
 	*** you need to do these to add ANT and VSS to your "path" variable in windows
 	2) When eclipse is installed, you'll have a directory something like this: c:\eclipse\plugins\org.apache.ant_1.7.XXXX (whatever that path is).
@@ -14,7 +14,7 @@
 	6) back out of the ant directory into your plugins directory.
 	
 	*** you need to do these if you want to GET the SVN projects ***
-	5) copy all the jars from \\argus-nas3\programs\Eclipse\Subversion ANT Jars into c:\eclipse\plugins\org.apache.ant_1.7.XXXX (whatever that path is)
+	
 	7) toward the bottom of your eclipse plugins directory, find a directory starting with org.tigris.subversion...., something like this: C:\eclipse\plugins\org.tigris.subversion.javahl.win32_1.2.4
 	8) go into that directory, and copy the full path, and add it to your system's Path environment variable
 
@@ -53,7 +53,7 @@
 		<property name="svnlogin" value="${username}" />
 		<property name="svnpass" value="${password}" />
 		<property name="vssserver" value="R:" />
-		<property name="svnserver" value="http://bltr-aips3h.bsg.ad.adp.com/svnrepos" />
+		<property name="svnserver" value="http://blah.com/svnrepos" />
 
 
 		<property name="libdir" location="lib" />
