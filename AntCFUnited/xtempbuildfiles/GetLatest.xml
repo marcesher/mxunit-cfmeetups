@@ -1,10 +1,10 @@
-<project name="buildenvironment" basedir="." default="build">
+<project name="Get Latest Code" basedir="." default="build">
 
 	<!-- HOW TO RUN FROM COMMAND LINE -->
 
 	<!--
 	*** if you haven't put eclipse on your machine, you must complete this step ***
-	1) install eclipse by unzipping eclipse-rcp-europa-win32.zip from \\XXXXX-nas3\programs\Eclipse. You're installing eclipse so that you can easily get all the ant stuff... plus, you'll need eclipse anyway for your job.
+	1) install eclipse by unzipping eclipse-rcp-europa-win32.zip from \\argus-nas3\programs\Eclipse. You're installing eclipse so that you can easily get all the ant stuff... plus, you'll need eclipse anyway for your job.
 	
 	*** you need to do these to add ANT and VSS to your "path" variable in windows
 	2) When eclipse is installed, you'll have a directory something like this: c:\eclipse\plugins\org.apache.ant_1.7.XXXX (whatever that path is).
@@ -14,7 +14,7 @@
 	6) back out of the ant directory into your plugins directory.
 	
 	*** you need to do these if you want to GET the SVN projects ***
-	5) copy all the jars from \\XXXXX-nas3\programs\Eclipse\Subversion ANT Jars into c:\eclipse\plugins\org.apache.ant_1.7.XXXX (whatever that path is)
+	5) copy all the jars from \\argus-nas3\programs\Eclipse\Subversion ANT Jars into c:\eclipse\plugins\org.apache.ant_1.7.XXXX (whatever that path is)
 	7) toward the bottom of your eclipse plugins directory, find a directory starting with org.tigris.subversion...., something like this: C:\eclipse\plugins\org.tigris.subversion.javahl.win32_1.2.4
 	8) go into that directory, and copy the full path, and add it to your system's Path environment variable
 
@@ -53,43 +53,78 @@
 		<property name="svnlogin" value="${username}" />
 		<property name="svnpass" value="${password}" />
 		<property name="vssserver" value="R:" />
-		<property name="svnserver" value="http://xxxx.com/svnrepos" />
+		<property name="svnserver" value="http://bltr-aips3h.bsg.ad.adp.com/svnrepos" />
+
+
+		<property name="libdir" location="lib" />
+		<path id="classpath">
+			<fileset dir="${libdir}">
+				<include name="**/*.jar" />
+			</fileset>			
+		</path>
+		<!-- http://sourceforge.net/projects/ant-contrib -->
+		<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="classpath" />
+		<taskdef resource="svntask.properties" classpathref="classpath" />
+
+		<!-- this contains all the locations we're going to update -->
+		<property file="GetLatest.properties" />
+
 	</target>
 
-	<target name="build" depends="init,build.svn,build.vss" />
+	<target name="build" depends="init,build.svnupdate,build.vss" />
+
+	<target name="build.svncheckout" depends="init" description="use this when you haven't checked out anything from svn yet and thus have nothing to update">
+		<echoproperties prefix="svn" />
+		<!-- loop over each project; the first part is the svn url, the second part is the local dir where the code lives -->
+		<for list="${svn.projects}" param="project" delimiter=",">
+			<sequential>
+				<listGetAt list="@{project}" pos="1" delim=":" prop="url" />
+				<listGetAt list="@{project}" pos="2" delim=":" prop="path" />
+				<echo>${url} = ${path}</echo>
+				<svn username="${svnlogin}" password="${svnpass}">
+					<checkout url="${svnserver}${url}" destPath="${src}${path}" />
+				</svn>
+			</sequential>
+		</for>
+	</target>
+
+	<target name="build.svnupdate" depends="init" description="use this when you've already checked out projects and just need to update">
+		<echoproperties prefix="svn" />
+		<!-- loop over each project; the first part is the svn url, the second part is the local dir where the code lives -->
+		<for list="${svn.projects}" param="project" delimiter=",">
+			<sequential>
+				<listGetAt list="@{project}" pos="1" delim=":" prop="url" />
+				<listGetAt list="@{project}" pos="2" delim=":" prop="path" />
+				<echo>SVN: url: ${url} = path: ${path}</echo>
+				<svn username="${svnlogin}" password="${svnpass}">
+					<update dir="${src}${path}" />
+				</svn>
+			</sequential>
+		</for>
+	</target>
 
 	<target name="build.vss" depends="init">
-		<vssget localpath="${src}\DOCS" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/DOCS" serverPath="${vssserver}" />
-
-		<vssget localpath="${src}\DOCSJava" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/DOCSJava" serverPath="${vssserver}" />
-
-		<vssget localpath="${src}\com\XXXXX" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/com/XXXXX" serverPath="${vssserver}" />
-
-		<vssget localpath="${src}\!SharedResources\CustomTags" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/!SharedResources/CustomTags" serverPath="${vssserver}" />
-		
-		<vssget localpath="${src}\!SharedResources\global\functions" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/!SharedResources/CustomTags/global/functions" serverPath="${vssserver}" />
-
-		<vssget localpath="${src}\XXXXX\sandbox" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/XXXXX/sandbox" serverPath="${vssserver}" />
-
-		<vssget localpath="${src}Client\Enrollment" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" vsspath="$/client/enrollment" serverPath="${vssserver}" />
-
+		<echoproperties prefix="svn" />
+		<!-- loop over each project -->
+		<for list="${vss.projects}" param="project" delimiter=",">
+			<sequential>
+				<echo>VSS: Getting Latest for @{project}</echo>
+				<vssget vsspath="$@{project}" localpath="${src}@{project}" recursive="true" failonerror="false" writablefiles="skip" filetimestamp="updated" login="${vsslogin}" serverPath="${vssserver}" />
+			</sequential>
+		</for>
 	</target>
 
-	<target name="build.svn" depends="init">
-		<path id="project.classpath">
-			<pathelement location="${ant.home}\lib\svnant.jar" />
-			<pathelement location="${ant.home}\lib\svnClientAdapter.jar" />
-		</path>
-		<taskdef resource="svntask.properties" classpathref="project.classpath" />
 
-		<svn username="${svnlogin}" password="${svnpass}">
-			<checkout url="${svnserver}/client/trunk/Enrollment" destPath="${src}\client\Enrollment" />
-			<checkout url="${svnserver}/com/trunk/XXXXX/framework/retail" destPath="${src}\com\XXXXX\framework\retail" />
-			<checkout url="${svnserver}/com/trunk/XXXXX/retail" destPath="${src}\com\XXXXX\retail" />
-			
-			
-		</svn>
-	</target>
+	<scriptdef name="listGetAt" language="javascript">
+		<attribute name="list" />
+		<attribute name="pos" />
+		<attribute name="delim" />
+		<attribute name="prop" />		
+			values = attributes.get("list").split(attributes.get("delim"));
+			myint = parseInt(attributes.get("pos"));
+			oneBasedIndex = myint-1; /* so if they pass position "1", we turn that into "0" since javascript is 0-based but we want to work in a 1-based fashion  */
+			project.setProperty(attributes.get("prop"),values[oneBasedIndex]);	         
+	</scriptdef>
 </project>
 
 
