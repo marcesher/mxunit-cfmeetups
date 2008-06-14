@@ -1,0 +1,28 @@
+<project name="basebuild"  basedir=".">
+
+	<target name="init">
+		<property name="dir.src" value="hi"/>
+		<property name="dir.includes" value="**/*.cfm,**/*.cfc"/>
+		<echoproperties prefix="dir"/>
+	</target>
+	
+	<target name="copyToTest" depends="init">
+		<echo>
+		Copying ${dir.src} to test dir. including files ${dir.includes}
+		</echo>
+	</target>
+	
+	<target name="package" depends="copyToTest">
+		<echo>
+		Zipping files for ${dir.src}
+		</echo>
+	</target>
+	
+	<target name="deploy" depends="package">
+		<echo>
+		Deploying files for ${dir.src}
+		</echo>
+	</target>
+
+
+</project>

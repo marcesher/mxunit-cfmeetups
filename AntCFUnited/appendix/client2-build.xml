@@ -1,0 +1,15 @@
+<project name="Client2" default="copyToTest" basedir=".">
+
+	<!-- this will include all targets from the base file -->
+	<import file="base-build.xml" />
+
+	<!-- here we override all the properties we need to that are client-specific -->
+	<target name="init">
+		<property name="dir.src" value="Client2" />
+	</target>
+
+	<target name="copyToTest" depends="init">
+		<ant inheritAll="true" antfile="base-build.xml" target="copyToTest" />
+	</target>
+
+</project>

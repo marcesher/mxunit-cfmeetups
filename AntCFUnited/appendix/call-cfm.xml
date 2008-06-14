@@ -1,0 +1,18 @@
+<project name="callCFMPage" default="call">
+
+	<target name="call">
+		<property name="url" value="http://localhost/mxunit-cfmeetups/AntCFUnited/appendix/called.cfm" />
+		<loadresource property="output">
+			<url url="${url}" />
+		</loadresource>
+		<echo>${output}</echo>
+
+		<!--  if the cfm page returned a long list of file names, we could use that like so:
+		<zip destfile="${zipfile}">
+			<zipfileset dir="${attroot}" includes="${output}" prefix="${prefixinzipfile}/files/attachments" casesensitive="false" />
+		</zip>
+		-->
+	</target>
+
+
+</project>
