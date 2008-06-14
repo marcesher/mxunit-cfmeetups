@@ -1,4 +1,4 @@
-<project name="CFUnited (m): SQL, MacroDef, and exec" basedir="." default="getServers">
+<project name="CFUnited (m): SQL, for, MacroDef, and exec" basedir="." default="getServers">
 
 	<target name="init">
 
@@ -15,12 +15,12 @@
 		<property name="locations.test.deploy" location="${locations.test.clientroot}\deploy" />
 		<property name="locations.test.deployzip" location="${locations.test.deploy}\${app.name}.zip" />
 
-		
+
 
 		<!-- read all our 'secure' properties from this file; this defines the sql.userid and sql.password properties -->
 		<property file="unames.properties" />
 
-		<!-- create a classpath for ANT to use for finding and running the jdbc driver task -->
+		<!-- create a classpath for ANT to use for finding and running the jdbc driver(s) -->
 		<property name="jdbclibdir" location="lib" />
 		<path id="jdbc.classpath">
 			<fileset dir="${jdbclibdir}">
@@ -28,9 +28,16 @@
 			</fileset>
 		</path>
 
+		<!-- these properties would be better placed in a .properties file -->
+		<!-- this will use the jtds.jar in the classpath -->
+		<property name="sqlserver.driver" value="net.sourceforge.jtds.jdbc.Driver" />
+		<property name="sqlserver.url" value="jdbc:jtds:sqlserver://localhost:1436/ANT;instance=NetSDK" />
 
-		<property name="db.driver" value="net.sourceforge.jtds.jdbc.Driver" />
-		<property name="db.url" value="jdbc:jtds:sqlserver://localhost:1436/ANT;instance=NetSDK" />
+		<!-- this will use the mysql-connector jar in the classpath -->
+		<property name="mysql.driver" value="com.mysql.jdbc.Driver" />
+		<property name="mysql.url" value="jdbc:mysql://localhost/ANT" />
+
+		<!-- this is where the sql resultset will be stored -->
 		<property name="db.output" value="serverslist.txt" />
 
 		<!-- http://sourceforge.net/projects/ant-contrib -->
@@ -41,8 +48,8 @@
 
 	<target name="getServers" depends="init" description="Queries a db for a list of servers">
 
-		<sql driver="${db.driver}" url="${db.url}" userid="${sql.userid}" password="${sql.password}" classpathref="jdbc.classpath" print="yes" output="${db.output}" showheaders="false" showtrailers="false">
-		select ServerIP from servers						
+		<sql driver="${mysql.driver}" url="${mysql.url}" userid="${sql.username}" password="${sql.password}" classpathref="jdbc.classpath" print="yes" output="${db.output}" showheaders="false" showtrailers="false">
+		select ServerIP from servers where ActiveFlag=1
 		</sql>
 
 	</target>
@@ -76,7 +83,7 @@
 	<target name="deployToAllServers" depends="init,getServers">
 		<OpenOrCloseConnections action="open" />
 
-		<antcall target="loopOverServers"/>
+		<antcall target="loopOverServers" />
 
 		<OpenOrCloseConnections action="close" />
 	</target>
@@ -95,8 +102,8 @@
 			</exec>
 		</sequential>
 	</macrodef>
-	
-	
+
+
 
 
 
