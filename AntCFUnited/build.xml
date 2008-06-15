@@ -22,6 +22,16 @@
 			</fileset>
 		</ftp>
 	</target>
+	
+	<target name="cleanAll">
+	
+		<delete dir="dist"/>
+		<delete dir="10.0.204.59"/>
+		<delete dir="10.0.204.60"/>
+		<delete dir="tags"/>
+		<delete file="ftplist.txt"/>
+		<delete file="serverslist.txt"/>
+	</target>
 
 
 </project>

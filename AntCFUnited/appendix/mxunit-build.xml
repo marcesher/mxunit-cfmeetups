@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+
+<project name="MXUnit Framework Build" default="package" basedir=".">
+	<description>
+            build file for moving all files into a directory structure easily zippable and deployable
+    </description>
+
+	<!--
+	Committers: HOW TO CONFIGURE YOUR ENVIRONMENT
+	
+	1)(one time only): get latest from repository to ensure you have all jar files from the lib directory
+	2) add the commons-net, jakarta-oro, mail, and activation jars to your ant classpath in eclipse (window - preferences - ant - runtime - add external jars)
+	3) in windows explorer, navigate to your eclipse/plugins directory. there should be an org.tigris.subversion.... directory. 
+		mine is at C:\eclipse_33_rcp\plugins\org.tigris.subversion.javahl.win32_1.2.4
+		
+		find that directory and copy the entire directory path. Now, go to your computer's path variable (my computer - properties - advanced - environment variables - path) and paste that path as an extra entry
+		
+	4) You will probably have to restart your computer after that. Every time I've tried just restarting eclipse, it didn't work.
+	5) when you got latest, it put a directory called "buildprops" into your mxunit directory. get the unames.properties file from marc and put it in there. otherwise, this build will not work at all. nothing. nada.
+	
+	-->
+
+
+	<!-- !!!! These are the intended targets. 
+	
+		Use package to test the zip build
+		
+		Use publish to build the zip, 
+		upload it to google code, upload the version.properties to the website, reload the website, 
+		and tag the version in svn -->
+
+	<!-- ================================= 
+	          target: publish            
+	         ================================= -->
+	<target name="publish" depends="incrementVersion,runTests,package,upload,updatewebsite,publishTestResults,tagVersion" description="--> packages into a zip and uploads to google code" />
+
+
+
+	<!-- ================================= 
+	          target: package            
+	         ================================= -->
+	<target name="package" depends="clean,version" description="--> packages the appropriate files into the deployment-ready zip file. use this for testing; otherwise, use publish">
+		<echo message="building ${zipfile}. basedir is  ${basedir}" />
+		<zip destfile="${zipfile}" casesensitive="false">
+			<zipfileset dir="${basedir}" includes="**/*" excludes="dist/**,designs/**,site/**,framework/tests/**,framework/t/**,generator/tests/**,generator/tests2/**,**/testreports/**,**/testresults/**,.project,.deployment,lib**,**/unames.properties,tests/tmp/**,ftp.listing,**/*.db" prefix="mxunit" casesensitive="false" />
+		</zip>
+	</target>
+
+
+
+
+
+	<!-- internal targets; you can run these individually for testing things out -->
+
+
+
+	<!-- ================================= 
+          target: init             
+         ================================= -->
+	<target name="init">
+		<property name="dist" location="dist" />
+		<property name="unames.file" value="buildprops/unames.properties" />
+		<property name="version.file" value="buildprops/version.properties" />
+		<property name="antrunner.file" value="buildprops/antrunner.properties" />
+		<property name="testmailmessage.file" value="buildprops/testresultsmail.html" />
+		<property name="svnserver" value="https://mxunit.googlecode.com/svn" />
+
+		<!-- for the test runner -->
+		<property name="mxunit.jar" value="ant/lib/mxunit-ant.jar" />
+		<property name="junit.out.dir.xml" value="tests/testresults" />
+		<property name="junit.out.dir.html" value="${junit.out.dir.xml}/html" />
+		<property name="output.dir" value="${junit.out.dir.xml}/tmp" />
+		<property name="style.dir" value="ant/xsl/" />
+
+		<property file="${unames.file}" />
+
+		<path id="project.classpath">
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<taskdef name="mxunittask" classname="org.mxunit.ant.MXUnitAntTask" classpath="${mxunit.jar}" />
+		<taskdef resource="svntask.properties" classpathref="project.classpath" />
+	</target>
+
+
+
+	<!-- ================================= 
+          target: clean          
+         ================================= -->
+	<target name="clean" depends="init">
+		<mkdir dir="${dist}" />
+		<delete failonerror="false">
+			<fileset dir="${dist}" includes="*.zip" />
+		</delete>
+	</target>
+
+	<!-- ================================= 
+          target: incrementVersion            
+         ================================= -->
+	<target name="incrementVersion" depends="init">
+		<svn username="${gc.username}" password="${gc.password}">
+			<update dir="buildprops" />
+		</svn>
+
+		<propertyfile file="${version.file}" comment="Build version info">
+			<entry key="build.date" type="date" value="now" pattern="MM/dd/yyyy" />
+			<entry key="build.major" type="int" operation="=" value="0" />
+			<entry key="build.minor" type="int" operation="=" value="9" />
+			<entry key="build.notation" operation="=" value="-rc2" />
+			<entry key="build.versiondescription" operation="=" value="Release Candidate #2" />
+			<!-- this is autoincremented -->
+			<entry key="build.buildnum" type="int" operation="+" value="0" />
+		</propertyfile>
+
+		<svn username="${gc.username}" password="${gc.password}">
+			<commit dir="buildprops" message="" />
+		</svn>
+
+	</target>
+
+	<!-- ================================= 
+          target: version            
+         ================================= -->
+	<target name="version" depends="init">
+		<property file="${version.file}" />
+		<property name="build.version" value="${build.major}.${build.minor}.${build.buildnum}${build.notation}" />
+		<property name="zipfile" location="${dist}${file.separator}mxunit-${build.version}.zip" />
+		<echo message="build.version is ${build.version} -- zipfile is ${zipfile}" />
+	</target>
+
+
+
+	<!-- ================================= 
+          target: upload       
+         ================================= -->
+	<target name="upload" depends="version">
+		<input message="Please add a summary for this version" addproperty="build.summary" defaultvalue="MXUnit Unit Test Framework version ${build.version}" />
+
+		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpathref="project.classpath" name="gcupload" />
+		<gcupload username="${gc.username}" password="${gc.password}" projectname="mxunit" filename="${zipfile}" targetfilename="mxunit-${build.version}.zip" summary="${build.summary}" />
+	</target>
+
+	<!-- ================================= 
+          target: updatewebsite           
+         ================================= -->
+	<target name="updatewebsite" depends="version">
+
+		<!-- ftp the version file to the website and reinit the application -->
+		<ftp server="${ftp.site}" userid="${ftp.username}" password="${ftp.password}" remotedir="">
+			<fileset dir="buildprops">
+				<include name="version.properties" />
+			</fileset>
+		</ftp>
+
+		<!-- reinit the web app; this causes the version.properties file to be reread into the application scope -->
+		<loadresource property="homepage">
+			<url url="${http.reinit}" />
+		</loadresource>
+	</target>
+
+	<!-- ================================= 
+          target: tagVersion: intended for use by publish only!           
+         ================================= -->
+	<target name="tagVersion" depends="init,version">
+		<svn username="${gc.username}" password="${gc.password}">
+			<copy srcURL="${svnserver}/mxunit/trunk" destURL="${svnserver}/mxunit/tags/${build.version}" message="autotagging version ${build.version}" />
+		</svn>
+	</target>
+
+	<target name="update" depends="init">
+		<svn username="${gc.username}" password="${gc.password}">
+			<update dir="."/>
+		</svn>
+	</target>
+
+	<!-- ================================= 
+          target: runTests       
+         ================================= -->
+	<target name="runTests" depends="init,update">
+
+		<!-- load the current version of the package-summary file; this way, we can put it at the end of the email we send so that
+			comparing test the aggregate test results is easy; makes it simpler to see if any test failures crept in -->
+		<loadfile property="currentresultshtml" srcFile="${junit.out.dir.html}/mxunit/tests/package-summary.html" failonerror="false" />
+
+		<delete dir="${junit.out.dir.html}" />
+		<delete dir="${output.dir}" />
+		<mkdir dir="${junit.out.dir.html}" />
+		<mkdir dir="${output.dir}" />
+
+
+		<!-- get the server, port, and webroot properties from the antrunner file; this way
+		each developer can have their own version of the properties file with different
+		values depending on their setup -->
+		<property file="${antrunner.file}" />
+
+		<mxunittask server="${server}" port="${port}" defaultrunner="/mxunit/runner/HttpAntRunner.cfc" outputdir="${output.dir}" verbose="true" testResultsSummary="my.summary">
+
+			<!-- componentPath is not required, but it results in a much faster test run -->
+			<directory remoteMethod="run" path="${webroot}\mxunit\tests\framework" packageName="mxunit.tests.framework" componentPath="mxunit.tests.framework" recurse="false" includes="*.cfc" excludes="" />
+			<directory remoteMethod="run" path="${webroot}\mxunit\tests\runner" packageName="mxunit.tests.runner" componentPath="mxunit.tests.runner" recurse="false" includes="*.cfc" excludes="" />
+		</mxunittask>
+
+		<!-- create nice pretty report -->
+		<junitreport todir="${junit.out.dir.html}">
+			<fileset dir="${output.dir}">
+				<include name="*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.out.dir.html}" styledir="${style.dir}" />
+		</junitreport>
+
+		<!-- Read the properties files we generated 
+		<property file="${output.dir}/my.summary" />
+		<echoproperties />
+		-->
+
+		<!-- now load the version we just created; this will be the first set of results in the email we send -->
+		<loadfile property="resultshtml" srcFile="${junit.out.dir.html}/mxunit/tests/package-summary.html" />
+		<loadfile property="resultscss" srcFile="${junit.out.dir.html}/stylesheet.css" />
+
+		<mail from="${mail.from}" tolist="${mail.to}" mailhost="${mail.host}" subject="MXUnit Build Results" charset="UTF-8" messagemimetype="text/html" messagefile="${testmailmessage.file}">
+
+
+		</mail>
+
+	</target>
+
+	<!-- ================================= 
+          target: publishTestResults    
+         ================================= -->
+	<target name="publishTestResults" depends="init">
+		<ftp server="${ftp.site}" userid="${ftp.username}" password="${ftp.password}" remotedir="testresults">
+			<fileset dir="${junit.out.dir.html}">
+				<include name="**/*" />
+			</fileset>
+		</ftp>
+	</target>
+
+	<target name="testFTP" depends="init">
+		<ftp server="${ftp.site}" userid="${ftp.username}" password="${ftp.password}" action="list" listing="ftp.listing">
+			<fileset>
+				<include name="index.html" />
+			</fileset>
+		</ftp>
+	</target>
+
+	<target name="testMail" depends="init">
+		<property file="${antrunner.file}" />
+		<mail from="${mail.from}" tolist="${mail.to}" mailhost="${mail.host}" subject="MXUnit Build Results" charset="UTF-8" messagemimetype="text/html">
+
+			<message>
+				&lt;h1&gt;Test Successful&lt;/h1&gt;				
+			</message>
+		</mail>
+	</target>
+
+
+	<target name="testSVN" depends="init">
+		<svn username="${gc.username}" password="${gc.password}">
+			<update dir="buildprops" />
+		</svn>
+	</target>
+
+
+
+
+</project>
+

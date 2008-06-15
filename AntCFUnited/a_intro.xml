@@ -37,8 +37,8 @@
 	<target name="init" description="If I have a description attribute, it's known as an external task" depends="">
 		<!-- use properties files to set a bunch of properties at once;
 		 also used for keeping properties out of build files so that you 
-		 can swap out a properties file (think: different developers, different properties)
-		 and keep your build files stable
+		 can swap out a properties file and keep your build files stable 
+		 (think: different developers, different properties)
 		 -->
 		<property file="a.properties" />
 		<echoproperties prefix="cfunited" />

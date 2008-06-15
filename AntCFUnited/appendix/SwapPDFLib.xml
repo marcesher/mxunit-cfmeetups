@@ -16,7 +16,7 @@
 		<property name="CFInstallDir" value="C:\ColdFusion8" />
 		<property name="JRunInstallDir" value="C:\JRun4\servers\cfusion\cfusion-ear\cfusion-war\WEB-INF\cfusion" />
 		<property name="System32" value="C:\windows\system32" />
-		<property name="confirmURL" value="http://localhost/docs/global/buildscripts/pdflibfiles/showpdflibversion.cfm" />
+		<property name="confirmURL" value="http://localhost/mxunit-cfmeetups/AntCFUnited/appendix/pdflibfiles/showpdflibversion.cfm" />
 
 		<condition property="InstallDir" value="${JRunInstallDir}" else="${CFInstallDir}">
 			<available file="${JRunInstallDir}" type="dir"/>

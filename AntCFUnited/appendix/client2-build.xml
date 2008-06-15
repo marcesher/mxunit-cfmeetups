@@ -7,9 +7,9 @@
 	<target name="init">
 		<property name="dir.src" value="Client2" />
 	</target>
-
-	<target name="copyToTest" depends="init">
-		<ant inheritAll="true" antfile="base-build.xml" target="copyToTest" />
-	</target>
+	
+	<!--  stupid trick to ensure that this init
+	AND the one from the base file are called -->
+	<target name="initAll" depends="init,basebuild.init"/>
 
 </project>

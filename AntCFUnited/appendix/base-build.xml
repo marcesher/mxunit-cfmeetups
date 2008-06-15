@@ -5,8 +5,10 @@
 		<property name="dir.includes" value="**/*.cfm,**/*.cfc"/>
 		<echoproperties prefix="dir"/>
 	</target>
+	<!--  this is merely a trick. the clientXXX files will need this, though, so don't delete -->
+	<target name="initAll" depends="init"/>
 	
-	<target name="copyToTest" depends="init">
+	<target name="copyToTest" depends="initAll">
 		<echo>
 		Copying ${dir.src} to test dir. including files ${dir.includes}
 		</echo>
