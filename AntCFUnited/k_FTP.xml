@@ -50,11 +50,6 @@
 		<!-- ensure our target dir exists -->
 		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" action="mkdir" remotedir="${ftp.targetdir}" />
 
-		<!-- list that directory, so we can see what's on there -->
-		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" action="list" listing="ftplist.txt" verbose="true">
-			<fileset includes="${ftp.targetdir}/**" />
-		</ftp>
-
 		<!-- move the zip file to it -->
 		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" 
 			remotedir="${ftp.targetdir}" 
