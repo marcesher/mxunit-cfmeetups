@@ -1,4 +1,4 @@
-<project name="CFUnited (p): ScriptDef" basedir="." default="demoListGetAt">
+<project name="CFUnited (k): ScriptDef" basedir="." default="demoListGetAt">
 
 	<!-- <import file="scripts.xml"/> -->
 
@@ -66,7 +66,7 @@
 
 
 	<!-- TEASER: How to use <for> together with listGetAt. Imagine how you could use this
-	when looping over resultsets (see m_SQL.xml) -->
+	when looping over resultsets (see j_SQL.xml) -->
 
 	<target name="nestedLoopSimulation" depends="init">
 		<property name="serverlist" value="1,10.0.205.59;2,10.0.205.69" />
@@ -80,7 +80,7 @@
 			</sequential>
 		</for>
 
-		<!-- HOMEWORK: how could you use this, combined with the loopOverServers task from m_SQL.xml,
+		<!-- HOMEWORK: how could you use this, combined with the loopOverServers task from j_SQL.xml,
 		to loop over a line-delimited result set of the format ServerID,ServerIP? -->
 
 

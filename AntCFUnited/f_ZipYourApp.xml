@@ -1,4 +1,4 @@
-<project name="CFUnited (e): Zipping your app" basedir="." default="package">
+<project name="CFUnited (f): Zipping your app" basedir="." default="package">
 
 	<target name="init">
 

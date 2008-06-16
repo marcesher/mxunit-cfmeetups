@@ -1,4 +1,4 @@
-<project name="CFUnited (i): SVN" basedir="." default="package">
+<project name="CFUnited (h): SVN" basedir="." default="package">
 
 	<target name="init">
 

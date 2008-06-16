@@ -1,4 +1,4 @@
-<project name="CFUnited (m): SQL, for, MacroDef, and exec" basedir="." default="getServers">
+<project name="CFUnited (j): SQL, for, MacroDef, and exec" basedir="." default="getServers">
 
 	<target name="init">
 

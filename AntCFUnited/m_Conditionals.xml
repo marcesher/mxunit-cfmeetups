@@ -1,4 +1,4 @@
-<project name="CFUnited (g): Zipping your app With Conditionals" basedir="." default="packageWithConditionalsToChangePrefixAttempt1">
+<project name="CFUnited (m): Zipping your app With Conditionals" basedir="." default="packageWithConditionalsToChangePrefixAttempt1">
 
 	<target name="init">
 

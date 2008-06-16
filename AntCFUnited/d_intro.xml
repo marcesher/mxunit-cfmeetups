@@ -1,13 +1,13 @@
 <!--  <project> kind of like cfcomponent -->
 <!-- use "." as basedir for relative paths. means 'this current directory' -->
-<project name="CFUnited (a): 5_Minute_Intro" basedir="." default="main">
+<project name="CFUnited (d): 5_Minute_Intro" basedir="." default="main">
 
 
 	<!-- <target> kind of like cffunction -->
 	<target name="main" description="the big enchilada" depends="">
 
 		<!-- <property> kind of like a once-and-done cfset (although i'll show you 
-		later how you can, in fact, re-set a property, using scriptdef (see p_ScriptDev.xml) ) -->
+		later how you can, in fact, re-set a property, using scriptdef (see k_ScriptDef.xml) ) -->
 		<property name="dev.root" value="DEVSERVER" />
 
 		<!-- when using location attribute, creates a path relative to basedir in project element -->

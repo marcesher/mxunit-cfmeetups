@@ -1,4 +1,4 @@
-<project name="CFUnited (k): FTP" basedir="." default="package">
+<project name="CFUnited (i): FTP" basedir="." default="package">
 
 	<target name="init">
 

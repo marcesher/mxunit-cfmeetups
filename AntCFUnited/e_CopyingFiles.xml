@@ -1,4 +1,4 @@
-<project name="CFUnited (b):  Copying Files From Dev To Test" basedir="." default="CopyToTest">
+<project name="CFUnited (e):  Copying Files From Dev To Test" basedir="." default="CopyToTest">
 
 	<target name="init">
 
