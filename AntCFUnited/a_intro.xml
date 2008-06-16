@@ -6,18 +6,20 @@
 	<!-- <target> kind of like cffunction -->
 	<target name="main" description="the big enchilada" depends="">
 
-		<!-- <property> kind of like a once-and-done cfset (although i'll show you later how you can, in fact, re-set a property) -->
+		<!-- <property> kind of like a once-and-done cfset (although i'll show you 
+		later how you can, in fact, re-set a property) -->
 		<property name="dev.root" value="DEVSERVER" />
 
 		<!-- when using location attribute, creates a path relative to basedir in project element -->
 		<property name="test.root" location="TESTSERVER" />
 
 
-		<!-- <echo> is a "task". Tasks are like functions you call. ANT has LOTS of built-in tasks! -->
+		<!-- <echo> is a "task". Tasks are like functions you call. 
+		ANT has LOTS of built-in tasks! See http://ant.apache.org/manual/index.html. Click on "Ant Tasks"-->
 		<echo>
 		dev.root = ${dev.root}
 		test.root = ${test.root}		
-		basedir = ${basedir}
+		basedir = ${basedir}		
 		</echo>
 
 
@@ -27,7 +29,7 @@
 		<echoproperties regex=".*root" />
 		-->
 
-		<!-- note what happens when a property is NOT set 
+		<!-- note what happens when a property is NOT set
 		<echo>
 		src.dir = ${src.dir}
 		</echo>
