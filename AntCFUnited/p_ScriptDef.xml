@@ -1,8 +1,8 @@
-<project name="CFUnited (p): ScriptDef" basedir="." default="play">
+<project name="CFUnited (p): ScriptDef" basedir="." default="demoListGetAt">
 
-	<import file="scripts.xml"/>
-	
-	
+	<!-- <import file="scripts.xml"/> -->
+
+
 	<target name="init">
 
 		<property name="libdir" location="lib" />
@@ -16,7 +16,7 @@
 	</target>
 
 
-	<target name="play" depends="init">
+	<target name="demoListGetAt" depends="init">
 		<listGetAt list="one,two,three" pos="1" delim="," prop="myprop" />
 		<echo message="${myprop}" />
 
@@ -24,20 +24,36 @@
 		<echo message="${myprop}" />
 	</target>
 
-	<target name="nestedLoops" depends="init">
+	<target name="demoResetProperty" depends="init">
+		<property name="myprop" value="one" />
+		<echo message="original myprop = ${myprop}" />
+
+		<property name="myprop" value="two" />
+		<echo message="after trying again with property, myprop = ${myprop}" />
+
+		<resetProperty name="myprop" value="two" />
+		<echo message="after using resetProperty, myprop = ${myprop}" />
+	</target>
+
+	<target name="nestedLoopSimulation" depends="init">
 		<property name="serverlist" value="1,10.0.205.59;2,10.0.205.69" />
 		<echo message="${serverlist}" />
 		<!-- loop over the serverlist -->
 		<for list="${serverlist}" param="serverrow" delimiter=";">
 			<sequential>
 				<listGetAt list="@{serverrow}" pos="1" delim="," prop="serverid" />
-				<listGetAt list="@{serverrow}" pos="2" delim="," prop="serverip" /> 
+				<listGetAt list="@{serverrow}" pos="2" delim="," prop="serverip" />
 				<echo>${serverid} = ${serverip}</echo>
 			</sequential>
 		</for>
+
+		<!-- HOMEWORK: how could you use this, combined with the loopOverServers task from m_SQL.xml,
+		to loop over a line-delimited result set of the format ServerID,ServerIP? -->
+
+
 	</target>
 
-<!--
+
 	<scriptdef name="listGetAt" language="javascript">
 		<attribute name="list" />
 		<attribute name="pos" />
@@ -47,5 +63,14 @@
 			myint = parseInt(attributes.get("pos"));
 			oneBasedIndex = myint-1; /* so if they pass position "1", we turn that into "0" since javascript is 0-based but we want to work in a 1-based fashion  */
 			project.setProperty(attributes.get("prop"),values[oneBasedIndex]);	         
-	</scriptdef>-->
+	</scriptdef>
+
+	<scriptdef name="resetProperty" language="javascript">
+		<attribute name="name" />
+		<attribute name="value" />
+		project.setProperty(attributes.get("name"),attributes.get("value"));
+	</scriptdef>
+
+
+
 </project>

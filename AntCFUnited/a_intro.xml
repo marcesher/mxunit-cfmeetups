@@ -4,7 +4,7 @@
 
 
 	<!-- <target> kind of like cffunction -->
-	<target name="main" description="the big enchilada">
+	<target name="main" description="the big enchilada" depends="">
 
 		<!-- <property> kind of like a once-and-done cfset (although i'll show you later how you can, in fact, re-set a property) -->
 		<property name="dev.root" value="DEVSERVER" />
