@@ -66,6 +66,12 @@
 		</zip>
 
 	</target>
+	
+	<!--
+	
+	TEASER: Better, faster version that does the exact same thing!
+	
+	-->
 
 
 	<target name="packageWithConditionalsToChangePrefixBetterVersion" depends="init,clean">

@@ -56,16 +56,11 @@
 		</svn>
 
 		<!-- OR, you can use update if know that your "target" directory is already 
-		a 'working copy', i.e. it's been checked out to before. THIS IS PREFERABLE! -->
+		a 'working copy', i.e. it's been checked out to before. THIS IS PREFERABLE! 
 		<svn username="${svn.username}" password="${svn.password}">
 			<update dir="DEVSERVER\${app.name}" />
 		</svn>
-	</target>
-
-	<target name="commitToSVN" depends="init">
-		<svn username="${svn.username}" password="${svn.password}">
-			<commit dir="." message="Committing my changes" />
-		</svn>
+		-->
 	</target>
 
 	<!-- now, copyToTest depends on updating our working copy from SVN -->
@@ -111,6 +106,20 @@
 
 			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="ColdFusion8\CustomTags" casesensitive="false" />
 		</zip>
+	</target>
+
+
+	<!--
+	LAME TEASER: how to commit. i'm sure you can guess.
+	
+	-->
+
+
+	<target name="commitToSVN" depends="init">
+		<input message="Add commit message: " addproperty="message" defaultvalue="Auto-Committing" />
+		<svn username="${svn.username}" password="${svn.password}">
+			<commit dir="." message="${message}" />
+		</svn>
 	</target>
 
 </project>

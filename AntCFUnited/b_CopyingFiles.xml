@@ -134,6 +134,16 @@
 
 	</target>
 
+	
+	<!--
+	
+	TEASER: using filtermapper and replacestring to rename files on the fly
+	
+	
+	-->
+	
+	
+	
 	<target name="CopyToTestUsingFilterMapper" depends="init,clean" description="copies files from dev to test using a single copy tag for everything under the 'client' app. Uses a filtermapper to change SharedCodebase to codebase">
 
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
@@ -141,10 +151,9 @@
 			<!-- added SharedCodebase to our includes, and we change the name by 
 			using a filtermapper with replacestring -->
 			<fileset dir="${dev.root}" includes="com/**,SharedCodebase/**" />
-			<!--<filtermapper>
+			<filtermapper>
 				<replacestring from="SharedCodebase" to="codebase" />
-			</filtermapper>
-			-->
+			</filtermapper>		
 		</copy>
 
 		<tstamp>

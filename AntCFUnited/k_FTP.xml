@@ -20,6 +20,8 @@
 		<!-- read all our 'secure' properties from this file; this defines the ftp.username, ftp.password, and svn.server properties -->
 		<property file="unames.properties" />
 
+		<property name="ftp.targetdir" value="CFUNITED_TARGET_DIR" />
+
 	</target>
 
 	<target name="clean" depends="init">
@@ -42,8 +44,9 @@
 		</zip>
 	</target>
 
+
 	<target name="publish" depends="init,package">
-		<property name="ftp.targetdir" value="CFUNITED_TARGET_DIR" />
+
 		<!-- ensure our target dir exists -->
 		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" action="mkdir" remotedir="${ftp.targetdir}" />
 
@@ -53,12 +56,27 @@
 		</ftp>
 
 		<!-- move the zip file to it -->
-		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" remotedir="${ftp.targetdir}" newer="yes" serverTimeZoneConfig="America/Los_Angeles" systemTypeKey="WINDOWS" verbose="true" skipFailedTransfers="true" retriesAllowed="3">
+		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" 
+			remotedir="${ftp.targetdir}" 
+			newer="yes" 
+			serverTimeZoneConfig="America/Los_Angeles" 
+			systemTypeKey="WINDOWS" verbose="true" 
+			skipFailedTransfers="true" retriesAllowed="3">
+
 			<fileset dir="${locations.test.deploy}" />
+
 		</ftp>
 
 	</target>
 
+
+
+	
+	<!--
+	In my experience, this method is more reliable. NOTE: before you run it for the
+	very first time, run the initializeCacheForModifiedSelector target!
+	
+	-->
 	<target name="publishWithModifiedSelector" depends="init,package">
 		<property name="ftp.targetdir" value="CFUNITED_TARGET_DIR" />
 
@@ -73,6 +91,9 @@
 
 	</target>
 
+
+	<!-- you don't need to understand what this does!!! just run it before you run the publishWithModifiedSelector
+	target the first time and you're good to go -->
 	<target name="initializeCacheForModifiedSelector" depends="init">
 		<!-- delete the cache to force an update -->
 		<delete file="cache.properties" />
@@ -85,6 +106,13 @@
 				</modified>
 			</fileset>
 		</pathconvert>
+	</target>
+
+	<target name="whatsThere" depends="init">
+		<!-- list that directory, so we can see what's on there -->
+		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" action="list" listing="ftplist.txt" verbose="true">
+			<fileset includes="${ftp.targetdir}/**" />
+		</ftp>
 	</target>
 
 

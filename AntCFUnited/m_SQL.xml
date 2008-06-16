@@ -54,6 +54,18 @@
 
 	</target>
 
+
+	<!--
+	
+	IMAGINE: You have a database table of servers to which you'll deploy. 
+	You want to query for the "active" servers, and for each server
+	Copy your code onto it. This would assume an active network connection between
+	the machine you're on and the servers to which you are deploying
+	-->
+
+
+
+
 	<target name="loopOverServers" depends="init,getServers">
 		<loadfile srcFile="${db.output}" property="serverlist" />
 		<for list="${serverlist}" param="server" delimiter="${line.separator}">
@@ -80,13 +92,34 @@
 
 	</target>
 
+
+
+
+
+
+	<!--  NOW IMAGINE:
+	
+	You want to do the same as above, but you need to open and close the connection to each server
+	because your network people run a tight ship, and they don't want connections open
+	between your dev environment and your other environments except 
+	during the brief time it takes to copy code
+	
+	-->
+
 	<target name="deployToAllServers" depends="init,getServers">
+		<!-- open the connections using a bat file provided to you by your network admins;
+		we'll call the bat file using a self-made task that we create with macrodef -->
 		<OpenOrCloseConnections action="open" />
 
+		<!-- call the loopOverServers target and copy all code -->
 		<antcall target="loopOverServers" />
 
+		<!-- close the connections -->
 		<OpenOrCloseConnections action="close" />
 	</target>
+
+
+	<!-- MACRODEF: this little gem lits you define your own tasks! -->
 
 	<macrodef name="OpenOrCloseConnections">
 		<attribute name="action" default="close" />
@@ -104,7 +137,19 @@
 	</macrodef>
 
 
-
+	<!-- FINALLY, IMAGINE:
+	
+	Imagine a table called "Deployments" and a table called "J_Deployments_Servers". And
+	every time you deploy, you insert a row into the deployments table, get the ID
+	of that deployment, and for each server you copy code to, you insert a row
+	into J_Deployments_Servers with some audit information (IP address of machine
+	from which the deployment was run, the exact time of the copy, etc).
+	
+	How would you do that using sql and macrodef up in your loopOverServers target?
+	
+	
+	
+	-->
 
 
 

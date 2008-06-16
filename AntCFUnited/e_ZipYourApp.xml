@@ -14,8 +14,8 @@
 		<property name="locations.test.deployzip" location="${locations.test.deploy}\${app.name}.zip" />
 
 		<!-- for creating a zip that is based on file system comparison-->
-		<property name="locations.prodcompare.clientdir" location="CurrentProdCode\${app.name}"/>
-		
+		<property name="locations.prodcompare.clientdir" location="CurrentProdCode\${app.name}" />
+
 		<echoproperties prefix="locations" />
 	</target>
 
@@ -25,93 +25,82 @@
 		<!-- delete any old files -->
 		<delete file="${locations.test.deployzip}" />
 	</target>
-	
-	
-	
-	
+
+
+
+
 
 	<target name="package" depends="init,clean">
-		
+
 		<zip destfile="${locations.test.deployzip}">
-		
+
 			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
-			<zipfileset dir="${locations.test.clientroot}" 
-				excludes="deploy/**" 
-				prefix="${app.name}" 
-				casesensitive="false">
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="${app.name}" casesensitive="false">
 			</zipfileset>
-			
+
 		</zip>
-		
+
 	</target>
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 
 	<target name="packageTwoDirectories" depends="init,clean">
-		
+
 		<zip destfile="${locations.test.deployzip}">
-			
+
 			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
-			<zipfileset dir="${locations.test.clientroot}" 
-				excludes="deploy/**" 
-				prefix="${app.name}" 
-				casesensitive="false">
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="${app.name}" casesensitive="false">
 			</zipfileset>
-			
-			<zipfileset dir="${locations.test.customtags}" 
-				includes="**/*.cfm"
-				prefix="CustomTags" 
-				casesensitive="false">
-			
+
+			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="CustomTags" casesensitive="false">
+
 			</zipfileset>
-			
+
 		</zip>
-		
+
 	</target>
-	
+
 	<target name="packageWithDifferentPrefixes" depends="init,clean">
 		<zip destfile="${locations.test.deployzip}">
 			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
-			<zipfileset dir="${locations.test.clientroot}" 
-				excludes="deploy/**" 
-				prefix="inetpub\wwwroot\${app.name}" 
-				casesensitive="false">
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="inetpub\wwwroot\${app.name}" casesensitive="false">
 			</zipfileset>
-			
-			<zipfileset dir="${locations.test.customtags}" 
-				includes="**/*.cfm"
-				prefix="ColdFusion8\CustomTags" 
-				casesensitive="false">			
+
+			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="ColdFusion8\CustomTags" casesensitive="false">
 			</zipfileset>
 		</zip>
 	</target>
 
+
+	<!--
+	
+	TEASER: create a zip file whose files are selected based on:
+	
+	1) difference between current code and copy of production code
+	2) files containing just a certain string
+	
+	-->
+
 	<target name="packageWithSelector" depends="init,clean">
-		
+
 		<zip destfile="${locations.test.deployzip}">
-			<zipfileset dir="${locations.test.clientroot}" 
-				excludes="deploy/**" 
-				prefix="inetpub\wwwroot\${app.name}" 
-				casesensitive="false">
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="inetpub\wwwroot\${app.name}" casesensitive="false">
 				<!-- use the 'different' selector to zip only stuff that's different 
 				between our app on test and our copy of the current production code -->
-				<different targetdir="${locations.prodcompare.clientdir}"/>
+				<different targetdir="${locations.prodcompare.clientdir}" />
 			</zipfileset>
-			
-			<zipfileset dir="${locations.test.customtags}" 
-				includes="**/*.cfm"
-				prefix="ColdFusion8\CustomTags" 
-				casesensitive="false">	
+
+			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="ColdFusion8\CustomTags" casesensitive="false">
 				<!-- only get custom tags that have the string deleteFile in them -->
-				<contains text="deleteFile" casesensitive="false"/>
+				<contains text="deleteFile" casesensitive="false" />
 			</zipfileset>
 		</zip>
 	</target>
-	
-	
-	
+
+
+
 </project>
