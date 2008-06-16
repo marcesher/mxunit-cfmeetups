@@ -23,15 +23,33 @@
 		<property name="locations.test.com" location="${locations.test.clientroot}\com" />
 
 		<echoproperties prefix="locations" />
+
+		<!-- ensure this file appears old. using this to demonstrate the date filter -->
+		<touch file="${locations.dev.customtags}\SubmitButton.cfm" datetime="01/01/2001 12:00 am" />
+
 	</target>
 
 	<target name="clean" depends="init">
 		<!-- delete our client app from test -->
 		<delete dir="${locations.test.clientroot}" />
-
+		<delete dir="${locations.test.customtags}" />
 		<!-- ensure necessary directories are created... these won't be overwritten if they exist -->
 		<mkdir dir="${locations.test.clientroot}" />
 		<mkdir dir="${locations.test.customtags}" />
+	</target>
+
+	<target name="CopyToTestSuperSimple" depends="init,clean" description="copies from dev to test using a single fileset per copy">
+
+		<!-- copy files into our client app -->
+		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
+			<fileset dir="${locations.dev.clientroot}" excludes="" />
+			<!-- exclude images/raw, tmp, and requirements -->
+
+			<!-- ** means "everything!" See http://ant.apache.org/manual/dirtasks.html for full explanation
+			images/raw/ is the same as images/raw/**
+			images/raw is NOT the same as images/raw/  Go ahead... try it!
+			 -->
+		</copy>
 	</target>
 
 
@@ -39,9 +57,10 @@
 
 		<!-- copy files into our client app -->
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
-			<fileset dir="${locations.dev.clientroot}" />
+			<fileset dir="${locations.dev.clientroot}" excludes="images/raw/,/tmp/,/requirements/" />
 			<!-- exclude raw, tmp, and requirements -->
 		</copy>
+
 
 		<copy toDir="${locations.test.com}" preserveLastModified="true" includeEmptyDirs="false">
 			<!-- copy the root "com" directory INSIDE our client app; NOTE: now would be a good time to look at Application.cfc -->
@@ -59,6 +78,8 @@
 				<date datetime="01/01/2005 12:00 AM" when="after" />
 			</fileset>
 		</copy>
+
+
 
 	</target>
 
