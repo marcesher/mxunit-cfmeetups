@@ -12,7 +12,7 @@
 	<!--- Ensure  "Enable Per App Settings option is checked in CFAdmin on ALL CF Servers" --->
 	
 	<!--- local mapping expects com at the webroot. All applications share this com directory in development --->
-	<cfset this.localFrameworkMapping = expandpath("/com")>	
+	<cfset this.localFrameworkMapping = expandpath("../com")>	
 	<!--- in non-dev (i.e. test, staging, prod), com is underneath the client root; ant will put it there --->
 	<cfset this.prodFrameworkMapping = getDirectoryFromPath(getcurrenttemplatepath()) & "com">
 	
@@ -26,7 +26,7 @@
 		<!--- else use the local "shared" path --->
 		<cfset this.mappings["/com"] = this.localFrameworkMapping> 
 	</cfif>
-
+	
 
 	<cffunction name="onApplicationStart">
 		<!--- do app initialization --->
@@ -35,6 +35,8 @@
 		<cfelse>
 			<cfset application.codebase = "/mxunit-cfmeetups/AntCFUnited/DEVSERVER/SharedCodebase">
 		</cfif>
+		<!--- solely for showing on the dsp page! --->
+		<cfset application["mappings"]["/com"] = this.mappings["/com"]>
 	</cffunction>
 	
 	<cffunction name="onRequestStart">
