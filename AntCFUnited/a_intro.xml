@@ -7,7 +7,7 @@
 	<target name="main" description="the big enchilada" depends="">
 
 		<!-- <property> kind of like a once-and-done cfset (although i'll show you 
-		later how you can, in fact, re-set a property) -->
+		later how you can, in fact, re-set a property, using scriptdef (see p_ScriptDev.xml) ) -->
 		<property name="dev.root" value="DEVSERVER" />
 
 		<!-- when using location attribute, creates a path relative to basedir in project element -->
@@ -19,15 +19,14 @@
 		<echo>
 		dev.root = ${dev.root}
 		test.root = ${test.root}		
-		basedir = ${basedir}		
+		basedir = ${basedir}	
 		</echo>
 
 
-		<!--
+
 		<echoproperties prefix="dev" />
 		<echo message=" " />
 		<echoproperties regex=".*root" />
-		-->
 
 		<!-- note what happens when a property is NOT set
 		<echo>
