@@ -1,5 +1,6 @@
 <h1>Hey, CFUnited!</h1>
 
+<p><a href="index.cfm?reinit=true&dumpsettings=true">Reinitialize settings</a></p>
 <p><a href="index.cfm?dumpsettings">Show application settings</a></p>
 
 
