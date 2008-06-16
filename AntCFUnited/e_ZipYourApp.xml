@@ -13,6 +13,9 @@
 		<property name="locations.test.deploy" location="${locations.test.clientroot}\deploy" />
 		<property name="locations.test.deployzip" location="${locations.test.deploy}\${app.name}.zip" />
 
+		<!-- for creating a zip that is based on file system comparison-->
+		<property name="locations.prodcompare.clientdir" location="CurrentProdCode\${app.name}"/>
+		
 		<echoproperties prefix="locations" />
 	</target>
 
