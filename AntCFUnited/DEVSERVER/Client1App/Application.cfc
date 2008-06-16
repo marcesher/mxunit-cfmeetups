@@ -1,7 +1,6 @@
 <cfcomponent>
 
-	<!--- Figure out where we are! --->
-	<cfset environment = determineEnvironment()>
+	
 	
 	<!--- set application settings --->
 	<cfset this.name = "Client1App">
@@ -16,6 +15,9 @@
 	<cfset this.localFrameworkMapping = expandpath("/com")>	
 	<!--- in non-dev (i.e. test, staging, prod), com is underneath the client root; ant will put it there --->
 	<cfset this.prodFrameworkMapping = getDirectoryFromPath(getcurrenttemplatepath()) & "com">
+	
+	<!--- Figure out where we are! --->
+	<cfset environment = determineEnvironment()>
 	
 	<!--- if it's NOT local, use the prod path --->
 	<cfif environment NEQ "dev">
