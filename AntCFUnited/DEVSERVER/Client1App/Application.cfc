@@ -29,7 +29,7 @@
 	<cffunction name="onApplicationStart">
 		<!--- do app initialization --->
 		<cfif environment neq "dev">
-			<cfset application.codebase = "/mxunit-cfmeetups/AntCFUnited/DEVSERVER/#this.name#/codebase">
+			<cfset application.codebase = "/mxunit-cfmeetups/AntCFUnited/TESTSERVER/#this.name#/codebase">
 		<cfelse>
 			<cfset application.codebase = "/mxunit-cfmeetups/AntCFUnited/DEVSERVER/SharedCodebase">
 		</cfif>
