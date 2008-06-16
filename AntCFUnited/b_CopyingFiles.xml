@@ -42,7 +42,7 @@
 
 		<!-- copy files into our client app -->
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
-			<fileset dir="${locations.dev.clientroot}" excludes="" />
+			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,tmp/,requirements/" />
 			<!-- exclude images/raw, tmp, and requirements -->
 
 			<!-- ** means "everything!" See http://ant.apache.org/manual/dirtasks.html for full explanation
@@ -116,7 +116,7 @@
 			<!-- note how we filter out junk we don't need on test -->
 			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,**tmp/,**/requirements/" />
 			<!-- add com by using dev.root as source and just including com/** -->
-			<fileset dir="${dev.root}" includes="com/**" />
+			<fileset dir="${dev.root}" includes="com/" />
 		</copy>
 
 		<copy toDir="${locations.test.codebase}" preserveLastModified="true" includeEmptyDirs="false">
