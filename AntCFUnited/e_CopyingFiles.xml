@@ -42,7 +42,7 @@
 
 		<!-- copy files into our client app -->
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
-			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,tmp/,requirements/" />
+			<fileset dir="${locations.dev.clientroot}" excludes="" />
 			<!-- exclude images/raw, tmp, and requirements -->
 
 			<!-- ** means "everything!" See http://ant.apache.org/manual/dirtasks.html for full explanation
