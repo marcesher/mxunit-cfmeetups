@@ -54,6 +54,8 @@
 			to exclude particular file types, use:
 			
 			excludes="**/*.psd" for example. This will exclude all psd files anywhere in the fileset
+			
+			If you find yourself using the same stuff inside excludes, check out <defaultexcludes> (example is above in init)
 			 -->
 		</copy>
 	</target>
