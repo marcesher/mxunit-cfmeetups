@@ -24,6 +24,9 @@
 
 		<echoproperties prefix="locations" />
 
+		<!-- so you don't have to add these into every excludes you use -->
+		<defaultexcludes add="**/.project,**/Thumbs.db" />
+
 		<!-- ensure this file appears old. using this to demonstrate the date filter -->
 		<touch file="${locations.dev.customtags}\SubmitButton.cfm" datetime="01/01/2001 12:00 am" />
 
@@ -48,6 +51,9 @@
 			<!-- ** means "everything!" See http://ant.apache.org/manual/dirtasks.html for full explanation
 			images/raw/ is the same as images/raw/**
 			images/raw is NOT the same as images/raw/  Go ahead... try it!
+			to exclude particular file types, use:
+			
+			excludes="**/*.psd" for example. This will exclude all psd files anywhere in the fileset
 			 -->
 		</copy>
 	</target>
@@ -86,7 +92,7 @@
 	<target name="CopyToTestWithDifferentDateFilter" depends="init,clean" description="copies from dev to test using a single fileset per copy; uses a variable date filter instead of a hard-coded one">
 
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
-			<fileset dir="${locations.dev.clientroot}" />
+			<fileset dir="${locations.dev.clientroot}" excludes="images/raw/,/tmp/,/requirements/" />
 		</copy>
 
 		<copy toDir="${locations.test.com}" preserveLastModified="true" includeEmptyDirs="false">
@@ -114,7 +120,7 @@
 
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
 			<!-- note how we filter out junk we don't need on test -->
-			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,**tmp/,**/requirements/" />
+			<fileset dir="${locations.dev.clientroot}" excludes="images/raw/,/tmp/,/requirements/" />
 			<!-- add com by using dev.root as source and just including com/** -->
 			<fileset dir="${dev.root}" includes="com/" />
 		</copy>
@@ -134,26 +140,26 @@
 
 	</target>
 
-	
+
 	<!--
 	
 	TEASER: using filtermapper and replacestring to rename files on the fly
 	
 	
 	-->
-	
-	
-	
+
+
+
 	<target name="CopyToTestUsingFilterMapper" depends="init,clean" description="copies files from dev to test using a single copy tag for everything under the 'client' app. Uses a filtermapper to change SharedCodebase to codebase">
 
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
-			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,**tmp/,**/requirements/" />
+			<fileset dir="${locations.dev.clientroot}" excludes="images/raw/,/tmp/,/requirements/" />
 			<!-- added SharedCodebase to our includes, and we change the name by 
 			using a filtermapper with replacestring -->
-			<fileset dir="${dev.root}" includes="com/**,SharedCodebase/**" />
+			<fileset dir="${dev.root}" includes="com/,SharedCodebase/" />
 			<filtermapper>
 				<replacestring from="SharedCodebase" to="codebase" />
-			</filtermapper>		
+			</filtermapper>
 		</copy>
 
 		<tstamp>
