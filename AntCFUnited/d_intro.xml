@@ -45,10 +45,4 @@
 		<echoproperties prefix="cfunited" />
 	</target>
 
-	<target name="getinput">
-		<input message="Username:" addproperty="unames.username" defaultvalue="" />
-		<input message="Password:" addproperty="unames.password" defaultvalue="" />
-		<echoproperties prefix="unames" />
-	</target>
-
 </project>

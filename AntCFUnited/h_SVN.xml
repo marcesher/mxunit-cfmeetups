@@ -90,7 +90,7 @@
 		</tstamp>
 		<property name="tag.srcURL" value="${svn.server}/mxunit-cfmeetups/AntCFUnited/DEVSERVER/${app.name}" />
 		<property name="tag.destURL" value="${svn.server}/mxunit-cfmeetups/AntCFUnited/tags/${app.name}/${tag.versionStamp}" />
-		<property name="tag.message" value="AutoTagging from package target" />
+		<input addproperty="tag.message" message="Please add a tag comment" defaultvalue="AutoTagging from package target"/>
 		<echoproperties prefix="tag" />
 		<svn username="${svn.username}" password="${svn.password}">
 			<copy srcURL="${tag.srcURL}" destURL="${tag.destURL}" message="${tag.message}" />
