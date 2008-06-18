@@ -65,7 +65,7 @@
 
 		<!-- copy files into our client app -->
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
-			<fileset dir="${locations.dev.clientroot}" excludes="images/raw/,/tmp/,/requirements/" />
+			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,/tmp/,/requirements/" />
 			<!-- exclude raw, tmp, and requirements -->
 		</copy>
 
