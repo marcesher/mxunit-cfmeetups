@@ -19,7 +19,7 @@
 		<echo>
 		dev.root = ${dev.root}
 		test.root = ${test.root}		
-		basedir = ${basedir}	
+		basedir = ${basedir} 	
 		</echo>
 
 
@@ -41,7 +41,7 @@
 		 can swap out a properties file and keep your build files stable 
 		 (think: different developers, different properties)
 		 -->
-		<property file="a.properties" />
+		<property file="d.properties" />
 		<echoproperties prefix="cfunited" />
 	</target>
 
