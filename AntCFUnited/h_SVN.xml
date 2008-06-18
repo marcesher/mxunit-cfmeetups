@@ -68,7 +68,7 @@
 
 		<copy toDir="${locations.test.clientroot}" preserveLastModified="true" includeEmptyDirs="false">
 			<fileset dir="${locations.dev.clientroot}" excludes="**/raw/,**tmp/,**/requirements/" />
-			<fileset dir="${dev.root}" includes="com/**,SharedCodebase/**" />
+			<fileset dir="${dev.root}" includes="com/,SharedCodebase/" />
 			<filtermapper>
 				<replacestring from="SharedCodebase" to="codebase" />
 			</filtermapper>
@@ -102,7 +102,7 @@
 	in SVN, of exactly what we put into the zip -->
 	<target name="package" depends="init,clean,tagVersion">
 		<zip destfile="${locations.test.deployzip}">
-			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/**" prefix="inetpub\wwwroot\${app.name}" casesensitive="false" />
+			<zipfileset dir="${locations.test.clientroot}" excludes="deploy/" prefix="inetpub\wwwroot\${app.name}" casesensitive="false" />
 
 			<zipfileset dir="${locations.test.customtags}" includes="**/*.cfm" prefix="ColdFusion8\CustomTags" casesensitive="false" />
 		</zip>
