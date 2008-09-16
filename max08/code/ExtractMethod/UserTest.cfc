@@ -8,7 +8,7 @@
 	</cffunction>
 	
 	<!--- make some queries to test our different scenarios --->
-	
+	<!--- these won't run as tests because they're private! --->
 	<cffunction name="zeroPermissions" access="private">
 		<cfset var q = "">
 		<cf_querysim>
