@@ -1,0 +1,15 @@
+<project name="Max08" basedir="." default="package">
+
+	
+	<target name="init">
+		<property name="destfile" location="MAX08_AdvancedUnitTestPatterns_Shelton_Esher.zip"/>
+	</target>
+	
+	<target name="package" depends="init">
+		<delete file="${destfile}"/>
+		<zip destfile="${destfile}" >
+			<zipfileset dir="${basedir}" excludes="*.doc,/images/,*.xml" prefix="MXUnit_MAX08" casesensitive="false" />
+		</zip>
+	</target>
+	
+</project>
