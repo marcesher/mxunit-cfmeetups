@@ -4,8 +4,15 @@
 	<cffunction name="setUp" returntype="void" access="public" hint="put things here that you want to run before each test">
 		
 		<cfset fsm = createObject("component","FileSystemMaintenance")>
+		<!--- create our collaborator;
+		in the tests, we'll override his methods to achieve the desired setup we want --->
+		<cfset util = createObject("component","FileSystemUtility")>
+		
 		<!--- ensure all deletes are safe! --->
-		<cfset injectMethod(fsm,this,"deleteOverride","deleteFile")>
+		<cfset injectMethod(util,this,"deleteOverride","deleteFile")>
+		
+		<!--- initialize our object under test with its collaborator --->
+		<cfset fsm.init(util)>
 		
 	</cffunction>
 
@@ -13,16 +20,6 @@
 	
 	</cffunction>
 	
-	<!--- this is the hardest one to test. if we weren't abstracting out 
-	"current time" (via getTime()), getDirectoryListing to return a directory query,
-	 and deleteFile, it'd be virtually impossible to test correctly. 
-	 But since we can manipulate so many pieces of the puzzle,
-	we can focus on testing just the logic we want to test:
-	
-	* Does it correctly loop through our config query?
-	* Does it correctly gather just the old files from our directory?
-	* Does it call delete on those old files?
-	  --->
 	<cffunction name="runCleanupMaintenanceWithNoValidDirectoriesReturnsNoResults">
 		<cfset injectMethod(fsm,this,"spoofCleanupConfig","getCleanupConfig")>		
 		<cfset results = fsm.runCleanupMaintenance()>
@@ -31,10 +28,10 @@
 	  
 	<cffunction name="runCleanupMaintenanceShouldHitExpectedFiles">
 		<cfset injectMethod(fsm,this,"spoofCleanupConfig","getCleanupConfig")>		
-		<cfset injectMethod(fsm,this,"bigSpoofDirectory","getDirectoryListing")>		
+		<!--- override the method in the collaborator --->
+		<cfset injectMethod(util,this,"bigSpoofDirectory","getDirectoryListing")>		
 		
 		<cfset results = fsm.runCleanupMaintenance()>
-		<cfset debug(results)>
 		<cfset fileList = ArrayToList(results.deletedfiles)>
 		
 		<!--- this should thoroughly test our results; this works because we created a spoof
@@ -57,47 +54,19 @@
 	</cffunction>
 	
 	<cffunction name="runCleanupMaintenanceShouldNotFailOnFileDeleteErrors">
-		<cfset injectMethod(fsm,this,"spoofCleanupConfig","getCleanupConfig")>		
-		<cfset injectMethod(fsm,this,"bigSpoofDirectory","getDirectoryListing")>		
-		<cfset injectMethod(fsm,this,"getTime","getTime")>
-		<cfset injectMethod(fsm,this,"deleteAndCauseError","deleteFile")>
+		<cfset injectMethod(fsm,this,"spoofCleanupConfig","getCleanupConfig")>	
+			
+		<!--- override these methods in the collaborator --->
+		<cfset injectMethod(util,this,"bigSpoofDirectory","getDirectoryListing")>		
+		<cfset injectMethod(util,this,"deleteAndCauseError","deleteFile")>
+		
 		<cfset results = fsm.runCleanupMaintenance()>
 		<cfset assertEquals(0, ArrayLen(results.deletedfiles)  )>
 		<!--- 3 because that's how many files we know should've been deleted --->
 		<cfset assertEquals(3,ArrayLen(results.errors))>
 		<cfset assertTrue( StructKeyExists( results.errors[1],"TagContext" ) )> 
 	</cffunction>
-	
-	
-	
-	<!--- this tests more granular stuff, not the entire process; 
-		all we really want to ensure is that the code correctly filters
-		out stuff newer than the target time. This is easy to test
-		because we can simply create a query that simulates the file system
-		and then override getDirectoryListing() with a function that returns
-		the query we want.  
-		
-		MAIN POINT: by abstracting cfdirectory into a function, we can then
-		override the function in a test, thereby freeing us from the confines
-		of the file system when all we really want to test is the filtering,
-		NOT the functionality of cfdirectory
-		
-	 --->
-	
-	<cffunction name="getFilesOlderThanShouldReturnOnlyOldFiles">		
-		<!--- set the target time one minute in the future.  --->
-		<cfset var targetTime = DateAdd("n",1,getTime())>
-		
-		<!--- inject our directory spoofer query; this has one file in the future, so it should be filtered out; the rest should be returned --->
-		<cfset injectMethod(fsm,this,"spoofDirectory","getDirectoryListing")>
-		<!--- make getFilesOlderThan public so we can test it --->
-		<cfset makePublic(fsm,"getFilesOlderThan")>
-		
-		<cfset all = fsm.getFilesOlderThan("c:\files\",targetTime)>
-		<cfset FileList = Valuelist(all.Name)>
-		<cfset assertTrue( listFind(FileList,"oneminuteold.txt") ,"")>
-		<cfset assertFalse( listFind(FileList,"oneminutenewer.txt") ,"")>
-	</cffunction>
+
 
 	<cffunction name="getCleanupConfigShouldReturnResults" returntype="void" access="public" hint="extremely simple test to make sure query has guts">
 		<cfset makePublic(fsm,"getCleanupConfig")>
@@ -115,23 +84,6 @@
 	
 	<cffunction name="deleteAndCauseError" access="private">
 		<cfthrow message="error deleting file!" type="FileDeleteError">
-	</cffunction>
-	
-	<cffunction name="spoofDirectory" access="private">
-		<cfset var dir = "">
-		<cfset var dirname = "c:\files\">
-		<cfset var thisTime = getTime()>
-		<cfoutput>
-		<cf_querysim>			
-		dir
-		DateLastModified,Directory,Mode,Name,Size,Type
-		#DateAdd("d",-1,thisTime)#|#dirname#| |onedayold.txt|100|File
-		#DateAdd("n",-1,thisTime)#|#dirname#| |oneminuteold.txt|100|File		
-		#DateAdd("n",1,thisTime)#|#dirname#| |oneminutenewer.txt|100|File
-		#DateAdd("n",0,thisTime)#|#dirname#| |exactlynow.txt|100|File
-		</cf_querysim>
-		</cfoutput>
-		<cfreturn dir>
 	</cffunction>
 	
 	<cffunction name="bigSpoofDirectory" access="private">

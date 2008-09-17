@@ -13,7 +13,7 @@
 		
 		<cfloop query="cleanupConfig">
 			<cfset targetTime = DateAdd("n",-#cleanupConfig.StaleInMinutes#,startTime)>
-			<cfset filesToDelete = getMarkedFilesForDeletion(cleanupConfig.DirectoryPath,targetTime)>
+			<cfset filesToDelete = getFilesOlderThan(cleanupConfig.DirectoryPath,targetTime)>
 			<cfloop query="filesToDelete">
 				<cftry>
 					<cfset fullFilePath = filesToDelete.Directory & filesToDelete.Name>
@@ -43,7 +43,7 @@
 		<cfreturn now()>
 	</cffunction>
 	
-	<cffunction name="getMarkedFilesForDeletion" access="private" returntype="query" hint="gets all files to be deleted for a given directory and given target time">
+	<cffunction name="getFilesOlderThan" access="private" returntype="query" hint="gets all files to be deleted for a given directory and given target time">
 		<cfargument name="directory" type="string" required="true" hint="the directory to search">
 		<cfargument name="targetTime" type="date" required="true" hint="the target time. files older than this will be gathered.">
 		<cfset var files = getDirectoryListing(directory)>		
