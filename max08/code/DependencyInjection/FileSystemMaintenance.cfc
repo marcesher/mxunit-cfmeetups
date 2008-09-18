@@ -36,14 +36,14 @@
 	</cffunction>
 	
 	<cffunction name="getCleanupConfig" hint="gets the configured directories for cleanup from the database" returntype="query" access="private">
-		<cfset var qConfig = "">
+		<cfset var configurations = "">
 		
-		<cfquery name="qConfig" datasource="UnitTest">
+		<cfquery name="configurations" datasource="UnitTest">
 		select CleanupID,DirectoryPath,StaleInMinutes,EmailRecipients
 		from CleanupConfig
 		</cfquery>
 		
-		<cfreturn qConfig>
+		<cfreturn configurations>
 	</cffunction>
 	
 	
