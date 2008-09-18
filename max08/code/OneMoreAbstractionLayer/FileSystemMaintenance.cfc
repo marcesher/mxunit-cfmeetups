@@ -29,14 +29,14 @@
 	</cffunction>
 	
 	<cffunction name="getCleanupConfig" hint="gets the configured directories for cleanup from the database" returntype="query" access="private">
-		<cfset var qConfig = "">
+		<cfset var configurations = "">
 		
-		<cfquery name="qConfig" datasource="UnitTest">
+		<cfquery name="configurations" datasource="UnitTest">
 		select CleanupID,DirectoryPath,StaleInMinutes,EmailRecipients
 		from CleanupConfig
 		</cfquery>
 		
-		<cfreturn qConfig>
+		<cfreturn configurations>
 	</cffunction>
 	
 	<cffunction name="getTime" hint="returns the current time. splitting out to make unit testing easier" returntype="date" access="private">

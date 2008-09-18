@@ -153,15 +153,15 @@
 	</cffunction>
 	
 	<cffunction name="spoofCleanupConfig" access="private">
-		<cfset var qConfig = "">
+		<cfset var configurations = "">
 		<cf_querysim>
-		qConfig
+		configurations
 		CleanupID,DirectoryPath,StaleInMinutes,EmailRecipients
 		1|c:\noexist\|30| |
 		2|c:\noexist2\|60| |
 		3|c:\noexist3\|360| |
 		</cf_querysim>
-		<cfreturn qConfig>
+		<cfreturn configurations>
 	</cffunction>
 	 
 	<cffunction name="getTime" access="private">
