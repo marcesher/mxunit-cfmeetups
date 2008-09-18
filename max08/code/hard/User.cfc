@@ -16,9 +16,9 @@
 	
 	
 	<cffunction name="loadPermissions" hint="queries database for all permissions for this user and loads into the permissions struct">
-		<cfset var q_Permissions = "">
+		<cfset var permissions = "">
 		
-		<cfquery name="q_Permissions" datasource="UnitTest">
+		<cfquery name="permissions" datasource="UnitTest">
 		select u.UserID, p.PermissionID,PermissionName
 		from J_Users_Permissions jup 
 		join users u on jup.UserID = u.UserID
@@ -26,8 +26,8 @@
 		where u.userid = <cfqueryparam cfsqltype="cf_sql_integer" value="#variables.instance.UserID#">
 		</cfquery>
 		
-		<cfloop query="q_Permissions">
-			<cfset addPermission(q_Permissions.PermissionName)>
+		<cfloop query="permissions">
+			<cfset addPermission(permissions.PermissionName)>
 		</cfloop>
 		
 	</cffunction>
