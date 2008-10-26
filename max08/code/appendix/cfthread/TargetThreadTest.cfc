@@ -58,9 +58,9 @@
     <cfthread action="join" name="t1,t2,t3,t4" timeout="#threadTimeOut#" /> 
     <cfset debug(cfthread)>
     <!--- 
-      Using the cfthred action=join, we can now test the state of each thread 
-      No need to poll this.callBackFlag, which doesn't seem to work anyway ... scope?,
-      but we can verity output in the callback method. This output can be arbitrary.
+      Using the cfthred action=join, we can now test the state of each thread via
+      the listener. If the thread were to output anything, we could test that, too,
+      using the cfthread.output variable.
     --->
 	 <cfloop collection="#cfthread#" item="thread">
 	   <cfset debug(cfthread[thread]) />
