@@ -34,7 +34,7 @@
   </cffunction>
   
   
-  <cffunction name="testThreadedCallBacks">
+  <cffunction name="testAsynchrounousThreadedCalls">
     <cfset var threadTimeOut = 5000 />
 
     <!--- Call threads in setUp  --->
