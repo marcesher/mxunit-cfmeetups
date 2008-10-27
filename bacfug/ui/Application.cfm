@@ -1,4 +1,8 @@
 <cfapplication name="bacfug">
 
-<cfparam name="user" default="testability">
-<cfparam name="pass" default="">
+
+
+<cfset ini = getDirectoryFromPath(getCurrentTemplatePath()) & "credentials" />
+
+<cfparam name="user" default="#getProfileString(ini,"section","u")#">
+<cfparam name="pass" default="#getProfileString(ini,"section","p")#">
