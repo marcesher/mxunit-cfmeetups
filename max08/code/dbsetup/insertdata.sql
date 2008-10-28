@@ -1,35 +1,35 @@
 insert into users(firstname,lastname,username,password)
-values('Marc','Esher','mesher','mesher')
+values('Marc','Esher','mesher','mesher');
 
 insert into users(firstname,lastname,username,password)
-values('Bill','Shelton','bshelton','bshelton')
+values('Bill','Shelton','bshelton','bshelton');
 
 insert into permissions(PermissionName)
-values('Kick it')
+values('Kick it');
 
 insert into permissions(PermissionName)
-values('SmokeStogies')
+values('SmokeStogies');
 
 insert into permissions(PermissionName)
-values('BuyScotch')
+values('BuyScotch');
 
 insert into permissions(PermissionName)
-values('Eat Ice Cream')
+values('Eat Ice Cream');
 
 insert into permissions(PermissionName)
-values('Eat Steak')
+values('Eat Steak');
 
 insert into permissions(PermissionName)
-values('Play Hookie From Work')
+values('Play Hookie From Work');
 
 insert into j_users_permissions(userid,permissionid)
-values(1,1)
+values(1,1);
 
 insert into j_users_permissions(userid,permissionid)
-values(1,2)
+values(1,2);
 
 insert into j_users_permissions(userid,permissionid)
-values(2,2)
+values(2,2);
 
 insert into j_users_permissions(userid,permissionid)
-values(2,3)
+values(2,3);
