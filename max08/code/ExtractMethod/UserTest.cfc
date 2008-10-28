@@ -62,7 +62,8 @@
 	
 	<!--- in the ideal world, we could granularly control the query being used by loadPermissions;
 	however, in the real world, we have to settle for what's in the DB or else create the conditions
-	and hope they don't change --->
+	and hope they don't change. So instead of relying on the real world, we create the conditions
+	we want by injecting in spoof queries --->
 	
 	<cffunction name="loadPermissionsForKnownExistingPermissions">
 		<cfset injectMethod(user,this,"eatPermissions","getUserPermissionsQuery")>
