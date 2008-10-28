@@ -1,9 +1,10 @@
-<cffile action="read" file="#expandPath('insertdata.sql')#" variable="sql">
+<cffile action="read" file="#expandPath('insertdata.sql')#" variable="statements">
+<cfset dsn = "UnitTest">
 
-<cfloop list="#trim(sql)#" index="idx" delimiters=";">
+<cfloop list="#trim(statements)#" index="sql" delimiters=";">
 	
-	<cfquery name="ins" datasource="UnitTest">
-	<cfoutput>#trim(preserveSingleQuotes(idx))#</cfoutput>  
+	<cfquery name="ins" datasource="#dsn#">
+	#trim(preserveSingleQuotes(sql))#
 	</cfquery>
 
 </cfloop>
