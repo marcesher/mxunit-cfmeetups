@@ -71,7 +71,7 @@
 	<cffunction name="getCleanupConfigShouldReturnResults" returntype="void" access="public" hint="extremely simple test to make sure query has guts">
 		<cfset makePublic(fsm,"getCleanupConfig")>
 		<cfset results = fsm.getCleanupConfig()>
-		<cfset assertTrue(results.recordcount GT 0)>
+		<cfset assertTrue(results.recordcount GT 0,"Expected results from CleanupConfig table but got none")>
 	</cffunction>
 	
 	<!--- ////  END TESTS --->
