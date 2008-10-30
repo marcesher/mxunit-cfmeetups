@@ -21,3 +21,11 @@ CREATE TABLE J_Users_Permissions
     PermissionID INT,
     Primary key (UserID, PermissionID)
 );  
+
+CREATE TABLE CleanupConfig
+(
+	CleanupID INT Primary Key NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+	DirectoryPath VARCHAR(500) NOT NULL,
+	StaleInMinutes INT NOT NULL,
+	EmailRecipients VARCHAR(4000) 
+);

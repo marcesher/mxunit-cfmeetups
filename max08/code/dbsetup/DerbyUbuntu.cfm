@@ -50,3 +50,14 @@ CREATE TABLE J_Users_Permissions
 
 </cfquery>
 
+<cfquery name="q" datasource="#dsn#">
+
+CREATE TABLE CleanupConfig
+(
+	CleanupID INT Primary Key NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+	DirectoryPath VARCHAR(500) NOT NULL,
+	StaleInMinutes INT NOT NULL,
+	EmailRecipients VARCHAR(4000) 
+)
+
+</cfquery>

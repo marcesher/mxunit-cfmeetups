@@ -33,3 +33,10 @@ values(2,2);
 
 insert into j_users_permissions(userid,permissionid)
 values(2,3);
+
+insert into CleanupConfig(DirectoryPath,StaleInMinutes)
+values('\\path\to\share\dir',30);
+
+
+insert into CleanupConfig(DirectoryPath,StaleInMinutes)
+values('\\path\to\othershare\dir',60);
