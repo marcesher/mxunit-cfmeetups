@@ -6,7 +6,7 @@
 	
 	
 	<cffunction name="setUp" returntype="void" access="public" hint="put things here that you want to run before each test">
-		<cfset sourceFilePath = expandPath("sourcefiles\")>
+		<cfset sourceFilePath = getDirectoryFromPath(getCurrentTemplatePath()) & "/sourcefiles/">
 		<cfset onepage = sourceFilePath & "onepage.pdf">
 		<cfset twopage = sourceFilePath & "letter.pdf">
 		<cfset weirdname = sourceFilePath & "one.pdf_hmmm.pdf">
@@ -138,8 +138,6 @@
 			<cfset structclear(cfthread)>	
 		</cfcatch>
 		</cftry>		
-		
-		<!--- <cfdump var="#cfthread#">---> 
 		
 	</cffunction> 
 	

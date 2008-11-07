@@ -61,11 +61,7 @@
 		</cfthread>
 		
 		<cfif WaitForCompletion>
-			<!---<cfset request.logger.debug("#cfthread#",1)>  --->
 			<cfthread action="join" name="#threadname#"/>
-		<cfelse>
-			<!--- what should i do here? --->
-			
 		</cfif>
 			<!--- if it's just a single page, append it straight up --->
 			<cfif isNumeric(pages)>
