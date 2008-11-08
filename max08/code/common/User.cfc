@@ -9,6 +9,7 @@
 		<cfargument name="LastName" required="false" type="string" default="">
 		<cfargument name="UserName" required="false" type="string" default="">
 		<cfargument name="Password" required="false" type="string" default="">
+		
 		<cfset StructAppend(variables.instance,arguments,true)>
 		
 		<cfreturn this>
