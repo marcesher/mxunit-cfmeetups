@@ -12,6 +12,14 @@
 		<cfset assertEquals("", user.getPermissionsAsList() )>
 	</cffunction>
 	
+	<cffunction name="addPermissionResultsInSuccessfulHasPermission">
+		<cfset permissionName = "himom">
+		<cfset assertFalse( user.hasPermission(permissionName) )>
+		
+		<cfset user.addPermission(permissionName)>
+		<cfset assertTrue( user.hasPermission(permissionName) )>
+	</cffunction>
+	
 	<cffunction name="testGetPermissionsAsList">
 		<cfset user.addPermission("one")
 					.addPermission("two")
@@ -23,13 +31,6 @@
 		<cfset assertEquals(expected,actual )>
 	</cffunction>
 	
-	<cffunction name="addPermissionResultsInSuccessfulHasPermission">
-		<cfset permissionName = "himom">
-		<cfset assertFalse( user.hasPermission(permissionName) )>
-		
-		<cfset user.addPermission(permissionName)>
-		<cfset assertTrue( user.hasPermission(permissionName) )>
-	</cffunction>
 	
 	<!--- other tests would go here for weirdo conditions... case sensitivity, spaces in key names (should they be allowed, etc) --->
 	
