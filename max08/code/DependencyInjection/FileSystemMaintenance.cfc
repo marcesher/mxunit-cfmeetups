@@ -2,8 +2,16 @@
 
 	<cfset variables.fsu = "">
 	
+	<!--- example of constructor dependency injection --->
 	<cffunction name="init">
-		<cfargument name="FileSystemUtility" type="FileSystemUtility" required="false" default="#CreateObject('component','FileSystemUtility')#"/>
+		<cfargument name="FileSystemUtility" type="FileSystemUtility" required="false" 
+					default="#CreateObject('component','FileSystemUtility')#"/>
+		<cfset variables.fsu = arguments.FileSystemUtility>
+	</cffunction>
+	
+	<!--- example of setter dependency injection --->
+	<cffunction name="setFileSystemUtility" access="public" hint="enable us to inject filesystemutility dependency">
+		<cfargument name="FileSystemUtility" type="FileSystemUtility" required="true">
 		<cfset variables.fsu = arguments.FileSystemUtility>
 	</cffunction>
 	
