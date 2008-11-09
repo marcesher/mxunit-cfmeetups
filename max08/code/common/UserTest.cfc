@@ -32,7 +32,8 @@
 	</cffunction>
 	
 	
-	<!--- other tests would go here for weirdo conditions... case sensitivity, spaces in key names (should they be allowed, etc) --->
+	<!--- other tests would go here for weirdo conditions... case sensitivity, 
+	spaces in key names (should they be allowed, etc) --->
 	
 
 </cfcomponent>
