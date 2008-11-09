@@ -85,7 +85,7 @@
 		
 		<!--- then load em again and make sure the permission is gone --->
 		<cfset user.loadPermissions()>
-		<cfset assertFalse(user.hasPermission("EatSteak"))><!--- this will fail the first time b/c we have a bug in the code!!! --->
+		<cfset assertFalse(user.hasPermission("EatSteak"),"User should not have EatSteak permission any more")><!--- this will fail the first time b/c we have a bug in the code!!! --->
 	</cffunction>
 	
 	<cffunction name="loadPermissionsWithCrazyCharactersShouldThrowNoErrors">
