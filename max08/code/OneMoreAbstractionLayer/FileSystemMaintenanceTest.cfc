@@ -14,8 +14,17 @@
 	</cffunction>
 	
 	<!--- this is the hardest one to test. if we weren't abstracting out 
-	"current time" (via getTime()), getDirectoryListing to return a directory query,
-	 and deleteFile, it'd be virtually impossible to test correctly. 
+	
+	 getDirectoryListing to return directory queries that mimic the conditions we'd like
+	 to create, but without actually doing file system setup
+	 
+	 and deleteFile to ensure files aren't deleted, 
+	 
+	 it'd be virtually impossible to test correctly. 
+	 
+	 In addition, we couldn't test "edge cases" such as midnight, or Y2K, without
+	 the ability to override "current time" (via getTime())
+	 
 	 But since we can manipulate so many pieces of the puzzle,
 	we can focus on testing just the logic we want to test:
 	
@@ -59,7 +68,6 @@
 	<cffunction name="runCleanupMaintenanceShouldNotFailOnFileDeleteErrors">
 		<cfset injectMethod(fsm,this,"spoofCleanupConfig","getCleanupConfig")>		
 		<cfset injectMethod(fsm,this,"bigSpoofDirectory","getDirectoryListing")>		
-		<cfset injectMethod(fsm,this,"getTime","getTime")>
 		<cfset injectMethod(fsm,this,"deleteAndCauseError","deleteFile")>
 		<cfset results = fsm.runCleanupMaintenance()>
 		<cfset assertEquals(0, ArrayLen(results.deletedfiles)  )>
