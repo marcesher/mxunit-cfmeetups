@@ -55,7 +55,9 @@
 	
 	<!--- we'll override this one just so we don't hit the DB at all --->
 	<cffunction name="loadPermissionsForNoPermissionsResultsInEmptyStruct">
+		
 		<cfset injectMethod(user,this,"zeroPermissions","getUserPermissionsQuery")>
+		
 		<cfset user.loadPermissions()>
 		<cfset assertEquals("",user.getPermissionsAsList())>
 	</cffunction>
@@ -88,7 +90,8 @@
 	
 	<cffunction name="loadPermissionsWithCrazyCharactersShouldThrowNoErrors">
 		<cfset var q_weird = permissionsWithSpacesAndOtherWeirdness()>
-		<cfset injectMethod(user,this,"permissionsWithSpacesAndOtherWeirdness","getUserPermissionsQuery")>
+		<cfset injectMethod(user,this,"permissionsWithSpacesAndOtherWeirdness",
+				"getUserPermissionsQuery")>
 		<cfset user.loadPermissions()>
 		
 		<!--- doesn't this feel like the kind of thing we could pull out as a custom assertion and use in ALL of our tests? --->
