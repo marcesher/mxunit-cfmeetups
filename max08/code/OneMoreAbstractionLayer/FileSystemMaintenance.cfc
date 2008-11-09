@@ -1,6 +1,6 @@
 <cfcomponent>
 
-	<cffunction name="runCleanupMaintenance" hint="cleans up old files">
+	<cffunction name="runCleanupMaintenance" hint="cleans up old files" access="public">
 		<cfset var cleanupConfig = getCleanupConfig()>
 		<cfset var startTime = getTime()>		
 		<cfset var targetTime = "">
@@ -28,6 +28,11 @@
 		<cfreturn results>
 	</cffunction>
 	
+	
+	
+	<!--- pull these simple operations into separate functions because 
+	then they're easier to override in unit tests --->
+	
 	<cffunction name="getCleanupConfig" hint="gets the configured directories for cleanup from the database" returntype="query" access="private">
 		<cfset var configurations = "">
 		
@@ -37,11 +42,8 @@
 		</cfquery>
 		
 		<cfreturn configurations>
-	</cffunction>
+	</cffunction>	
 	
-	<cffunction name="getTime" hint="returns the current time. splitting out to make unit testing easier" returntype="date" access="private">
-		<cfreturn now()>
-	</cffunction>
 	
 	<cffunction name="getFilesOlderThan" access="private" returntype="query" hint="gets all files to be deleted for a given directory and given target time">
 		<cfargument name="directory" type="string" required="true" hint="the directory to search">
@@ -57,6 +59,8 @@
 		<cfreturn files>
 	</cffunction>
 	
+	<!--- These are simply wrappers around built-in ColdFusion functionality
+	that we wish to override in unit tests --->
 	<cffunction name="getDirectoryListing" access="private" returntype="query" hint="returns a query representing the directory">
 		<cfargument name="directory" type="string" required="true" hint="the directory to search">
 		<cfset var files = "">
@@ -64,10 +68,12 @@
 		<cfreturn files>
 	</cffunction>
 	
-	<!--- pull these simple operations into separate functions because then they're easier to override in unit tests --->
 	<cffunction name="deleteFile" hint="deletes a file" access="private">
 		<cfargument name="fileToDelete" required="true" type="string" hint="the file to be deleted">
 		<cffile action="delete" file="#fileToDelete#">
 	</cffunction>
 
+	<cffunction name="getTime" hint="returns the current time. splitting out to make unit testing easier" returntype="date" access="private">
+		<cfreturn now()>
+	</cffunction>
 </cfcomponent>
