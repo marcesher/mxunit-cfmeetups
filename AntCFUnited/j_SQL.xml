@@ -31,7 +31,7 @@
 		<!-- these properties would be better placed in a .properties file -->
 		<!-- this will use the jtds.jar in the classpath -->
 		<property name="sqlserver.driver" value="net.sourceforge.jtds.jdbc.Driver" />
-		<property name="sqlserver.url" value="jdbc:jtds:sqlserver://localhost:1436/ANT;instance=NetSDK" />
+		<property name="sqlserver.url" value="jdbc:jtds:sqlserver://argus-toki:1433/MARC_ANT" />
 
 		<!-- this will use the mysql-connector jar in the classpath -->
 		<property name="mysql.driver" value="com.mysql.jdbc.Driver" />
@@ -48,7 +48,7 @@
 
 	<target name="getServers" depends="init" description="Queries a db for a list of servers">
 
-		<sql driver="${mysql.driver}" url="${mysql.url}" userid="${sql.username}" password="${sql.password}" classpathref="jdbc.classpath" print="yes" output="${db.output}" showheaders="false" showtrailers="false">
+		<sql driver="${sqlserver.driver}" url="${sqlserver.url}" userid="${sql.username}" password="${sql.password}" classpathref="jdbc.classpath" print="yes" output="${db.output}" showheaders="false" showtrailers="false">
 		select ServerIP from servers where ActiveFlag=1
 		</sql>
 
@@ -70,22 +70,25 @@
 		<loadfile srcFile="${db.output}" property="serverlist" />
 		<for list="${serverlist}" param="server" delimiter="${line.separator}">
 			<sequential>
+				<property name="pathOnNetwork" location="ProductionSim"/>
+				<echo message="${pathOnNetwork}"/>
+				
+				<echo>Copying to ${pathOnNetwork}\@{server}\Apps\${app.name}</echo>
 
-				<echo>Copying to @{server}\Apps\${app.name}</echo>
 
-
-				<copy toDir="@{server}\Apps\${app.name}" preserveLastModified="true" includeEmptyDirs="false">
+				<copy toDir="${pathOnNetwork}\@{server}\Apps\${app.name}" preserveLastModified="true" includeEmptyDirs="false">
 					<fileset dir="${locations.test.clientroot}" />
 				</copy>
 
 				<tstamp>
 					<format pattern="MM/dd/yyyy hh:mm aa" offset="-5" unit="year" property="customtagfilter" />
 				</tstamp>
-				<copy toDir="@{server}\CustomTags" preserveLastModified="true" includeEmptyDirs="false">
+				<copy toDir="${pathOnNetwork}\@{server}\CustomTags" preserveLastModified="true" includeEmptyDirs="false">
 					<fileset dir="${locations.test.customtags}">
 						<date datetime="${customtagfilter}" when="after" />
 					</fileset>
 				</copy>
+				
 				
 			</sequential>
 		</for>
