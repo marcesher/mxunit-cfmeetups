@@ -39,6 +39,9 @@
 		<cfreturn q>
 	</cffunction>
 	
+	
+	<!--- !!! START OUR TESTS !!! --->
+	
 	<cffunction name="permissionsWithSpacesAndOtherWeirdness" access="private">
 		<cfset var q = "">
 		<cf_querysim>
@@ -56,6 +59,20 @@
 	<!--- we'll override this one just so we don't hit the DB at all --->
 	<cffunction name="loadPermissionsForNoPermissionsResultsInEmptyStruct">
 		
+		<!--- 
+		injectMethod(
+			Receiver = The object receiving the overriding method,
+			Giver = The object supplying the overriding method,
+			functionName = The name of the method to be used as the override,
+			functionNameInReceiver = The method in the receiver to be overridden
+		)
+		
+		functionName from the Giver object will be used to 
+		override functionNameInReceiver from the receiving object
+		 --->
+		
+		<!--- in this case, this.zeroPermissions will be used to 
+		override user.getUserPermissionsQuery --->
 		<cfset injectMethod(user,this,"zeroPermissions","getUserPermissionsQuery")>
 		
 		<cfset user.loadPermissions()>
@@ -94,7 +111,8 @@
 				"getUserPermissionsQuery")>
 		<cfset user.loadPermissions()>
 		
-		<!--- doesn't this feel like the kind of thing we could pull out as a custom assertion and use in ALL of our tests? --->
+		<!--- doesn't this feel like the kind of thing we could 
+		pull out as a custom assertion and use in ALL of our tests? --->
 		<cfset assertEquals(q_weird.recordcount,ListLen(user.getPermissionsAsList()))>
 		<cfloop query="q_weird">
 			<cfset assertTrue(user.hasPermission(q_weird.PermissionName))>
@@ -102,6 +120,8 @@
 		
 	</cffunction>
 	
+	<!--- !!!! Example of using custom assertions in your test when it seems like
+	you're duplicating the same assertions over and over --->
 	<cffunction name="assertPermissionsMatchQuery" access="private" hint="custom assertion for testing permissions against the query that drove loadPermissions">
 		<cfargument name="queryFunctionName" required="true">
 		<cfargument name="user" required="true">
