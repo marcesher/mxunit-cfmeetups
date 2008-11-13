@@ -19,9 +19,10 @@ Installing the database
 	
 	
 2) MySQL
-	a) In CFAdministrator, create a new MySQL datasource named "UnitTest".
-	b) In MySQL Query Browser or DBVisualizer or whatever it is you use to interact with mysql, run the scripts in MySQL_CreateTables.sql
-	c) Open InsertData.cfm in a web browser. This will insert the data.
+	a) In MySQL Query Browser or DBVisualizer  or whatever it is you use to interact with mysql, create a new database named "UnitTest"
+	b) In CFAdministrator, create a new MySQL datasource named "UnitTest". Point to the new database you just created.
+	c) In your MySQL IDE, run the scripts in MySQL_CreateTables.sql
+	d) Open InsertData.cfm in a web browser. This will insert the data.
 	
 	
 VALIDATE:
