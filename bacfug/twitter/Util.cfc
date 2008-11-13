@@ -13,6 +13,10 @@
       return getProfileString(ini,"section","p");    
     }
     
+    function getIniPath(){
+    	return ini;
+    }
+    
     </cfscript>
 
 </cfcomponent>

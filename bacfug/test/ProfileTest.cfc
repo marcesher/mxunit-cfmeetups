@@ -18,6 +18,7 @@
     
    function setUp(){
      credentials = createObject("component","bacfug.twitter.Util");
+     debug(credentials.getIniPath());
    }
     
    function  tearDown(){
