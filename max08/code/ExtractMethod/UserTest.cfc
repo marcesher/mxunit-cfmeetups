@@ -91,7 +91,8 @@
 	</cffunction>
 	
 	
-	<!--- now, tell me: how the heck are you realistically going to test this? --->
+	<!--- now, tell me: how the heck are you realistically going to test this
+	if you have to hit the database?  --->
 	<cffunction name="reloadPermissionsClearsDeletedPermissions">
 		<cfset injectMethod(user,this,"eatPermissions","getUserPermissionsQuery")>
 		<cfset user.loadPermissions()>
