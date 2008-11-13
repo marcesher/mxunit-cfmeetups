@@ -72,7 +72,7 @@
  //-------------------------------------------------// 
   
   function setUp(){
-  	var un = ''; //set this to valid Twitter crentials
+  	var un = ''; //set this to valid Twitter credentials
   	var pwd = '';
     twitter = createObject("component","bacfug.twitter.CFTwitter").init(un,pwd);
   }
