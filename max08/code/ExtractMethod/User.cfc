@@ -17,7 +17,7 @@
 	
 	<cffunction name="loadPermissions" hint="queries database for all permissions for this user and loads into the permissions struct">
 		<cfset var permissions = getUserPermissionsQuery()>
-
+		<!--- for the  "reloadPermissionsClearsDeletedPermissions" test to pass, you're going to need to add something here!--->
 		<cfloop query="permissions">
 			<cfset addPermission(permissions.PermissionName)>
 		</cfloop>
