@@ -37,10 +37,8 @@
 		1|1|EatIceCream
 		</cf_querysim>
 		<cfreturn q>
-	</cffunction>
+	</cffunction>	
 	
-	
-	<!--- !!! START OUR TESTS !!! --->
 	
 	<cffunction name="permissionsWithSpacesAndOtherWeirdness" access="private">
 		<cfset var q = "">
@@ -55,6 +53,7 @@
 		<cfreturn q>
 	</cffunction>
 
+	<!--- !!! START OUR TESTS !!! --->
 	
 	<!--- we'll override this one just so we don't hit the DB at all --->
 	<cffunction name="loadPermissionsForNoPermissionsResultsInEmptyStruct">
