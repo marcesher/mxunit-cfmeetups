@@ -3,10 +3,12 @@
         
     this.twitterProps = createObject("component","Twitter");
     
+    
     function setTwitterProperties(propObj){
      this.twitterProps = propObj;
     }
-         
+       
+        
     function init(username,password){
       verifyCredentials(username,password);
       this.username = username;
@@ -14,8 +16,9 @@
       return this;
     }
     
-    function getFriends(){
     
+    function getFriends(){
+      //fail to do
     }
     
    function getMyTimeline(cnt){
@@ -37,30 +40,9 @@
      }
     }
     
-    
-    
-    
-    </cfscript>
+  </cfscript>
 
 
- <cffunction name="printMyTimeline" access="public">
-     <cfargument name="count" />
-	 <cfscript>
-	 var user = "";
-	 var text = "";
-	 var q = getMyTimeline(count);
-	</cfscript>
-	 <cfoutput query="q">
-	   <cfscript>
-	      user = listGetAt(q.title,1,":");
-	      text = replace(q.title,user, '<a href="http://twitter.com/#user#">#user#</a>');
-	    </cfscript>  
-	   <div align="left" style="padding:4px;border-top:1px ridge gray">  
-	   <img src="#listGetAt(q.linkhref,2)#" align="absmiddle"/>
-	    <span style=""position:relative;left:4">#text#</span>
-	   </div>
-	 </cfoutput>
-</cffunction> 
    
  <cffunction name="printFriendsTimeline" access="public">
    <cfargument name="count" />
