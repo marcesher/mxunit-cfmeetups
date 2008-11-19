@@ -6,15 +6,10 @@
 </style>
 
 
-<cfif url.tl eq "ftl">
   <h4 align="center">Friends Timeline
   <a href="untestable.cfm?tl=mtl">My Timeline</a></h4>
   <cfset tlUrl = "http://twitter.com/statuses/friends_timeline.atom?count=50" />
-<cfelse>
-  <h4 align="center">My Timeline
-  <a href="untestable.cfm?tl=ftl">Friends Timeline</a></h4>    
-  <cfset tlUrl = "http://twitter.com/statuses/user_timeline.atom?count=50" />
-</cfif>
+
 
 <cfhttp url="http://twitter.com/account/verify_credentials.rss" username="#user#" password="#pass#" />
 
@@ -23,11 +18,8 @@
  <cfabort />
 </cfif>
 
-
-
 <cfset getTimeline(tlUrl)>
  
-
 
 <cfset dest = "#getDirectoryFromPath(getCurrentTemplatePath())#/#createUUID()#.xml" />
 <cffile action="write" output="#cfhttp.filecontent#" file="#dest#" />
