@@ -6,8 +6,7 @@
 </style>
 
 
-  <h4 align="center">Friends Timeline
-  <a href="untestable.cfm?tl=mtl">My Timeline</a></h4>
+  <h4 align="center">Friends Timeline</h4>
   <cfset tlUrl = "http://twitter.com/statuses/friends_timeline.atom?count=50" />
 
 
