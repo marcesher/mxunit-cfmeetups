@@ -61,10 +61,6 @@
 		
 	</cffunction>
 	
-	<cffunction name="runCleanupMaintenanceShouldHitExpectedFilesAtMidnight">
-		<cfset fail("How would you test this? Hint.... think injectMethod() and getMidnight()")>
-	</cffunction>
-	
 	<cffunction name="runCleanupMaintenanceShouldNotFailOnFileDeleteErrors">
 		<cfset injectMethod(fsm,this,"spoofCleanupConfig","getCleanupConfig")>		
 		<cfset injectMethod(fsm,this,"bigSpoofDirectory","getDirectoryListing")>		
@@ -112,6 +108,12 @@
 		<cfset results = fsm.getCleanupConfig()>
 		<cfset assertTrue(results.recordcount GT 0,"Expected results from CleanupConfig table but got none")>
 	</cffunction>
+	
+	
+	<cffunction name="runCleanupMaintenanceShouldHitExpectedFilesAtMidnight">
+		<cfset fail("How would you test this? Hint.... think injectMethod() and getMidnight()")>
+	</cffunction>
+	
 	
 	<!--- ////  END TESTS --->
 	
