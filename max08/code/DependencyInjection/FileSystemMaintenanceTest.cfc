@@ -23,6 +23,10 @@
 	<cffunction name="runCleanupMaintenanceWithNoValidDirectoriesReturnsNoResults">
 		<cfset injectMethod(fsm,this,"spoofCleanupConfig","getCleanupConfig")>		
 		<cfset results = fsm.runCleanupMaintenance()>
+		
+		<cfset debug(results)>
+		
+		
 		<cfset assertEquals(0,ArrayLen(results.deletedfiles),"none of the spoof directories exist and therefore no files should be marked for deletion")>
 	</cffunction>  
 	  
