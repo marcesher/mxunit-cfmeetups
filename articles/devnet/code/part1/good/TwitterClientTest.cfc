@@ -13,8 +13,17 @@
       <cfset actual = twitter.verifyCredentials(variables.uname,variables.pw) />
       <cfset assertTrue(actual)>
     </cffunction>
+    
+    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailureException">
+      <cfset twitter = createObject("component","TwitterClient")>
+      <cftry>
+       <cfset twitter.verifyCredentials('bobo','the clown') />
+       <cfset fail('Should not get here.') />
+       <cfcatch type="TwitterAuthenticationFailure"></cfcatch>      
+      </cftry>
+    </cffunction>
 
-
+ <!--- 
 	<cffunction name="initShouldSetFeedFormat">
 		<cfset twitter = createObject("component","TwitterClient")>
 		<cfset twitter.init(uname,pw,"json")>
@@ -38,7 +47,7 @@
 		<cfset assertTrue(isArray(results), "Something other than an array was returned.") />
 		<cfset assertEquals(20, arrayLen(results), "Something other than 20 items were returned.") />
 	</cffunction>
- <!--- --->
+--->
 
 
 <!---

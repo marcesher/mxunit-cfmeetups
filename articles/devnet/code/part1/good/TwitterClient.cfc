@@ -25,22 +25,23 @@
 		<cfreturn response>
 	</cffunction>
 
-<!--- 
-    <cffunction name="verifyCredentials" hint="Simply tests that the credentials passed in are valid.">
-		<cfargument name="uname">
-        <cfargument name="pwd">
-        <cfset var response = {} >
-		<cfhttp url="#twitterUrl#/account/verify_credentials.json" method="get"
-				username="#uname#"
-				password="#pwd#">
-		<cfset response = deserializeJSON(cfhttp.FileContent)>
-		<cfif not structKeyExists(response,'id')>
-		  <cfthrow type="TwitterAuthenticationFailure"
-		  		   message="Could not log into Twitter with the specified credentials"
-		  		   detail="Tried username:#variables.instance.username# and password #variables.instance.password#">
-		</cfif>
-		<cfreturn true />
-	</cffunction> --->
+ 
+<cffunction name="verifyCredentials" hint="Tests that the credentials are valid.">
+  <cfargument name="uname" type="string">
+  <cfargument name="pwd" type="string">
+  <cfset var response = {} >
+  <cfhttp url="#twitterUrl#/account/verify_credentials.json" method="get"
+          username="#arguments.uname#"
+	    password="#arguments.pwd#">
+    <cfset response = deserializeJSON(cfhttp.FileContent)>
+    <cfif not structKeyExists(response,'id')>
+	 <cfthrow type="TwitterAuthenticationFailure"
+		    message="Could not log into Twitter."
+		    detail="Tried user:#arguments.uname# pwd:#arguments.pwd#">
+	</cfif>
+	<cfreturn true />
+  </cffunction>
+<!--- --->
 
 	<!--- <cffunction name="verifyCredentials" hint="Simply tests that the credentials passed in are valid.">
 		<cfset var response = {} >
