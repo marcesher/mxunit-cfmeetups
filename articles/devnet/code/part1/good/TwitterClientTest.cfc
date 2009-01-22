@@ -1,59 +1,50 @@
 <cfcomponent extends="mxunit.framework.TestCase">
 
-	<cfset setCredentials()>
-
-	<cffunction name="twitterShouldBeAlive">
-       <cfset twitter = createObject("component","TwitterClient")>
-	   <cfset assertEquals('ok',twitter.ping())> 
-	</cffunction>
+   <cffunction name="twitterShouldBeAlive">
+     <cfset var twitter = createObject("component","TwitterClient")>
+	 <cfset assertEquals('ok',twitter.ping())> 
+   </cffunction>
     
     
 	<cffunction name="theTwitterAccountShouldBeValid">
-      <cfset twitter = createObject("component","TwitterClient")>
-      <cfset actual = twitter.verifyCredentials(variables.uname,variables.pw) />
+      <cfset var twitter = createObject("component","TwitterClient").init(variables.uname,variables.pw)>
+      <cfset var actual = twitter.verifyCredentials() />
       <cfset assertTrue(actual)>
     </cffunction>
     
-    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailureException">
-      <cfset twitter = createObject("component","TwitterClient")>
+    
+    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure">
+      <cfset var twitter = createObject("component","TwitterClient").init('Kwai Chang Caine','Grasshopper')>
       <cftry>
-       <cfset twitter.verifyCredentials('bobo','the clown') />
+       <cfset twitter.verifyCredentials() />
        <cfset fail('Should not get here.') />
        <cfcatch type="TwitterAuthenticationFailure"></cfcatch>      
       </cftry>
     </cffunction>
+    
+    
+   <cffunction name="twitterFriendsShouldReturn20Items">
+	 <cfset var twitter = createObject("component","TwitterClient").init(variables.uname,variables.pw)>
+	 <cfset var results = twitter.friendsTimeline()>
+	 <cfset debug(results)>
+	 <cfset assertEquals(20, arrayLen(results), "Something other than 20 items were returned.") />
+   </cffunction>
+   
+   
+   <cffunction name="initShouldSetCredentials">
+     <cfset var twitter = createObject("component","TwitterClient")>
+     <cfset twitter.init('Master Po', 'gimme my walking stick')>
+     <cfset assertEquals('Master Po', twitter.getUserName(), 'Username was not set') >
+     <cfset assertEquals('gimme my walking stick', twitter.getPassword(), 'Password was not set') >
+   </cffunction>
 
- <!--- 
-	<cffunction name="initShouldSetFeedFormat">
-		<cfset twitter = createObject("component","TwitterClient")>
-		<cfset twitter.init(uname,pw,"json")>
-		<cfset assertEquals(twitter.getFormat(),'json') />
-	</cffunction>
 
-	<cffunction name="initShouldSetCredentials">
-	  <cfset twitter = createObject("component","TwitterClient")>
-		<cfset twitter.init(uname,pw,"rss")>
-		<cfset assertEquals("rss",twitter.getFormat())>
-		<cfset assertEquals(uname,twitter.getUsername())>
-		<cfset assertEquals(pw,twitter.getPassword())>
-	</cffunction>
-
-
-	<cffunction name="twitterFriendsShouldReturn20Items">
-		<cfset twitter = createObject("component","TwitterClient")>
-		<cfset twitter.init(uname,pw,"json")>
-		<cfset results = twitter.friendsTimeline()>
-		<!---<cfset debug(results)> --->
-		<cfset assertTrue(isArray(results), "Something other than an array was returned.") />
-		<cfset assertEquals(20, arrayLen(results), "Something other than 20 items were returned.") />
-	</cffunction>
---->
 
 
 <!---
-  Private utility method. 
+  Private utility method.  Set up a credentials.txt file with one line: username,password
  --->
-
+    <cfset setCredentials()>
 	<cffunction name="setCredentials" access="private">
 		<cfset var contents = "">
 		<cfset var filepath = "#getDirectoryFromPath(getCurrentTemplatePath())#/credentials.txt">
