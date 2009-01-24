@@ -2,7 +2,7 @@
 
    <cffunction name="twitterShouldBeAlive">
      <cfset var twitter = createObject("component","TwitterClient")>
-	 <cfset assertEquals('ok',twitter.ping())>
+	   <cfset assertEquals('ok',twitter.ping())>
    </cffunction>
 
 
@@ -43,7 +43,8 @@
 
 <!---
   Private utility method.  Set up a credentials.txt file with one line: username,password
- --->
+  This is called once when the component is created.
+--->
     <cfset setCredentials()>
 	<cffunction name="setCredentials" access="private">
 		<cfset var contents = "">

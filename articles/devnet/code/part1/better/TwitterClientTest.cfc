@@ -1,50 +1,61 @@
+<!---
+ This demonstrates some refactoring of the same component in the
+ "good" directory. It is functionally identical, but has a better
+ design and uses setUp to initialize the TwitterClient instance
+ rather than writing it out in every test. Either way, a new instance
+ if TwitterClient is created for every test. This is done so that
+ we can control the state of the TwitterClient at each test run.
+
+ --->
+
 <cfcomponent extends="mxunit.framework.TestCase">
 
-	<cfset setCredentials()>
-
-
-	<cffunction name="twitterShouldBeAlive">
-        <cfset twitter = createObject("component","TwitterClient")>
-		<cfset assertEquals('"ok"',twitter.ping())>
+  <cffunction name="setup">
+	 <cfset twitter = createObject("component","TwitterClient").init(variables.uname,variables.pw)>
 	</cffunction>
 
-	<cffunction name="theTwitterAccountShouldBeValid" returntype="void" access="public">
-	  <cfset twitter = createObject("component","TwitterClient")>
-	  <cfset twitter.init(uname,pw,"json")>
-	  <cfset actual = twitter.verifyCredentials() />
+   <cffunction name="twitterShouldBeAlive">
+	  <cfset assertEquals('ok',twitter.ping())>
+   </cffunction>
+
+
+	<cffunction name="theTwitterAccountShouldBeValid">
+      <cfset var actual = twitter.verifyCredentials() />
       <cfset assertTrue(actual)>
-	</cffunction>
+    </cffunction>
 
 
-	<cffunction name="initShouldSetFeedFormat" returntype="void" access="public">
-		<cfset twitter = createObject("component","TwitterClient")>
-		<cfset twitter.init(uname,pw,"json")>
-		<cfset assertEquals(twitter.getFormat(),'json') />
-	</cffunction>
-
-	<cffunction name="initShouldSetCredentials" returntype="void">
-	  <cfset twitter = createObject("component","TwitterClient")>
-      <cfset twitter.init(uname,pw,"rss")>
-	  <cfset assertEquals(uname,twitter.getUsername())>
-	  <cfset assertEquals(pw,twitter.getPassword())>
-	</cffunction>
+    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure">
+      <cfset twitter.init('Kwai Chang Caine','Grasshopper')>
+      <cftry>
+       <cfset twitter.verifyCredentials() />
+       <cfset fail('Should not get here.') />
+       <cfcatch type="TwitterAuthenticationFailure"></cfcatch>
+      </cftry>
+    </cffunction>
 
 
-	<cffunction name="twitterFriendsShouldReturn20Items">
-		<cfset twitter = createObject("component","TwitterClient")>
-		<cfset twitter.init(uname,pw,"json")>
-		<cfset results = twitter.friendsTimeline()>
-		<!---<cfset debug(results)> --->
-		<cfset assertTrue(isArray(results), "Something other than an array was returned.") />
-		<cfset assertEquals(20, arrayLen(results), "Something other than 20 items were returned.") />
-	</cffunction>
+   <cffunction name="twitterFriendsTimelineShouldReturn20Items">
+	   <cfset var results = twitter.friendsTimeline()>
+	   <cfset debug(results)>
+	   <cfset assertEquals(20, arrayLen(results), "Something other than 20 items were returned.") />
+   </cffunction>
+
+
+   <cffunction name="initShouldSetCredentials">
+     <cfset twitter.init('Master Po', 'gimme my walking stick, bug boy.')>
+     <cfset assertEquals('Master Po', twitter.getUserName(), 'Username was not set') >
+     <cfset assertEquals('gimme my walking stick, bug boy.', twitter.getPassword(), 'Password was not set') >
+   </cffunction>
+
 
 
 
 <!---
-  Private utility method.
- --->
-
+  Private utility method.  Set up a credentials.txt file with one line: username,password
+  setCredentials() is called once when the component is created.
+--->
+  <cfset setCredentials()>
 	<cffunction name="setCredentials" access="private">
 		<cfset var contents = "">
 		<cfset var filepath = "#getDirectoryFromPath(getCurrentTemplatePath())#/credentials.txt">
