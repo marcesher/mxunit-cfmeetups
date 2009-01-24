@@ -2,35 +2,35 @@
 
    <cffunction name="twitterShouldBeAlive">
      <cfset var twitter = createObject("component","TwitterClient")>
-	 <cfset assertEquals('ok',twitter.ping())> 
+	 <cfset assertEquals('ok',twitter.ping())>
    </cffunction>
-    
-    
+
+
 	<cffunction name="theTwitterAccountShouldBeValid">
       <cfset var twitter = createObject("component","TwitterClient").init(variables.uname,variables.pw)>
       <cfset var actual = twitter.verifyCredentials() />
       <cfset assertTrue(actual)>
     </cffunction>
-    
-    
+
+
     <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure">
       <cfset var twitter = createObject("component","TwitterClient").init('Kwai Chang Caine','Grasshopper')>
       <cftry>
        <cfset twitter.verifyCredentials() />
        <cfset fail('Should not get here.') />
-       <cfcatch type="TwitterAuthenticationFailure"></cfcatch>      
+       <cfcatch type="TwitterAuthenticationFailure"></cfcatch>
       </cftry>
     </cffunction>
-    
-    
-   <cffunction name="twitterFriendsShouldReturn20Items">
+
+
+   <cffunction name="twitterFriendsTimelineShouldReturn20Items">
 	 <cfset var twitter = createObject("component","TwitterClient").init(variables.uname,variables.pw)>
 	 <cfset var results = twitter.friendsTimeline()>
 	 <cfset debug(results)>
 	 <cfset assertEquals(20, arrayLen(results), "Something other than 20 items were returned.") />
    </cffunction>
-   
-   
+
+
    <cffunction name="initShouldSetCredentials">
      <cfset var twitter = createObject("component","TwitterClient")>
      <cfset twitter.init('Master Po', 'gimme my walking stick')>

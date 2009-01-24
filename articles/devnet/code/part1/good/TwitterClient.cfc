@@ -20,10 +20,10 @@
 	<cfreturn response>
 </cffunction>
 
- 
+
 <cffunction name="verifyCredentials" hint="Tests that the credentials are valid.">
-  <cfset var response = {} >
-  <cfhttp url="http://www.twitter.com/account/verify_credentials.json" 
+	  <cfset var response = {} >
+  <cfhttp url="http://www.twitter.com/account/verify_credentials.json"
           method="get"
           username="#getUserName()#"
           password="#getPassword()#">
@@ -38,9 +38,9 @@
 
 <cffunction name="friendsTimeline" hint="returns the authenticated user's friends timeline">
   <cfset var response = {} >
-  <cfhttp url="http://www.twitter.com/statuses/friends_timeline.json" 
-          method="get" 
-          username="#getUserName()#" 
+  <cfhttp url="http://www.twitter.com/statuses/friends_timeline.json"
+          method="get"
+          username="#getUserName()#"
           password="#getPassword()#">
   <cfset response = deserializeJSON(cfhttp.FileContent)>
   <cfreturn response>
