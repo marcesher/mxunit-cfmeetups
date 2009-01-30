@@ -48,13 +48,28 @@
  </cffunction>
 
 <cffunction name="friendsTimeline" hint="returns the authenticated user's friends timeline">
-  <cfset var response = {} >
-  <cfhttp url="#getTwitterUrl()#/statuses/friends_timeline.#getFormat()#"
-          method="get"
-          username="#getUserName()#"
-          password="#getPassword()#">
-  <cfset response = deserializeJSON(cfhttp.FileContent)>
-  <cfreturn response>
+  <cfreturn callTwitter(location="statuses/friends_timeline")>
+</cffunction>
+
+<cffunction name="callTwitter" access="private" returntype="array">
+	<cfargument name="location" type="string" required="true" hint="the twitter api location, such as 'statuses/friends_timeline'"/>
+	<cfargument name="apiArgs" type="struct" required="false" hint="any args to be passed to twitter" default="#StructNew()#"/>
+	<cfset var response = {} >
+	<cfset var urlString = "?">
+	<cfset var key = "">
+	<cfif not StructIsEmpty(arguments.apiArgs)>
+		<cfloop collection="#apiArgs#" item="key">
+			<cfset urlString = listAppend(urlString,"#key#=#apiArgs[key]#","&")>
+		</cfloop>
+	</cfif>	
+	
+	<cfhttp url="#getTwitterUrl()#/#location#.#getFormat()##urlString#"
+	        method="get"
+	        username="#getUserName()#"
+	        password="#getPassword()#">
+	<cfset response = deserializeJSON(cfhttp.FileContent)>
+	
+	<cfreturn response>
 </cffunction>
 
 <!--- Accessor methods --->

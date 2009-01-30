@@ -12,6 +12,7 @@
 
   <cffunction name="setup">
 	 <cfset twitter = createObject("component","TwitterClient").init(variables.uname,variables.pw)>
+	 <cfset request.debug = debug>
 	</cffunction>
 
    <cffunction name="twitterShouldBeAlive">
