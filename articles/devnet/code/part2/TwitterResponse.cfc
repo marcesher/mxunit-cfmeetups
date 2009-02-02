@@ -36,5 +36,13 @@
 	<cffunction name="getURL" access="public" hint="returns the url for the http call to Twitter" returntype="string">
 		<cfreturn get("twitterURL")>
 	</cffunction>
+	
+	<cffunction name="setRawResponseData" access="package" hint="sets the entire CFHTTP struct returned by the Twitter call">
+		<cfargument name="twitterURL" required="true" hint="the cfhttp struct" type="struct">
+		<cfreturn set("rawResponseData",twitterURL)>
+	</cffunction>
+	<cffunction name="getRawResponseData" access="public" hint="gets the entire CFHTTP struct returned by the Twitter call" returntype="struct">
+		<cfreturn get("rawResponseData")>
+	</cffunction>
 
 </cfcomponent>

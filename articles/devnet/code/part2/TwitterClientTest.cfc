@@ -24,13 +24,14 @@
 
 	<cffunction name="theTwitterAccountShouldBeValid">
 	  <cfset injectMethod(twitter,this,"verifyCredentialsHttpMock","doHTTPCall")>
-      <cfset assertTrue( twitter.verifyCredentials(), "Credentials should have validated but did not")>
+	  <cfset result = twitter.verifyCredentials()>
+	  <cfset debug(result)>
+      <cfset assertTrue( result, "Credentials should have validated but did not")>
     </cffunction>
 
 
     <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure">
 	  <cfset injectMethod(twitter,this,"invalidCredentialsHTTPMock","doHTTPCall")>
-      <cfset twitter.init('Kwai Chang Caine','Grasshopper')>
       <cftry>
        <cfset twitter.verifyCredentials() />
        <cfset fail('Should not get here. verifyCredentials() should have thrown a TwitterAuthenticationFailure but did not') />
@@ -53,6 +54,16 @@
 	   <cfset assertEquals("statuses/friends_timeline", twitterresponse.getURL())>
    </cffunction>
 
+	<cffunction name="whenTwitterIsUnresponsiveRawResponseDataShouldBeAvailable">
+		<cfset injectMethod(twitter,this,"TwitterIsDownMock","doHTTPCall")>
+		<cfset twitterresponse = twitter.friendsTimeline()>
+		<cfset rawdata = twitterresponse.getRawResponseData()>
+		<cfset assertTrue( StructKeyExists(rawdata,"StatusCode") ,"StatusCode should exist in raw data" )>
+		<cfset assertTrue( StructKeyExists(rawdata,"ErrorDetail") ,"ErrorDetail should exist in raw data" )>
+		<cfset assertTrue( StructKeyExists(rawdata,"FileContent") ,"FileContent should exist in raw data" )>
+		<cfset assertEquals("",twitterresponse.getDeserializedData(),"When an error occurs, there should be no deserialized data")>
+	</cffunction>
+
 
 <!---
   Private utility method.  Set up a credentials.txt file with one line: username,password
@@ -73,15 +84,25 @@
 	
 	
 	<!--- mocks! --->
-	<cffunction name="verifyCredentialsHttpMock" access="private">
-		<cfreturn '{"id":"1"}'>
+	<cffunction name="verifyCredentialsHttpMock" access="private" returntype="struct">
+		<cfset var http = StructNew()>
+		<cfset http.FileContent = '{"id":"1"}'>
+		<cfreturn http>		
 	</cffunction>
 	<cffunction name="invalidCredentialsHTTPMock" access="private">
-		<cfreturn '{"error":"could not authenticate you"}'>
+		<cfset var http = StructNew()>
+		<cfset http.FileContent = '{"error":"could not authenticate you"}'>
+		<cfreturn http>
 	</cffunction>
 	<cffunction name="friendsTimelineHttpMock" access="private">
 		<cfset var filepath = getDirectoryFromPath(getCurrentTemplatePath()) & "/friends_timeline.json">
-		<cfreturn fileRead(filePath)>
+		<cfset var filecontent = fileRead(filePath)>
+		<cfset var http = {FileContent="#filecontent#"}>
+		<cfreturn http>		
+	</cffunction>
+	<cffunction name="TwitterIsDownMock" access="private">
+		<cfset var cfhttp = {filecontent="connection failure",statuscode="Connection Failure. Status code unavailable.", errordetail="FailWhale!"}>
+		<cfreturn cfhttp>
 	</cffunction>
 
 </cfcomponent>

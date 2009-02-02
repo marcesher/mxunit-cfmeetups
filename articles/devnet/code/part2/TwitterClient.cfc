@@ -52,12 +52,13 @@
 	<cfargument name="requestMethod" type="string" required="false" hint="the http request method. use 'get' or 'post'" default="get">
 	<cfargument name="apiArgs" type="struct" required="false" hint="any args to be passed to twitter" default="#StructNew()#"/>
 	<cfset var urlString = structToQueryString(apiArgs=arguments.apiArgs)>
-	<cfset var httpContent = doHttpCall(location=arguments.location,urlString=urlString)>
-	<cfset var response = deserializeResponse(httpContent) >
+	<cfset var httpResponse = doHttpCall(location=arguments.location,requestMethod=arguments.requestMethod,urlString=urlString)>
+	<cfset var response = deserializeResponse(httpResponse.FileContent) >
 	<cfreturn createObject("component","TwitterResponse")
 				.setDeserializedData(response)
 				.setHttpRequestMethod(arguments.requestMethod)
-				.setURL(location)>
+				.setURL(arguments.location)
+				.setRawResponseData(httpResponse)>
 </cffunction>
 
 <cffunction name="structToQueryString" access="private" hint="converts the struct of api args to a query string" returntype="string">
@@ -72,7 +73,7 @@
 	<cfreturn urlString>
 </cffunction>
 
-<cffunction name="doHttpCall" access="private" hint="wrapper around the http call" returntype="any">
+<cffunction name="doHttpCall" access="private" hint="wrapper around the http call" returntype="struct">
 	<cfargument name="location" type="string" required="true" hint="the twitter api location, such as 'statuses/friends_timeline'"/>
 	<cfargument name="requestMethod" type="string" required="false" hint="the http request method. use 'get' or 'post'" default="get">
 	<cfargument name="urlString" type="string" required="false" hint="the query string to pass" default="">
@@ -80,13 +81,17 @@
 	        method="#arguments.requestMethod#"
 	        username="#getUserName()#"
 	        password="#getPassword()#">
-	  <cfreturn cfhttp.FileContent>
+	  <cfreturn cfhttp>
 </cffunction>
 
 <cffunction name="deserializeResponse" access="private" hint="deserializes the http response into CFML data">
 	<cfargument name="httpContent" type="string" required="true" hint="the http content to be deserialized">
 	<cfif getFormat() eq "JSON">
-		<cfreturn deserializeJSON(arguments.httpContent)>
+		<cfif isJSON(arguments.httpContent)>
+			<cfreturn deserializeJSON(arguments.httpContent)>
+		<cfelse>
+			<cfreturn "">	
+		</cfif>
 	<cfelse>
 		<cfthrow message="Currently there is no deserializer for #getFormat()#">
 	</cfif>
