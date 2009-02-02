@@ -33,28 +33,35 @@
 
 
 <cffunction name="verifyCredentials" hint="Tests that the credentials are valid.">
-	  <cfset var response = {} >
-  <cfhttp url="#getTwitterUrl()#/account/verify_credentials.#getFormat()#"
-          method="get"
-          username="#getUserName()#"
-          password="#getPassword()#">
-    <cfset response = deserializeJSON(cfhttp.FileContent)>
-    <cfif not structKeyExists(response,'id')>
-	    <cfthrow type="TwitterAuthenticationFailure"
-		         message="Could not log into Twitter."
-		         detail="Tried user:#getUserName()# pwd:#getPassword()#">
-    </cfif>
-  <cfreturn true />
- </cffunction>
+	<cfset var response = callTwitter(location="account/verify_credentials") >
+	
+	<cfif not structKeyExists(response.getDeserializedData(),'id')>
+		<cfthrow type="TwitterAuthenticationFailure"
+			message="Could not log into Twitter."
+			detail="Tried user:#getUserName()# pwd:#getPassword()#">
+	</cfif>
+	<cfreturn true />
+</cffunction>
 
 <cffunction name="friendsTimeline" hint="returns the authenticated user's friends timeline">
   <cfreturn callTwitter(location="statuses/friends_timeline")>
 </cffunction>
 
-<cffunction name="callTwitter" access="private" returntype="array">
+<cffunction name="callTwitter" access="private" returntype="TwitterResponse">
 	<cfargument name="location" type="string" required="true" hint="the twitter api location, such as 'statuses/friends_timeline'"/>
+	<cfargument name="requestMethod" type="string" required="false" hint="the http request method. use 'get' or 'post'" default="get">
 	<cfargument name="apiArgs" type="struct" required="false" hint="any args to be passed to twitter" default="#StructNew()#"/>
-	<cfset var response = {} >
+	<cfset var urlString = structToQueryString(apiArgs=arguments.apiArgs)>
+	<cfset var httpContent = doHttpCall(location=arguments.location,urlString=urlString)>
+	<cfset var response = deserializeResponse(httpContent) >
+	<cfreturn createObject("component","TwitterResponse")
+				.setDeserializedData(response)
+				.setHttpRequestMethod(arguments.requestMethod)
+				.setURL(location)>
+</cffunction>
+
+<cffunction name="structToQueryString" access="private" hint="converts the struct of api args to a query string" returntype="string">
+	<cfargument name="apiArgs" type="struct" required="false" hint="any args to be passed to twitter"/>
 	<cfset var urlString = "?">
 	<cfset var key = "">
 	<cfif not StructIsEmpty(arguments.apiArgs)>
@@ -62,14 +69,27 @@
 			<cfset urlString = listAppend(urlString,"#key#=#apiArgs[key]#","&")>
 		</cfloop>
 	</cfif>	
-	
+	<cfreturn urlString>
+</cffunction>
+
+<cffunction name="doHttpCall" access="private" hint="wrapper around the http call" returntype="any">
+	<cfargument name="location" type="string" required="true" hint="the twitter api location, such as 'statuses/friends_timeline'"/>
+	<cfargument name="requestMethod" type="string" required="false" hint="the http request method. use 'get' or 'post'" default="get">
+	<cfargument name="urlString" type="string" required="false" hint="the query string to pass" default="">
 	<cfhttp url="#getTwitterUrl()#/#location#.#getFormat()##urlString#"
-	        method="get"
+	        method="#arguments.requestMethod#"
 	        username="#getUserName()#"
 	        password="#getPassword()#">
-	<cfset response = deserializeJSON(cfhttp.FileContent)>
-	
-	<cfreturn response>
+	  <cfreturn cfhttp.FileContent>
+</cffunction>
+
+<cffunction name="deserializeResponse" access="private" hint="deserializes the http response into CFML data">
+	<cfargument name="httpContent" type="string" required="true" hint="the http content to be deserialized">
+	<cfif getFormat() eq "JSON">
+		<cfreturn deserializeJSON(arguments.httpContent)>
+	<cfelse>
+		<cfthrow message="Currently there is no deserializer for #getFormat()#">
+	</cfif>
 </cffunction>
 
 <!--- Accessor methods --->
