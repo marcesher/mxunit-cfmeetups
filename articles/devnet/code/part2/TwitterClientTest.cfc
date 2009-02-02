@@ -1,18 +1,9 @@
-<!---
- This demonstrates some refactoring of the same component in the
- "good" directory. It is functionally identical, but has a better
- design and uses setUp to initialize the TwitterClient instance
- rather than writing it out in every test. Either way, a new instance
- if TwitterClient is created for every test. This is done so that
- we can control the state of the TwitterClient at each test run.
-
- --->
 
 <cfcomponent extends="mxunit.framework.TestCase">
 	
 	<cfset setCredentials()>
 
-  <cffunction name="setup">
+	<cffunction name="setup">
 	 <cfset twitter = createObject("component","TwitterClient").init(variables.uname,variables.pw)>
 	 <cfset request.debug = debug>
 	</cffunction>

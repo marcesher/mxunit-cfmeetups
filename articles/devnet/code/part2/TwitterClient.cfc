@@ -1,9 +1,3 @@
-<!---
- This demonstrates some refactoring of the same component in the
- "good" directory. It is functionally identical, but has a slightly
- better design.
-
- --->
 
 <cfcomponent>
 	<cfset variables.instance = StructNew()>
