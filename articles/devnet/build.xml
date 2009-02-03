@@ -1,0 +1,10 @@
+<project name="DevnetTDDArticles" basedir="." default="package">
+
+	<target name="package">
+		<delete file="devnet_TDD.zip"/>
+		<zip file="devnet_TDD.zip">
+			<zipfileset dir="." excludes="Di**.doc,build.xml,**/credentials.txt,**/friends_timeline.json,**.zip" casesensitive="false"/>
+		</zip>
+	</target>
+	
+</project>
