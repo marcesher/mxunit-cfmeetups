@@ -71,11 +71,13 @@
 	<cfargument name="location" type="string" required="true" hint="the twitter api location, such as 'statuses/friends_timeline'"/>
 	<cfargument name="requestMethod" type="string" required="false" hint="the http request method. use 'get' or 'post'" default="get">
 	<cfargument name="urlString" type="string" required="false" hint="the query string to pass" default="">
+	<cfset var httpresponse = "">
 	<cfhttp url="#getTwitterUrl()#/#location#.#getFormat()##urlString#"
 	        method="#arguments.requestMethod#"
 	        username="#getUserName()#"
-	        password="#getPassword()#">
-	  <cfreturn cfhttp>
+	        password="#getPassword()#"
+	        result="httpresponse">
+	  <cfreturn httpresponse>
 </cffunction>
 
 <cffunction name="deserializeResponse" access="private" hint="deserializes the http response into CFML data">

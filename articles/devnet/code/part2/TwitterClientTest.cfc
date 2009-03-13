@@ -40,6 +40,7 @@
    <cffunction name="twitterFriendsTimelineShouldReturn20Items">
 	   <cfset injectMethod(twitter,this,"friendsTimelineHttpMock","doHTTPCall")>
 	   <cfset twitterresponse = twitter.friendsTimeline()>
+	   <cfset debug(twitterresponse.getDeserializedData())>
 	   <cfset assertEquals(20, arrayLen(twitterresponse.getDeserializedData()), "Something other than 20 items were returned.") />
 	   <cfset assertEquals("get",twitterresponse.getHttpRequestMethod())>
 	   <cfset assertEquals("statuses/friends_timeline", twitterresponse.getURL())>
