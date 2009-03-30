@@ -1,30 +1,28 @@
 <cfcomponent>
 
 	<cffunction name="runCleanupMaintenance" hint="cleans up old files" access="public">
-		<cfset var cleanupConfig = getCleanupConfig()>
+		<cfargument name="directory" type="string" required="true">
+		<cfargument name="StaleInMinutes" type="numeric" required="true" hint="the number of minutes in the past when a file is considered too old">
+		<cfargument name="emailRecipients" type="string" required="true">
 		<cfset var startTime = getTime()>		
 		<cfset var targetTime = "">
 		<cfset var filesToDelete = "">
 		<cfset var fullFilePath = "">
-		<cfset var results = StructNew()>
+		<cfset var results = {errors=ArrayNew(1),deletedFiles=ArrayNew(1)}>
 		
-		
-		<cfloop query="cleanupConfig">
-			<cfset results[cleanupConfig.CleanupID] = {errors=ArrayNew(1),deletedFiles=ArrayNew(1)}>
-			<cfset targetTime = DateAdd("n",-#cleanupConfig.StaleInMinutes#,startTime)>
-			<cfset filesToDelete = getFilesOlderThan(cleanupConfig.DirectoryPath,targetTime)>
-			<cfloop query="filesToDelete">
-				<cftry>
-					<cfset fullFilePath = filesToDelete.Directory & filesToDelete.Name>
-					<cfset deleteFile(fullFilePath)>
-					<cfset arrayAppend(results[cleanupConfig.CleanupID].deletedfiles,fullFilePath)>
-				<cfcatch>
-					<cfset ArrayAppend(results[cleanupConfig.CleanupID].errors,cfcatch)>
-				</cfcatch>
-				</cftry>
-				<cfset sendNotifications(deletedFiles=results[cleanupConfig.CleanupID].deletedfiles,errors=results[cleanupConfig.CleanupID].errors,recipients=cleanupConfig.EmailRecipients)>
-			</cfloop>
+		<cfset targetTime = DateAdd("n",-#StaleInMinutes#,startTime)>
+		<cfset filesToDelete = getFilesOlderThan(Directory,targetTime)>
+		<cfloop query="filesToDelete">
+			<cftry>
+				<cfset fullFilePath = filesToDelete.Directory & filesToDelete.Name>
+				<cfset deleteFile(fullFilePath)>
+				<cfset arrayAppend(results.deletedfiles,fullFilePath)>
+			<cfcatch>
+				<cfset ArrayAppend(results.errors,cfcatch)>
+			</cfcatch>
+			</cftry>
 		</cfloop>
+		<cfset sendNotifications(deletedFiles=results.deletedfiles,errors=results.errors,recipients=EmailRecipients)>
 		
 		<cfreturn results>
 	</cffunction>
@@ -33,18 +31,6 @@
 	
 	<!--- pull these simple operations into separate functions because 
 	then they're easier to override in unit tests --->
-	
-	<cffunction name="getCleanupConfig" hint="gets the configured directories for cleanup from the database" returntype="query" access="private">
-		<cfset var configurations = "">
-		
-		<cfquery name="configurations" datasource="UnitTest">
-		select CleanupID,DirectoryPath,StaleInMinutes,EmailRecipients
-		from CleanupConfig
-		</cfquery>
-		
-		<cfreturn configurations>
-	</cffunction>	
-	
 	
 	<cffunction name="getFilesOlderThan" access="private" returntype="query" hint="gets all files to be deleted for a given directory and given target time">
 		<cfargument name="directory" type="string" required="true" hint="the directory to search">
@@ -82,5 +68,12 @@
 		<cfargument name="deletedFiles" type="array" required="true"/>
 		<cfargument name="errors" type="array" required="true"/>
 		<cfargument name="recipients" type="string" required="true"/>
+		<cfmail from="directorycleaner@myco.com" to="#recipients#" subject="File System Cleaner Results: #now()#" type="html">
+		<p>#ArrayLen(deletedFiles)#	files deleted.</p>
+		
+		these errors were encountered:
+		
+		<cfdump var="#errors#">
+		</cfmail>
 	</cffunction>
 </cfcomponent>

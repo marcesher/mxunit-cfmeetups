@@ -8,7 +8,9 @@
 		
 		<cffile action="upload" nameconflict="overwrite" filefield="#UploadFormField#" result="uploadResult" destination="somedir">
 		
-		<cfset optimizer.optimize(uploadResult.ServerFile)>
+		<cfif listLast(uploadResult.ServerFile,".") eq "pdf">
+			<cfset optimizer.optimize(uploadResult.ServerFile)>
+		</cfif>
 		<cfset thumbnailgenerator.generateThumbnails(uploadResult.ServerFile)>
 		<cfreturn uploadResult>
 	</cffunction>

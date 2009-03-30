@@ -23,7 +23,9 @@
 	
 	<cffunction name="handleUpload" output="false" access="public" returntype="any" hint="">
 		<cfargument name="fileToProcess" type="string" required="true"/>
-		<cfset optimizer.optimize(fileToProcess)>
+		<cfif listLast(uploadResult.ServerFile,".") eq "pdf">
+			<cfset optimizer.optimize(uploadResult.ServerFile)>
+		</cfif>
 		<cfset thumbnailgenerator.generateThumbnails(fileToProcess)>
 	</cffunction>
 	
