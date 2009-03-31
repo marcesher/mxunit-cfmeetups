@@ -13,13 +13,9 @@
     </cffunction>
 
 
-    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure">
+    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure" mxunit:expectedException="TwitterAuthenticationFailure">
       <cfset var twitter = createObject("component","TwitterClient").init('Kwai Chang Caine','Grasshopper')>
-      <cftry>
        <cfset twitter.verifyCredentials() />
-       <cfset fail('Should not get here.') />
-       <cfcatch type="TwitterAuthenticationFailure"></cfcatch>
-      </cftry>
     </cffunction>
 
 

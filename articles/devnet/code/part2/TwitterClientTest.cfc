@@ -21,13 +21,9 @@
     </cffunction>
 
 
-    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure">
+    <cffunction name="invalidCredentialsShouldThrowTwitterAuthenticationFailure" mxunit:expectedException="TwitterAuthenticationFailure">
 	  <cfset injectMethod(twitter,this,"invalidCredentialsHTTPMock","doHTTPCall")>
-      <cftry>
-       <cfset twitter.verifyCredentials() />
-       <cfset fail('Should not get here. verifyCredentials() should have thrown a TwitterAuthenticationFailure but did not') />
-       <cfcatch type="TwitterAuthenticationFailure"></cfcatch>
-      </cftry>
+      <cfset twitter.verifyCredentials() />
     </cffunction>
 	
 	<cffunction name="initShouldSetCredentials">
