@@ -1,0 +1,11 @@
+<project name="EsherCFObjective2009" basedir="." default="package">
+
+	<target name="package">
+		<delete file="esher_cfobjective_2009.zip"/>
+		<zip file="esher_cfobjective_2009.zip">
+			<zipfileset dir="." includes="code/**,ppt/esher*.ppt" casesensitive="false"/>
+		</zip>
+	</target>
+
+	
+</project>

@@ -33,10 +33,8 @@
 		</cfloop>
 		
 		<cfmail from="directorycleaner@myco.com" to="#emailRecipients#" subject="File System Cleaner Results: #now()#" type="html">
-		<p>#ArrayLen(results.deletedFiles)#	files deleted.</p>
-		
-		these errors were encountered:
-		
+		<p>#ArrayLen(results.deletedFiles)#	files deleted.</p>		
+		these errors were encountered:		
 		<cfdump var="#results.errors#">
 		</cfmail>
 			
