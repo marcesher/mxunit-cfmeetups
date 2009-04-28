@@ -8,4 +8,11 @@
 	</buildSpec>
 	<natures>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>cfobjective</name>
+			<type>2</type>
+			<location>/home/billy/webapps/cfobjective</location>
+		</link>
+	</linkedResources>
 </projectDescription>
