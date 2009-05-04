@@ -1,4 +1,10 @@
 <cfcomponent displayname="Security Configuration" output="false">
+    
+    <cfscript>
+     loader = createObject('component' , 'ClassLoader').init();
+     securityConfig = loader.create('org.owasp.esapi.ESAPI').securityConfiguration();
+    </cfscript>
+    
 	<cffunction name="init" access="public" returntype="Any" output="false">
 		<cfargument name="config" type="XML" required="true" hint="XML Config for security preferences" />
 		
@@ -17,4 +23,9 @@
 		<cfset var props = XMLSearch(variables.config, "/Config/Properties/Property[@name='#arguments.propertyName#']")>
 		<cfreturn props[1].xmlattributes['value'] />
 	</cffunction>
+    
+    <cffunction name="setResourceDirectory" access="public" output="false" returntype="void">
+      <cfargument name="resourceDir" type="string" hint="Fully qualified path to a directory" />
+      <cfset securityConfig.setResourceDirectory( arguments.resourceDir ) />
+    </cffunction>
 </cfcomponent>
