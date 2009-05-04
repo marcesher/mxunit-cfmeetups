@@ -1,0 +1,5 @@
+This is the same resource structure as in the esapi java implementation. In 
+practice, this should be kept outside the webroot in order to avoid 
+dissemination of security configuration info.
+
+

