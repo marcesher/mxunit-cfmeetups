@@ -21,7 +21,7 @@ function xmlXss2Query(){
 
   var q = queryNew( columns );
   var i = 1;
-  var xssXml =  fileRead( expandPath('/cfobjective/vectors/xss.xml') );
+  var xssXml =  fileRead( expandPath('/cfobjective/code/vectors/xss.xml') );
   var dom = xmlParse(xssxml);
   var nodes = xmlSearch(dom,'/xss/attack');
   for(i; i <= arrayLen(nodes); i++){

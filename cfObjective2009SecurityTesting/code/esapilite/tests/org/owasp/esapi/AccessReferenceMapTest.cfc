@@ -16,7 +16,7 @@
 
 /*------------------------------------------------------------------*/
  function setUp(){
-   arm = createObject('component', root & '.' & 'org.owasp.esapi.AccessReferenceMap');
+   arm = createObject('component', 'cfobjective.code.esapilite.org.owasp.esapi.AccessReferenceMap');
   }
 /*------------------------------------------------------------------*/
 

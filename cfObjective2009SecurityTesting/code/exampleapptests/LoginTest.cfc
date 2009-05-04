@@ -17,6 +17,7 @@
   function setUp(){
     firefox = createObject('component','firefuzz.driver.WebDriver').newInstance('firefox');
     firefox.setUseExistingFireFoxInstance(true);
+    firefox.setFirefoxPath('C:/Programs/Mozilla Firefox/firefox.exe');
   }
 
   function tearDown(){

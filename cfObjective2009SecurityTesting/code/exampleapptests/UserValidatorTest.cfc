@@ -32,7 +32,7 @@
 
 
   function setUp(){
-   userValidator = createObject('component','cfobjective.exampleapp.UserValidator').init();
+   userValidator = createObject('component','cfobjective.code.exampleapp.UserValidator').init();
 
    id = 123;
    name = 'Wolverine';
@@ -40,14 +40,14 @@
    userName = 'wolverine';
    pwd = 'b@rK';
 
-   user = createObject('component','cfobjective.exampleapp.SecureUser').init();
+   user = createObject('component','cfobjective.code.exampleapp.SecureUser').init();
    user.setId(id);
    user.setName(name);
    user.setEmail(email);
    user.setUserName(userName);
    user.setPwd(pwd);
 
-   xssVectors = createObject('component','cfobjective.vectors.FuzzyVectors').getXSSVectors();
+   xssVectors = createObject('component','cfobjective.code.vectors.FuzzyVectors').getXSSVectors();
 
   }
 

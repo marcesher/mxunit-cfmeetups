@@ -25,7 +25,7 @@
   }
   
   function setUp(){
-    loader = createObject('component' , root & '.org.owasp.esapi.ClassLoader').init();
+    loader = createObject('component' , componentRoot & '.org.owasp.esapi.ClassLoader').init();
     
   }
   

@@ -101,7 +101,7 @@ function getTestDataItem(){
 
 
   function setUp(){
-  	validator = createObject('component', 'cfobjective.esapilite.org.owasp.esapi.Validator').init();
+  	validator = createObject('component', 'cfobjective.code.esapilite.org.owasp.esapi.Validator').init();
 
   }
 
@@ -111,7 +111,8 @@ function getTestDataItem(){
 
 
 
-/*
+/***************   To Do: Other methods available but not yet implemented:
+
 
 assertIsValidHTTPRequest()  	void
 assertIsValidHTTPRequestParameterSet(java.lang.String, java.util.Set, java.util.Set) 	void

@@ -1,6 +1,7 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
-root = 'cfesapi';
-configPath = ExpandPath('/#root#/esapi.xml');
+  fileRoot = 'cfobjective/code/esapilite';
+  componentRoot = 'cfobjective.code.esapilite';
+  configPath = ExpandPath('/#fileRoot#/esapi.xml');
 </cfscript>
 </cfcomponent>

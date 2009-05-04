@@ -1,4 +1,4 @@
-<cfcomponent extends="cfobjective.esapilite.org.owasp.esapi.Validator">
+<cfcomponent extends="cfobjective.code.esapilite.org.owasp.esapi.Validator">
 <cfscript>
 
   function init(){

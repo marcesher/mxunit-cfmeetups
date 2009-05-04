@@ -15,7 +15,7 @@ function simpleEncoderTest(){
  }
 
   function setUp(){
-    encoder = createObject('component', 'cfobjective.esapilite.org.owasp.esapi.Encoder').init();
+    encoder = createObject('component', 'cfobjective.code.esapilite.org.owasp.esapi.Encoder').init();
     instance = encoder;
   }
 

@@ -16,7 +16,7 @@
 
 
   function setUp(){
-    user = createObject('component','cfobjective.exampleapp.User').init();
+    user = createObject('component','cfobjective.code.exampleapp.User').init();
   }
 
   function tearDown(){

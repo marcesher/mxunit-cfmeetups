@@ -6,8 +6,8 @@
   //To Do: This root, should probably be read from a confi file.
 
   fileSep = createObject('java','java.lang.System').getProperty('file.separator');
-  variables.root =  'cfobjective#fileSep#esapilite';
-  variables.libDir = expandPath('#fileSep##root##fileSep#lib');
+  variables.root =  'cfobjective.code.esapilite';
+  variables.libDir = expandPath('#fileSep#cfobjective#fileSep#code#fileSep#esapilite#fileSep#lib');
   variables.paths = arrayNew(1);
   variables.jarsToInclude = '';
   variables.loadFromList = false;
