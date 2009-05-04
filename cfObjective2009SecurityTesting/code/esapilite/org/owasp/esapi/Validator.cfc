@@ -5,6 +5,15 @@
 	//instantiate only once, maybe in ESAPI.cfc
     loader = createObject('component' , 'ClassLoader').init();
     validator = loader.create('org.owasp.esapi.ESAPI').validator();
+    
+    
+    
+    //Move to SecurityConfiguration?
+    function setResourceDirectory(dir){
+       config = loader.create('org.owasp.esapi.ESAPI').securityConfiguration();
+       config.setResourceDirectory( dir );
+    }
+    
   </cfscript>
 
 
@@ -42,10 +51,14 @@
     <cfset var ret = '' />
     <cftry>
       <cfif input eq chr(0) and allowNulls>
-        <cfset input = javacast('char', chr(0)) />
+        <cfset input = createObject('java','java.lang.Byte') />
       </cfif>
       <cfset ret = validator.getValidInput(context, input, type, javacast('int',maxlength), allowNulls) />
-    <cfreturn ret />
+      <cfif isDefined('ret')>
+        <cfreturn  ret  />
+      <cfelse>
+        <cfreturn '' />
+      </cfif>
     <cfcatch type="any"><!--- CF doesn't appear to catch Java exceptions, so type:any has to be used :-( --->
       <cfthrow type="#cfcatch.Type#"
                message="#cfcatch.Message#"

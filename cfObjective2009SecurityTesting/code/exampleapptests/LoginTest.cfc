@@ -3,7 +3,7 @@
 
 
   function testGetLoginPage() {
-     firefox.get('http://dev/cfobjective/exampleapp/loginform.cfm');
+     firefox.get('http://dev/cfobjective/code/exampleapp/loginform.cfm');
      uname = firefox.findElement('username');
      pwd = firefox.findElement('password');
      uname.sendKeys('foo');

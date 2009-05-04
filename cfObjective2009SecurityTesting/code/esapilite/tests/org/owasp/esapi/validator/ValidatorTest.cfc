@@ -2,6 +2,28 @@
 
 <cfscript>
 
+function $testShouldCustomValidationInReourceDirectory(){
+ path = expandPath(  '/cfobjective/code/esapilite/tests/fixture/resources/.esapi' );
+ assert( fileExists(path & '/ESAPI.properties') );
+ debug(path);
+ validator.setResourceDirectory( path );
+ actual = validator.getValidInput('custom.docket', '12345', 'Docket', 5, true) ;
+ assert( '12345'==actual );
+ 
+  actual = validator.getValidInput('custom.kungfu', 'Kung Fu', 'KwaiChangCaine', 7, true) ;
+ //Validator.KwaiChangCaine=^Kung Fu$
+  assert( 'Kung Fu'==actual );
+
+}
+
+
+function $testShouldAllowNulls(){
+//public String getValidInput(String context, String input, String type, int maxLength, boolean allowNull)
+ var actual = validator.getValidInput('foo', '', '[0-9]{3,3}', 3, true) ;
+  actual = validator.getValidInput('asdasd', chr(0), '[0-9]{1,3}', 3, true) ;
+ assert( ''==actual );
+
+}
 
 function $testRegexGetValidInput(){
 //public String getValidInput(String context, String input, String type, int maxLength, boolean allowNull)
@@ -102,6 +124,8 @@ function getTestDataItem(){
 
   function setUp(){
   	validator = createObject('component', 'cfobjective.code.esapilite.org.owasp.esapi.Validator').init();
+  	
+  	
 
   }
 

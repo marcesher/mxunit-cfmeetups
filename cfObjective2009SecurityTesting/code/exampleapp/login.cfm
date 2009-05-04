@@ -6,13 +6,13 @@
 <cfoutput>
 
 <!--- Create AccessReferenceMap --->
-<cfset arm = createObject('component','cfobjective.esapilite.org.owasp.esapi.AccessReferenceMap') />
+<cfset arm = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.AccessReferenceMap') />
 <cfset user = createObject('component','User') />
 <cfset user.login(form.username,form.password) />
 
 
-<cfif !user.getId()>
-  Bad login for <strong>#form.username#</strong><br />
+<cfif user.getId() is ''>
+  Bad login <br />
   <a href="loginform.cfm">Try again</a>
 <cfelse>
   <!--- Regsiter a reference to user --->

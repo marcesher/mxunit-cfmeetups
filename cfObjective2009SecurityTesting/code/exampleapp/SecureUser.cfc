@@ -11,31 +11,29 @@
 	local.user.pwd = '';
 	local.user.email = '';
 
-	function getName(){
-	 return local.user.name ;
-	}
+  function getName(){
+	return local.user.name ;
+  }
 
   function getUsername(){
    return local.user.username;
   }
 
-	function getId(){
-	 return local.user.id ;
-	}
+  function getId(){
+	return local.user.id ;
+  }
 
-	function getPwd(){
-	 return local.user.pwd ;
-	}
+  function getPwd(){
+	return local.user.pwd ;
+  }
 
-	function getEmail(){
-	 return local.user.email ;
-	}
+  function getEmail(){
+	return local.user.email ;
+  }
 
-
-	///
-	function setName(name){
-	 local.user.name = name ;
-	}
+  function setName(name){
+	local.user.name = name ;
+  }
 
   function setUsername(username){
     local.user.username = username;
@@ -44,11 +42,11 @@
 	function setId(id){
 	 local.user.id = id ;
 	}
-
+	
 	function setPwd(pwd){
 	 local.user.pwd = pwd ;
 	}
-
+	
 	function setEmail(email){
 	 local.user.email = email ;
 	}
