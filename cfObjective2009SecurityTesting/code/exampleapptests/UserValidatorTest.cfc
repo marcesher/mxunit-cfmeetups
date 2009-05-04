@@ -4,6 +4,7 @@
  <cfoutput query="xssVectors">
    <cfset debug('Checking against #attack#') />
   <cfif userValidator.isValidUserName(attack) >
+    <cfset debug(attack)>
     <cfthrow type="mxunit.exception.AssertionFailedError"
               message="Invalid input slipped by"
               detail="Failure at row #xssvectors.currentrow# for #xssvectors.attack#">

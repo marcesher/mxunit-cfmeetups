@@ -22,7 +22,7 @@
 
 
   function setUp(){
-   vectors = createObject('component','cfobjective.vectors.FuzzyVectors');
+   vectors = createObject('component','cfobjective.code.vectors.FuzzyVectors');
   }
 
   function tearDown(){
