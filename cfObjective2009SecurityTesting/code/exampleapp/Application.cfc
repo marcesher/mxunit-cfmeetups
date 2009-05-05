@@ -1,11 +1,11 @@
 <cfcomponent>
   <cfset this.Sessionmanagement=true>
-<!---
+
 <cfset This.name = "Example">
 <cfset This.Sessionmanagement=true>
-<cfset This.Sessiontimeout="#createtimespan(0,0,10,0)#">
-<cfset This.applicationtimeout="#createtimespan(5,0,0,0)#">
-
+<cfset This.Sessiontimeout="#createtimespan(0,0,20,0)#">
+<cfset This.applicationtimeout="#createtimespan(15,0,0,0)#">
+<!---
 <cffunction name="onApplicationStart">
  </cffunction>
 
