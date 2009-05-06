@@ -42,8 +42,7 @@ Returns true if data received from browser is valid. Only URL encoding is
   }
 
   function isValidPassword(password){
-  	 var specialChars = '\~\!\@\##\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\|\\\:\;\<\>\,\.\?\/';
-     return isValidInput('user.password',password,'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[#specialChars#]).{6,10}$', 10, true);
+  	return isValidInput('user.password', password, '^[a-zA-Z0-9\$]{8,16}', 16, false);
   }
 
   function isValidName(name){

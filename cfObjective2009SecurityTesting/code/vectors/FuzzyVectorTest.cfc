@@ -21,6 +21,7 @@
  }
 
 
+
   function setUp(){
    vectors = createObject('component','cfobjective.code.vectors.FuzzyVectors');
   }

@@ -42,9 +42,11 @@ function setUp(){
 
 
  function isValidPassword() {
-     assert( userValidator.isValidPassword('123asdD?') );
-     assert( userValidator.isValidPassword('$%KLJj1') );
-     assert( userValidator.isValidPassword('+_)lR(9)') );
+     assert( userValidator.isValidPassword('asdasdas1$') );
+     
+     //assert( userValidator.isValidPassword('123asdDa?') );
+    // assert( userValidator.isValidPassword('q$%KLJj1sd}') );
+     //assert( userValidator.isValidPassword('3+_lR(9s?>') );
  }
 
  function isValidName() {
@@ -58,9 +60,26 @@ function setUp(){
  }
 
 
+ function regExTest(){
+   s = 'q)wQ8H@8';
+  
+   //s = generator.genRandPassword();
+
+   r = '^(?=.*[a-zA-Z])(?=.*[0-9]){8,16}';
+   s = 'asQf12a4as@'; 
+   s = '00AaK:>w'; 
+   for(i=1;i<100;i++){
+	   s = generator.genRandPassword();
+	   debug(s);
+	  // debug( refind(r,s) );
+	   assert( refind(r,s) ) ;
+   }
+ }
+
  function kickCrapOutOfPwd(){
   for(i=1;i<100;i++){
     pwd = generator.genRandPassword();
+    debug(pwd);
     assert( userValidator.isValidPassword(pwd) ,'failed on #pwd# on iteration ' & i );
   }
  }

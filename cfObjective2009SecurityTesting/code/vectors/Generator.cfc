@@ -4,27 +4,57 @@
  randomizer = loader.create('org.owasp.esapi.ESAPI').randomizer();
 
 
+ //generates a rando int between min and max
  function genRandomInteger(min,max){
    return randomizer.getRandomInteger(min,max);
  }
 
+
+ //Generates a 12 character password with 2 ints, 4 upper&lower case charctes,
+ // and 2 special characters
+ //E.g., FcIJ6l6W=?eg 
  function genRandPassword(){
-   var anInt = genRandomInteger(0,9);
-   var anUpper = randomizer.getRandomString(1, upperCharset);
-   var aLower = randomizer.getRandomString(1, lowerCharset);
-   var special = randomizer.getRandomString(1, specialCharset);
-   var temp = randomizer.getRandomString(6, asciiCharset);
-   var pwd = anUpper & special & temp & anInt & aLower;
-   pwd = randomizer.getRandomString(10, pwd.toCharArray());
-   return pwd;
+ 	
+   var aPwd = '';
+   var aList = createObject('java','java.util.ArrayList');
+   var it = '';
+   aList.add( genRandomInteger(0,9) );
+   aList.add( genRandomInteger(0,9) );
+   aList.add( randomizer.getRandomString(1, upperCharset) );
+   aList.add( randomizer.getRandomString(1, upperCharset) );
+   aList.add( randomizer.getRandomString(1, lowerCharset) );
+   aList.add( randomizer.getRandomString(1, lowerCharset) );
+   aList.add( randomizer.getRandomString(1, upperCharset) );
+   aList.add( randomizer.getRandomString(1, upperCharset) );
+   aList.add( randomizer.getRandomString(1, lowerCharset) );
+   aList.add( randomizer.getRandomString(1, lowerCharset) );
+   aList.add( randomizer.getRandomString(1, specialCharset) );
+   aList.add( randomizer.getRandomString(1, specialCharset) );
+   createObject('java','java.util.Collections').shuffle(aList);
+   
+   it = aList.iterator();
+   while(it.hasNext()){
+    aPwd &= it.next();
+   }
+
+   return aPwd;
 
  }
 
  function getAnInt(){
   return genRandomInteger(0,9);
  }
-
 </cfscript>
+
+
+<cffunction name="getWords" returntype="query" hint="Returns a query of 95K common english words">
+	<cfset wordsPath = getDirectoryFromPath( getCurrentTemplatePath() ) & 'words.txt' />
+	<cffile action="read" file="#wordsPath#" variable="dictionary" />
+	<cf_querysim>
+	  <cfoutput>#dictionary#</cfoutput>  
+	</cf_querysim>
+	 <cfreturn words />
+</cffunction>
 
 <cf_querysim>
 specialChars
