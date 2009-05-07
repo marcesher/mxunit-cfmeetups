@@ -2,6 +2,7 @@
 <cfscript>
  loader = createObject('component' , 'cfobjective.code.esapilite.org.owasp.esapi.ClassLoader').init();
  randomizer = loader.create('org.owasp.esapi.ESAPI').randomizer();
+ authenticator = loader.create('org.owasp.esapi.ESAPI').authenticator();
 
 
  //generates a rando int between min and max
@@ -10,39 +11,13 @@
  }
 
 
- //Generates a 12 character password with 2 ints, 4 upper&lower case charctes,
- // and 2 special characters
- //E.g., FcIJ6l6W=?eg 
+ //Generates an 8 character strong password with at least 1 lc,uc,int, & special char
  function genRandPassword(){
- 	
-   var aPwd = '';
-   var aList = createObject('java','java.util.ArrayList');
-   var it = '';
-   aList.add( genRandomInteger(0,9) );
-   aList.add( genRandomInteger(0,9) );
-   aList.add( randomizer.getRandomString(1, upperCharset) );
-   aList.add( randomizer.getRandomString(1, upperCharset) );
-   aList.add( randomizer.getRandomString(1, lowerCharset) );
-   aList.add( randomizer.getRandomString(1, lowerCharset) );
-   aList.add( randomizer.getRandomString(1, upperCharset) );
-   aList.add( randomizer.getRandomString(1, upperCharset) );
-   aList.add( randomizer.getRandomString(1, lowerCharset) );
-   aList.add( randomizer.getRandomString(1, lowerCharset) );
-   aList.add( randomizer.getRandomString(1, specialCharset) );
-   aList.add( randomizer.getRandomString(1, specialCharset) );
-   createObject('java','java.util.Collections').shuffle(aList);
-   
-   it = aList.iterator();
-   while(it.hasNext()){
-    aPwd &= it.next();
-   }
-
-   return aPwd;
-
+ 	return authenticator.generateStrongPassword();
  }
 
  function getAnInt(){
-  return genRandomInteger(0,9);
+  return genRandomInteger(0,10);
  }
 </cfscript>
 

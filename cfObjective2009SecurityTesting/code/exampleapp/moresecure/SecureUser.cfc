@@ -11,6 +11,10 @@
 	local.user.id = '';
 	local.user.pwd = '';
 	local.user.email = '';
+	
+	userValidator = createObject('component','UserValidator');
+	arm = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.AccessReferenceMap');
+	userReference = ''; 
 
   function getName(){
 	return local.user.name ;
@@ -40,20 +44,19 @@
     local.user.username = username;
   }
 
-	function setId(id){
-	 local.user.id = id ;
-	}
+  function setId(id){
+	local.user.id = id ;
+  }
+	
+  function setPwd(pwd){
+	local.user.pwd = pwd ;
+  }
+	
+  function setEmail(email){
+	local.user.email = email ;
+  }
 
-	function setPwd(pwd){
-	 local.user.pwd = pwd ;
-	}
 
-	function setEmail(email){
-	 local.user.email = email ;
-	}
-
-
-	//
 initUsers();
 </cfscript>
 
@@ -63,7 +66,49 @@ initUsers();
 
 
 
-<cffunction name="login">
+<cffunction name="login" returntype="void">
+  <cfargument name="username">
+  <cfargument name="pwd">
+  <cfset var q = getUserFromDb(username,pwd) />
+  <cfif q.recordCount eq 0>
+    <cfthrow type="InvalidCredentialsException" message="An invalid username and/or password was provided" />  
+  </cfif>
+  <cfscript>
+   setName(q.name );
+   setUsername(q.username);
+   setEmail(q.email);
+   setId(q.id);
+  </cfscript>
+  <cfif validate()>
+   <cfset setUserSession() /> 
+  <cfelse>
+     <cfthrow type="InvalidUserObjectException" message="The user data is not valid." /> 
+  </cfif>    
+  
+</cffunction>
+
+
+
+<cffunction name="_throw">
+ <cfthrow type="invaliduser" message="Invalid User">
+</cffunction>
+
+<cffunction name="setUserSession" access="private">
+  <cfset userReference = arm.addDirectReference(this) />
+  <cfset session.userReference = userReference />
+</cffunction>
+
+<cffunction name="getUserSession" access="public">
+   <cfargument name="ref" type="string" />
+  <cfset var userRefObject = arm.getDirectReference(arguments.ref) />
+  <cfreturn userRefObject />
+</cffunction>
+
+<cffunction name="validate" access="public">        
+  <cfreturn userValidator.isValidUser(this) />
+</cffunction>
+
+<cffunction name="getUserFromDb" access="private">
   <cfargument name="username">
   <cfargument name="pwd">
   <cfquery name="q" dbtype="query" maxrows="1">
@@ -72,18 +117,11 @@ initUsers();
    where username = '#arguments.username#' and
          password = '#arguments.pwd#'
   </cfquery>
-  <cfscript>
-   local.user.name = q.name;
-   local.user.username = q.username;
-   local.user.email = q.email;
-   local.user.id = q.id;
-   local.user.pwd = q.password;
-   session.user = local.user;
-  </cfscript>
+  <cfreturn q />
 </cffunction>
 
 <cffunction name="logout">
- <cfset structClear(session) />
+  <cfset structClear(session) />
 </cffunction>
 
 
@@ -99,7 +137,7 @@ id,name,email,username,password
 1|Kwai Change Caine|grasshopper@kungfu.fu|grassphopper|h0tp0t
 2|Master Po|oldblinddude@kungfu.fu|pome|iCanseeU
 3|Bruce Lee|bruce@kungfu.fu|bruce|badass
-4|bill shelton|bill@kungfu.fu|bill|bill
+4|bill shelton|bill@kungfu.fu|billys|$billY8
 </cf_querysim>
 </cffunction>
 </cfcomponent>

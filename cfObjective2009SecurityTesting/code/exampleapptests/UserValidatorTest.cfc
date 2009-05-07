@@ -31,25 +31,25 @@ function setUp(){
   }
 
 
-  function isValidUsername() {
+  function isValidUsernameSyntax() {
      assert(userValidator.isValidUserName(name) );
   }
 
 
-  function isValidEmail() {
+  function isValidEmailSyntax() {
      assert(userValidator.isValidEmail(email) );
   }
 
 
- function isValidPassword() {
-     assert( userValidator.isValidPassword('asdasdas1$') );
-
-     //assert( userValidator.isValidPassword('123asdDa?') );
-    // assert( userValidator.isValidPassword('q$%KLJj1sd}') );
-     //assert( userValidator.isValidPassword('3+_lR(9s?>') );
+ function isValidPasswordSyntax() {
+     assert( userValidator.isValidPassword('asaDsd1$') );
+     assert( userValidator.isValidPassword('13asdDa?') );
+     assert( userValidator.isValidPassword('q$KLJj1}') );
+     assert( userValidator.isValidPassword('3+_lR9s?') );
+     //assert( userValidator.isValidPassword('asdfghjk') );
  }
 
- function isValidName() {
+ function isValidNameSyntax() {
      assert( userValidator.isValidName('bill shelton') );
      assert( userValidator.isValidName('Kwai Chang Caine') );
      assert( userValidator.isValidName('Master Po') );
@@ -60,21 +60,19 @@ function setUp(){
  }
 
 
- function regExTest(){
-   s = 'q)wQ8H@8';
 
-   //s = generator.genRandPassword();
+function altPasswordChecker(){
+ loader = createObject('component' , 'cfobjective.code.esapilite.org.owasp.esapi.ClassLoader').init();
+ authenticator = loader.create('org.owasp.esapi.ESAPI').authenticator();
+ pwd1 = authenticator.generateStrongPassword();
+ pwd2 = authenticator.generateStrongPassword();
+ debug(pwd1);
+ debug(pwd2);
+ authenticator.verifyPasswordStrength(pwd1,pwd2);
 
-   r = '^(?=.*[a-zA-Z])(?=.*[0-9]){8,16}';
-   s = 'asQf12a4as@';
-   s = '00AaK:>w';
-   for(i=1;i<100;i++){
-	   s = generator.genRandPassword();
-	   debug(s);
-	  // debug( refind(r,s) );
-	   assert( refind(r,s) ) ;
-   }
- }
+}
+
+
 
  function kickCrapOutOfPwd(){
   for(i=1;i<100;i++){

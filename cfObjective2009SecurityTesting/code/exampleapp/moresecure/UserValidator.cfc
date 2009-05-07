@@ -25,6 +25,9 @@ Returns true if data received from browser is valid. Only URL encoding is
 
  -------------------------------------------------------------------------------------------------------->
 <cfscript>
+ loader = createObject('component' , 'cfobjective.code.esapilite.org.owasp.esapi.ClassLoader').init();
+ authenticator = loader.create('org.owasp.esapi.ESAPI').authenticator();
+
 
   function init(){
     return this;
@@ -41,9 +44,28 @@ Returns true if data received from browser is valid. Only URL encoding is
      return isValidInput('user.email',email,'Email', 128, true);
   }
 
+
+
+
+  // might be better to do this ...
+  // authenticator.verifyPasswordStrength(tempGen,password);
+  // where tempGen would be generated on demand
   function isValidPassword(password){
-  	return isValidInput('user.password', password, '^[a-zA-Z0-9\$]{8,16}', 16, false);
+  	//Note that this does NOT, as implied test for the length of the entire string.
+  	//var pattern = '^((?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\$\@\##\%\^\&\*\(\)\_\-\+\=\{\}\[\]\!\?\.\/\,\<\>])){8,8}';
+  	//if( len(password) gt 8 OR !refind(pattern,password) ){
+  	  //For some reasone the ESAPI regex engine does not like the above syntax
+  	  //return isValidInput('user.password', password, pattern, 8, false);
+  	//}
+  	//return true;
+  	 
+	 temp = authenticator.generateStrongPassword();
+	 authenticator.verifyPasswordStrength(temp,password);
+	 return true;
   }
+
+
+
 
   function isValidName(name){
      return isValidInput('user.name',name,'[a-zA-Z\ ]{4,128}', 128, true);
@@ -55,8 +77,8 @@ Returns true if data received from browser is valid. Only URL encoding is
 --------------------------------------------------------------------*/
   function isValidUser(user){
     var valid = isValidUserName( user.getUsername() ) &&
-    						isValidEmail( user.getEmail() ) &&
-    						isValidName( user.getName() );
+    			isValidEmail( user.getEmail() ) &&
+    			isValidName( user.getName() );
     return valid;
 
   }

@@ -1,6 +1,23 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
 
+  function validateUser(){
+    assert( user.validate() );
+  }
+
+  function loginUser(){
+    user = createObject('component','cfobjective.code.exampleapp.moresecure.SecureUser').init();
+    user.login( 'billys','$billY8' );    
+    
+    assert( session.userreference != '' );
+    debug(session);
+    sameUser = user.getUserSession(session.userreference);
+    debug(sameUser.getName());
+    debug(user.getName());
+    assertEquals( user.getName(), sameUser.getName() );
+    assertSame( user, sameUser );
+   
+  }
 
   function sanityCheck() {
      assertIsTypeOf( user , 'cfobjective.code.exampleapp.moresecure.SecureUser' );
@@ -9,11 +26,17 @@
      assert(username==user.getUsername());
      assert(pwd==user.getPwd());
   }
+ 
+  
+  function getUsersFromDbSmokeTest(){
+   makePublic(user,"getUserFromDb","_getUserFromDb");
+   u = user._getUserFromDb('billys','$billY8'); 
+   debug(u);
+   assertEquals( 'bill@kungfu.fu', u.email );
+  }
 
 
-
-
-
+ 
 
 
   function setUp(){
