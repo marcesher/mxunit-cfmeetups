@@ -22,7 +22,7 @@ function sessionIdShouldBeJ2EECompliant() {
 
 
  function setUp(){
-  user = createObject('component','cfobjective.code.exampleapp.User').init();
+  user = createObject('component','cfobjective.code.exampleapp.lesssecure.User').init();
   validator = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.Validator').init();
   validator.setResourceDirectory( expandpath('/cfobjective/code/esapilite/tests/fixture/resources/.esapi') );
  }

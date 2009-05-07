@@ -6,6 +6,7 @@
 
  --->
 <cfscript>
+  local.user = {};
 	local.user.name = '';
 	local.user.username = '';
 	local.user.id = '';

@@ -17,7 +17,7 @@
 
 
   function setUp(){
-    user = createObject('component','cfobjective.code.exampleapp.User').init();
+    user = createObject('component','cfobjective.code.exampleapp.lesssecure.User').init();
   }
 
   function tearDown(){

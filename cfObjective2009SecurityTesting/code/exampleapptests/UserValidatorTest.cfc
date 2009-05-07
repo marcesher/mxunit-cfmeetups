@@ -10,14 +10,14 @@ function setUp(){
    userName = 'wolverine';
    pwd = 'b@rK';
 
-   user = createObject('component','cfobjective.code.exampleapp.SecureUser').init();
+   user = createObject('component','cfobjective.code.exampleapp.moresecure.SecureUser').init();
    user.setId(id);
    user.setName(name);
    user.setEmail(email);
    user.setUserName(userName);
    user.setPwd(pwd);
 
-   userValidator = createObject('component','cfobjective.code.exampleapp.UserValidator').init();
+   userValidator = createObject('component','cfobjective.code.exampleapp.moresecure.UserValidator').init();
    generator = createObject('component','cfobjective.code.vectors.Generator');
    xssVectors = createObject('component','cfobjective.code.vectors.FuzzyVectors').getXSSVectors();
    encoder = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.Encoder').init();
@@ -27,7 +27,7 @@ function setUp(){
 
  function sanityCheck() {
      debug(userValidator);
-     assertIsTypeOf(userValidator,'cfobjective.code.exampleapp.UserValidator');
+     assertIsTypeOf(userValidator,'cfobjective.code.exampleapp.moresecure.UserValidator');
   }
 
 
@@ -43,7 +43,7 @@ function setUp(){
 
  function isValidPassword() {
      assert( userValidator.isValidPassword('asdasdas1$') );
-     
+
      //assert( userValidator.isValidPassword('123asdDa?') );
     // assert( userValidator.isValidPassword('q$%KLJj1sd}') );
      //assert( userValidator.isValidPassword('3+_lR(9s?>') );
@@ -62,12 +62,12 @@ function setUp(){
 
  function regExTest(){
    s = 'q)wQ8H@8';
-  
+
    //s = generator.genRandPassword();
 
    r = '^(?=.*[a-zA-Z])(?=.*[0-9]){8,16}';
-   s = 'asQf12a4as@'; 
-   s = '00AaK:>w'; 
+   s = 'asQf12a4as@';
+   s = '00AaK:>w';
    for(i=1;i<100;i++){
 	   s = generator.genRandPassword();
 	   debug(s);

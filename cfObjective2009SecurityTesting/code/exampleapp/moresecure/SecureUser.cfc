@@ -5,6 +5,7 @@
    and it sets the object reference
  --->
 <cfscript>
+	local.user = {};
 	local.user.name = '';
 	local.user.username = '';
 	local.user.id = '';
@@ -42,11 +43,11 @@
 	function setId(id){
 	 local.user.id = id ;
 	}
-	
+
 	function setPwd(pwd){
 	 local.user.pwd = pwd ;
 	}
-	
+
 	function setEmail(email){
 	 local.user.email = email ;
 	}
