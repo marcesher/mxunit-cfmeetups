@@ -1,3 +1,8 @@
+<cfif not isDefined('session.user')>
+ <cflocation url="loginform.cfm">
+</cfif>
+
+
 <h3>Update Profile</h3>
 <cfoutput>
 <form action="update_profile.cfm" method="post">

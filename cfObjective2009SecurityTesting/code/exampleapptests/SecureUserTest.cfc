@@ -3,7 +3,7 @@
 
 
   function sanityCheck() {
-     assertIsTypeOf( user , 'cfobjective.code.exampleapp.SecureUser' );
+     assertIsTypeOf( user , 'cfobjective.code.exampleapp.moresecure.SecureUser' );
      assert(name==user.getName());
      assert(email==user.getEmail());
      assert(username==user.getUsername());
@@ -23,7 +23,7 @@
    userName = 'wolverine';
    pwd = 'b@rK';
 
-   user = createObject('component','cfobjective.code.exampleapp.SecureUser').init();
+   user = createObject('component','cfobjective.code.exampleapp.moresecure.SecureUser').init();
    user.setId(id);
    user.setName(name);
    user.setEmail(email);

@@ -3,7 +3,7 @@
 
 
   function testGetLoginPage() {
-     firefox.get('http://dev/cfobjective/code/exampleapp/loginform.cfm');
+     firefox.get('http://dev/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
      uname = firefox.findElement('username');
      pwd = firefox.findElement('password');
      uname.sendKeys('foo');
@@ -15,7 +15,7 @@
 
 
   function setUp(){
-    firefox = createObject('component','firefuzz.driver.WebDriver').newInstance('firefox');
+    firefox = createObject('component','cfobjective.code.firefuzz.driver.WebDriver').newInstance('firefox');
     firefox.setUseExistingFireFoxInstance(true);
     firefox.setFirefoxPath('C:/Programs/Mozilla Firefox/firefox.exe');
   }
