@@ -151,11 +151,11 @@ encoded
 <cfset docWrite = "<script>document.write('<div id=\""_firefuzzTestDiv\"">hacked</div>')</script>" />
 <cfoutput>
 <cf_querysim>
-	docWriteVectors
-	name,type,exploit
-	xss.doc1|xss|>%22%27>#docWrite#>
-	xss.doc2|xss|>"'>#docWrite#
-	xss.doc3|xss|#docWrite#
+  docWriteVectors
+  name,type,exploit
+  xss.doc1|xss|>%22%27>#docWrite#>
+  xss.doc2|xss|>"'>#docWrite#
+  xss.doc3|xss|#docWrite#
   xss.doc4|xss|&{document.write('<div id="_firefuzzTestDiv">hacked</div>')};
   xss.doc5|xss|#docWrite#
   xss.doc6|xss|<script>document.body.addEventListener("command", document.write('<div id=\"_firefuzzTestDiv\">hacked</div>'), true)</script>
