@@ -46,22 +46,20 @@ Returns true if data received from browser is valid. Only URL encoding is
 
 
 
-
-  // might be better to do this ...
-  // authenticator.verifyPasswordStrength(tempGen,password);
-  // where tempGen would be generated on demand
   function isValidPassword(password){
-  	//Note that this does NOT, as implied test for the length of the entire string.
-  	//var pattern = '^((?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\$\@\##\%\^\&\*\(\)\_\-\+\=\{\}\[\]\!\?\.\/\,\<\>])){8,8}';
-  	//if( len(password) gt 8 OR !refind(pattern,password) ){
+  	//Note that this does NOT, as implied, test for the length of the entire string.
+  	var pattern = '^((?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\$\@\##\%\^\&\*\(\)\_\-\+\=\{\}\[\]\!\?\.\/\,\<\>])){8,8}';
+  	if( len(password) gt 8 OR !refind(pattern,password) ){
   	  //For some reasone the ESAPI regex engine does not like the above syntax
-  	  //return isValidInput('user.password', password, pattern, 8, false);
-  	//}
-  	//return true;
-  	 
+  	  return isValidInput('user.password', password, pattern, 8, false);
+  	}
+  	return true;
+
+  /* Alternative way, but allows aritrarily long strings
 	 temp = authenticator.generateStrongPassword();
 	 authenticator.verifyPasswordStrength(temp,password);
 	 return true;
+	 */
   }
 
 
