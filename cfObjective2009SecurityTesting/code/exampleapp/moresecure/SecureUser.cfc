@@ -99,7 +99,7 @@ initUsers();
 </cffunction>
 
 <cffunction name="getUserSession" access="public">
-   <cfargument name="ref" type="string" />
+  <cfargument name="ref" type="string" />
   <cfset var userRefObject = arm.getDirectReference(arguments.ref) />
   <cfreturn userRefObject />
 </cffunction>
