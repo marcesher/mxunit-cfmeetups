@@ -12,16 +12,20 @@ function getDocWriteVectors(){
   return docWriteVectors;
 }
 
-function getXSSVectors(){
-  return  xmlXss2Query();
+function getXSSAlertVectors(){
+  return  xmlXss2Query('xss.xml');
+}
+
+function getXSSDocWriteVectors(){
+  return  xmlXss2Query('xss-docwrite.xml');
 }
 
 
-function xmlXss2Query(){
+function xmlXss2Query(fileName){
 
   var q = queryNew( columns );
   var i = 1;
-  var xssXml =  fileRead( expandPath('/cfobjective/code/vectors/xss.xml') );
+  var xssXml =  fileRead( expandPath('/cfobjective/code/vectors/#arguments.fileName#') );
   var dom = xmlParse(xssxml);
   var nodes = xmlSearch(dom,'/xss/attack');
   for(i; i <= arrayLen(nodes); i++){

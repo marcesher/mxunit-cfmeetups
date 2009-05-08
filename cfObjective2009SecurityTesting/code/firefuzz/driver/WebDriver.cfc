@@ -25,7 +25,7 @@
 
 
 
-	  //
+	  //Only the FirefoxDriver is available 
 	  function newInstance(type){
 	     switch(type){
 
@@ -259,21 +259,16 @@
 
   </cfscript>
 
-<cffunction name="loadJars">
-    paths[1] =  expandPath("/cfwd/lib/webdriver-common.jar");
-    paths[2] = expandPath("/cfwd/lib/webdriver-firefox.jar");
-    paths[3] = expandPath("/cfwd/lib/json-20080701.jar");
-    paths[4] = expandPath("/cfwd/lib/webdriver-jobbie.jar");
-    paths[5] = expandPath("/cfwd/lib/jna.jar");
-<cfset var i = 1 />
 
-<cfdirectory name="d" action="list" directory="#expandPath("/cfwd/lib/")#" />
+<cffunction name="loadJars">
+ <cfset var i = 1 />
+ <cfdirectory name="d" action="list" directory="#expandPath("/cfobjective/code/firefuzz/lib/")#" />
  <cfoutput query="d">
-   <cfset paths[i] =  expandPath("/cfwd/lib/#d.name#") />
+   <cfset paths[i] =  expandPath("/cfobjective/code/firefuzz/lib/#d.name#") />
    <cfset i++ />
  </cfoutput>
-
 </cffunction>
+
 
  <cffunction name="throwNotImplementedException">
    <cfargument name="methodName" />

@@ -2,8 +2,16 @@
 <cfscript>
 
 
- function dumpXSSVectors(){
-  q = vectors.getXSSVectors();
+ function dumpXSSAlertVectors(){
+  q = vectors.getXSSAlertVectors();
+  assert( q.recordCount > 100 );
+  assertEquals( 'XSS Locator', q['name'][1] );
+  assertEquals( 'URL Encoding', q['name'][100] );
+  debug(q);
+ }
+ 
+ function dumpXSSDocWriteVectors(){
+  q = vectors.getXSSDocWriteVectors();
   assert( q.recordCount > 100 );
   assertEquals( 'XSS Locator', q['name'][1] );
   assertEquals( 'URL Encoding', q['name'][100] );
