@@ -2,22 +2,21 @@
 
   <cffunction name="fuzzProfile">
    <cfset fp = expandPath("/cfobjective/code/fuzzingtests/thumbs/") />
-   
+
     <cfscript>
-     
-     datePrefix = dateFormat(now(),"mm_dd_yyy_hh_mm_ss_ms");   
      ff.get('http://dev/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
      u = ff.findElement('username');
      p = ff.findElement('password');
      u.sendKeys('bill');
      p.sendKeys('bill');
      u.submit();
-     </cfscript>     
-     <cfoutput query="xss">
+     </cfscript>
+     <cfoutput query="xss" maxrows="20">
      <cfscript>
+     namePrefix = name & '_' & dateFormat(now(),"mm_dd_yyy_hh_mm_ss_ms");
      ff.get('http://dev/cfobjective/code/exampleapp/lesssecure/profile.cfm');
      debug(xss.currentrow & '  ' & xss.name);
-     fp = expandPath("/cfobjective/code/fuzzingtests/thumbs/#datePrefix#");
+     fp = expandPath("/cfobjective/code/fuzzingtests/thumbs/report/");
      pname = ff.findElement('name');
      e = ff.findElement('email');
      pname.clear();
@@ -27,14 +26,14 @@
      //e.sendKeys(attack);
      pname.submit();
      //log results
-     //pgSrc = ff.getPageSource(); 
-     //ff.saveScreenShot(fp & '#datePrefix#.png');
-     //pgSrc = ff.getPageSource(); 
-     //writeToFile( fp & '#datePrefix#.html', pgSrc );
+     pgSrc = ff.getPageSource();
+     ff.saveScreenShot(fp & '#namePrefix#.png');
+     pgSrc = ff.getPageSource();
+     writeToFile( fp & '#namePrefix#.html', pgSrc );
      //sleep(100);
      </cfscript>
     </cfoutput>
-    <cfset  ff.get('http://dev/cfobjective/code/fuzzingtests/thumbs/index.cfm') />
+    <cfset  ff.get('http://dev/cfobjective/code/fuzzingtests/thumbs/report/') />
   </cffunction>
 
 
@@ -42,24 +41,26 @@
 
 
   function smokeSomeFuzz() {
+     datePrefix = dateFormat(now(),"mm_dd_yyy_hh_mm_ss_ms");
      ff.get('http://google.com');
      e = ff.findElement('q');
      e.sendKeys('fuzzing');
      e.submit();
      e = ff.findElement('Fuzzing - OWASP');
      e.click();
-     fp = expandPath("/cfobjective/code/fuzzingtests/thumbs/");
+     fp = getDirectoryFromPath(getCurrentTemplatePath()) & 'thumbs/smoke/';
      ff.saveScreenShot(fp & 'smoke.png');
-     pgSrc = ff.getPageSource(); 
+     pgSrc = ff.getPageSource();
      writeToFile( fp & 'smoke.html', pgSrc );
      //display report
-     ff.get('http://dev/cfobjective/code/fuzzingtests/thumbs/index.cfm');  
+     ff.get('http://dev/cfobjective/code/fuzzingtests/thumbs/smoke');
   }
 
 
 function setUp(){
   ff = createObject('component','cfobjective.code.firefuzz.driver.WebDriver').newInstance('ff');
-  ff.setFireFoxPath('C:/Programs/Mozilla Firefox/firefox.exe');
+  //set when not in default location
+  //ff.setFireFoxPath('C:/Programs/Mozilla Firefox/firefox.exe');
   ff.setUseExistingFireFoxInstance(true);
   vectors = createObject('component','cfobjective.code.vectors.FuzzyVectors');
   xss = vectors.getXSSDocWriteVectors();
