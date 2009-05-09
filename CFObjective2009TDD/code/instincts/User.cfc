@@ -18,8 +18,12 @@
 		where username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#">
 		and password = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.password#">
 		</cfquery>
+		
+		<cfif findUser.numFound eq 1>
+			<cfreturn true>
+		</cfif>
 
-		<cfreturn findUser.numfound eq 1>
+		<cfreturn false>
 	</cffunction>
 	
 	<cffunction name="getUserID" output="false" access="public" returntype="numeric" hint="">
