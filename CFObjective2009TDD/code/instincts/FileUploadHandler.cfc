@@ -6,7 +6,7 @@
 		<cfset var thumbnailgenerator = createObject("component","ThumbnailGenerator")>
 		<cfset var uploadResult = "">
 		
-		<cffile action="upload" nameconflict="overwrite" filefield="#UploadFormField#" result="uploadResult" destination="somedir">
+		<cffile action="upload" nameconflict="makeunique" filefield="#UploadFormField#" result="uploadResult" destination="somedir">
 		
 		<cfif listLast(uploadResult.ServerFile,".") eq "pdf">
 			<cfset optimizer.optimize(uploadResult.ServerFile)>

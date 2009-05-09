@@ -17,7 +17,7 @@
 	<cffunction name="uploadFile" output="false" access="public" returntype="struct">
 		<cfargument name="UploadFormField" type="string" required="true"/>
 		<cfargument name="destination" type="string" required="true"/>
-		<cffile action="upload" nameconflict="overwrite" filefield="#UploadFormField#" result="uploadResult" destination="destination">
+		<cffile action="upload" nameconflict="makeunique" filefield="#UploadFormField#" result="uploadResult" destination="destination">
 		<cfreturn uploadResult>
 	</cffunction> --->
 	
