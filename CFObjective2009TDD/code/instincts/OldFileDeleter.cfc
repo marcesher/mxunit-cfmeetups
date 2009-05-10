@@ -10,7 +10,7 @@
 		<cfset var fullFilePath = "">
 		<cfset var results = StructNew()>
 	
-		<cfset results = {errors=ArrayNew(),deletedFiles=ArrayNew()}>
+		<cfset results = {errors=ArrayNew(1),deletedFiles=ArrayNew(1)}>
 		<cfset targetTime = DateAdd("n",-#staleInMinutes#,startTime)>
 		
 		<cfdirectory directory="#directory#" action="list" name="files" type="file">
