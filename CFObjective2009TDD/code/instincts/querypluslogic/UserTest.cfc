@@ -4,10 +4,6 @@
 	<cffunction name="setUp" returntype="void" access="public" hint="put things here that you want to run before each test">
 		<cfset user = createObject("component","User")>				
 	</cffunction>
-
-	<cffunction name="tearDown" returntype="void" access="public" hint="put things here that you want to run after each test">	
-	
-	</cffunction>
 	
 	<!--- this one's kind of easy. just pass a password you know can't possibly exist' --->
 	<cffunction name="authenticateWithZeroMatchesShouldReturnFalse" returntype="void" access="public">

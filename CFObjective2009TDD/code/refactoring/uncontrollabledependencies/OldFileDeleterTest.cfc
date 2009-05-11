@@ -8,10 +8,6 @@
 		<!--- ensure no emails get sent --->
 		<cfset injectMethod(deleter, this, "sendNotificationsOverride", "sendNotifications")>
 	</cffunction>
-
-	<cffunction name="tearDown" returntype="void" access="public" hint="put things here that you want to run after each test">	
-	
-	</cffunction>
 	
 	<!--- this is the hardest one to test. if we weren't abstracting out 
 	
