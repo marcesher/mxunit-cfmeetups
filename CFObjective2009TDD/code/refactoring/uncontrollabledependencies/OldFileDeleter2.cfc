@@ -22,9 +22,27 @@
 			</cfcatch>
 			</cftry>
 		</cfloop>
-		<cfset sendNotifications(deletedFiles=results.deletedfiles,errors=results.errors,recipients=EmailRecipients)>
+		<cfset sendNotifications(body=formatEmailContent(deletedFiles=results.deletedfiles,	errors=results.errors),
+					subject="File System Cleaner Results: #now()#",
+					sender="directorycleaner@myco.com",
+					recipients=emailRecipients
+				)>
 		
 		<cfreturn results>
+	</cffunction>
+	
+	<cffunction name="formatEmailContent" access="private" output="false" returntype="string" hint="formats the struct of deleted files and errors for email notification">
+		<cfargument name="deletedFiles" type="array" required="true"/>
+		<cfargument name="errors" type="array" required="true"/>
+		<cfset var content = "">
+		<cfsavecontent variable="content">
+		<cfoutput><p>Results: #ArrayLen(deletedFiles)# files deleted.</p></cfoutput>
+		
+		these errors were encountered:
+		
+		<cfdump var="#errors#">	
+		</cfsavecontent>
+		<cfreturn content>
 	</cffunction>
 	
 	
@@ -65,15 +83,12 @@
 	</cffunction>
 	
 	<cffunction name="sendNotifications" output="false" access="private" returntype="void" hint="sends notifications about the results of file system cleanup">
-		<cfargument name="deletedFiles" type="array" required="true"/>
-		<cfargument name="errors" type="array" required="true"/>
+		<cfargument name="body" type="string" required="true">
+		<cfargument name="subject" type="string" required="true">
+		<cfargument name="sender" type="string" required="true">
 		<cfargument name="recipients" type="string" required="true"/>
-		<cfmail from="directorycleaner@myco.com" to="#recipients#" subject="File System Cleaner Results: #now()#" type="html">
-		<p>Results: #ArrayLen(deletedFiles)# files deleted.</p>
-		
-		these errors were encountered:
-		
-		<cfdump var="#errors#">
+		<cfmail from="#arguments.sender#" to="#arguments.recipients#" subject="#arguments.subject#" type="html">
+		#arguments.body#
 		</cfmail>
 	</cffunction>
 </cfcomponent>

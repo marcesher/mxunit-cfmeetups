@@ -6,7 +6,7 @@
 		<!--- ensure all deletes are safe! --->
 		<cfset injectMethod(deleter,this,"deleteOverride","deleteFile")>
 		<!--- ensure no emails get sent --->
-		<cfset injectMethod(deleter, this, "sendEmailOverride", "sendEmail")>
+		<cfset injectMethod(deleter, this, "sendNotificationsOverride", "sendNotifications")>
 	</cffunction>
 
 	<cffunction name="tearDown" returntype="void" access="public" hint="put things here that you want to run after each test">	
@@ -114,8 +114,9 @@
 		<!--- do nothing! --->
 	</cffunction>
 	
-	<cffunction name="sendEmailOverride" access="private">
-		<cfset debug(arguments.content)>
+	<cffunction name="sendNotificationsOverride" access="private">
+		<cfoutput>coming from sendNotificationsOverride</cfoutput>
+		<cfdump var="#arguments#">
 	</cffunction>
 	
 	<cffunction name="deleteAndCauseError" access="private">
