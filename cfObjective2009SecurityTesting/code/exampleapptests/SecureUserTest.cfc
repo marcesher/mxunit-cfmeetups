@@ -8,16 +8,13 @@
   function loginUser(){
     user = createObject('component','cfobjective.code.exampleapp.moresecure.SecureUser').init();
     user.login( 'billys','$billY8' );    
-    
-    assert( session.userreference != '' );
     debug(session);
-    sameUser = user.getUserSession(session.userreference);
+    sameUser = session.arm.getDirectReference( session.uref );
     debug(sameUser.getName());
     debug(user.getName());
     assertEquals( user.getName(), sameUser.getName() );
     assertSame( user, sameUser );
-   
-  }
+   }
 
   function sanityCheck() {
      assertIsTypeOf( user , 'cfobjective.code.exampleapp.moresecure.SecureUser' );

@@ -5,7 +5,7 @@
   function testLogin() {
      user.login('bill','bill');
      debug(session);
-     assertEquals( 'bill@kungfu.fu',session.user.email );
+     assertEquals( 'bill@kungfu.fu',session.email );
   }
 
 

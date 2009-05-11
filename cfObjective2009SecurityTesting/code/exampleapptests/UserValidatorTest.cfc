@@ -19,7 +19,7 @@ function setUp(){
 
    userValidator = createObject('component','cfobjective.code.exampleapp.moresecure.UserValidator').init();
    generator = createObject('component','cfobjective.code.vectors.Generator');
-   xssVectors = createObject('component','cfobjective.code.vectors.FuzzyVectors').getXSSVectors();
+   xssVectors = createObject('component','cfobjective.code.vectors.FuzzyVectors').getXSSAlertVectors();
    encoder = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.Encoder').init();
 
 
@@ -59,6 +59,10 @@ function setUp(){
    assert( userValidator.isValidUser(user) );
  }
 
+ function isValidSession(){
+  debug( 'checks to make sure the session is valid' );
+  
+ }
 
 
 function altPasswordChecker(){

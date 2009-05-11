@@ -63,7 +63,9 @@ Returns true if data received from browser is valid. Only URL encoding is
   }
 
 
-
+  function isValidSession(){
+    return isValidInput('sessionid', session.sessionid, 'HTTPJSESSIONID', 36, false);
+  }
 
   function isValidName(name){
      return isValidInput('user.name',name,'[a-zA-Z\ ]{4,128}', 128, true);

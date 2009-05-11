@@ -94,13 +94,14 @@ initUsers();
 </cffunction>
 
 <cffunction name="setUserSession" access="private">
-  <cfset userReference = arm.addDirectReference(this) />
-  <cfset session.userReference = userReference />
+  <cfset session.arm = arm />
+  <cfset userReference = session.arm.addDirectReference(this) />
+  <cfset session.uref = userReference />
 </cffunction>
 
 <cffunction name="getUserSession" access="public">
   <cfargument name="ref" type="string" />
-  <cfset var userRefObject = arm.getDirectReference(arguments.ref) />
+  <cfset var userRefObject = session.arm.getDirectReference(arguments.ref) />
   <cfreturn userRefObject />
 </cffunction>
 

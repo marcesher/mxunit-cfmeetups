@@ -1,21 +1,21 @@
 <cfcomponent output="false">
 <!---
-   This is a typical User entity type object, and is not
+   This is a User entity type object, and is not
    particularly "secure". It does not perform any form of validation,
    and it sets the object reference
 
  --->
 <cfscript>
-  local.user = {};
+    local.user = {};
 	local.user.name = '';
 	local.user.username = '';
 	local.user.id = '';
 	local.user.pwd = '';
 	local.user.email = '';
 
-	function getName(){
-	 return local.user.name ;
-	}
+  function getName(){
+	return local.user.name ;
+  }
 
   function getUsername(){
    return local.user.username;
@@ -56,7 +56,13 @@
    local.user.email = q.email;
    local.user.id = q.id;
    local.user.pwd = q.password;
-   session.user = local.user;
+   
+   //Shoot me, please, if you ever see me doing this.
+   session.userName = local.user.username;
+   session.personName = local.user.name;
+   session.email = local.user.email;
+   session.userId = local.user.id;
+   session.userPassword = local.user.pwd;
   </cfscript>
 </cffunction>
 
