@@ -11,7 +11,7 @@
 		<!--- ensure all deletes are safe! --->
 		<cfset nuMock.deleteFile("{string}").returns("")>
 		<!--- ensure no emails get sent --->
-	 	<cfset nuMock.sendNotifications("{string}","{string}","{string}","{string}").returns("")>
+	 	<cfset nuMock.sendNotifications("{string}","{string}","{string}","{string}").returns()>
 		<!--- ensure calls to getDirectoryListing always return our fake directory listing --->
 		<cfset fsuMock.getDirectoryListing("{string}").returns(bigSpoofDirectory())>
 		
@@ -26,6 +26,7 @@
 	</cffunction>  
 	
 	<cffunction name="runCleanupMaintenanceShouldHitExpectedFiles">
+		<cfset debug(nuMock.debugMock())>
 		<cfset results = deleter.runCleanupMaintenance("c:\noexist\",30,"marc@marc.com")>
 		<cfset debug(results)>
 		
