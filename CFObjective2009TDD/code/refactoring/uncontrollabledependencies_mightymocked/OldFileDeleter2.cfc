@@ -25,10 +25,10 @@
 			</cfcatch>
 			</cftry>
 		</cfloop>
-		<cfset NotificationUtility.sendNotifications(body=formatEmailContent(deletedFiles=results.deletedfiles,	errors=results.errors),
-					subject="File System Cleaner Results: #now()#",
-					sender="directorycleaner@myco.com",
-					recipients=emailRecipients
+		<cfset NotificationUtility.sendNotifications(formatEmailContent(deletedFiles=results.deletedfiles,	errors=results.errors),
+					"File System Cleaner Results: #now()#",
+					"directorycleaner@myco.com",
+					emailRecipients
 				)>
 		<cfreturn results>
 	</cffunction>

@@ -26,9 +26,8 @@
 	</cffunction>  
 	
 	<cffunction name="runCleanupMaintenanceShouldHitExpectedFiles">
-		<cfset debug(nuMock.debugMock())>
 		<cfset results = deleter.runCleanupMaintenance("c:\noexist\",30,"marc@marc.com")>
-		<cfset debug(results)>
+		<!--- <cfset debug(results)> --->
 		
 		<cfset fileList = ArrayToList(results.deletedFiles)>
 		
@@ -44,6 +43,7 @@
 				<cfset assertFalse( ListFind(fileList,thisFile),   "should not have found #thisFile# in #fileList#")>
 			</cfif>
 		</cfloop>
+		<cfset nuMock.verifyTimes(1).sendNotifications("{string}","{string}","{string}","{string}")>
 	</cffunction>
 	
 	<cffunction name="runCleanupMaintenanceShouldNotFailOnFileDeleteErrors">
@@ -53,7 +53,7 @@
 		<!--- 4 because that's how many files we know should've been deleted --->
 		<cfset assertEquals(4,ArrayLen(results.errors))>
 		<cfset assertTrue( StructKeyExists( results.errors[1],"TagContext" ) )> 
-		 <cfset assertMocksRun()> 
+		<cfset assertMocksRun()> 
 	</cffunction>
 	
 	<cffunction name="getFilesOlderThanShouldReturnOnlyOldFiles">		
@@ -94,10 +94,13 @@
 	
 	<!--- custom assertions --->
 	<cffunction name="assertMocksRun" output="false" access="private" returntype="any" hint="">
-		<cfset nuMock.verifyTimes(1).sendNotifications("","","","")>
+		<cfset nuMock.verifyTimes(1).sendNotifications("{string}","{string}","{string}","{string}")>
+		<cfset fsuMock.verifyTimes(1).getDirectoryListing("{string}")>
+		<cfset fsuMock.verifytimes(4).deleteFile("{string}")>
 	</cffunction>
 	
-	<!--- all this stuff is for spoofing/overriding --->
+	<!--- all this stuff is for spoofing/overriding; this contains 4 files (designated with 'YES' in the name) that I expect to be deleted;
+	it contains 5 files (with 'NO' in the name) that should not be deleted, based on passing in  30 minutes as the "StaleInMinutes" arg to runCleanupMaintenance--->
 	<cffunction name="bigSpoofDirectory" access="private">
 		<cfset var dir = "">		
 		<cfset var dirname = "c:\noexist\">
