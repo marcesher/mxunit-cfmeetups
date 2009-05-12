@@ -10,6 +10,11 @@
      pwd.sendKeys('123');
      e = firefox.findElement('submitMe');
      e.click();
+     //verify bad login
+     link = firefox.findElement('Try again');
+     link.click();
+     assertEquals( 'Login Form' , firefox.getTitle() );
+     
   }
 
 

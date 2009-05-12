@@ -1,8 +1,8 @@
 <cfcomponent output="false" extends="mxunit.framework.TestCase">
 <cfscript>
 
-//HTTPJSESSIONID
   function testLogin() {
+     debug('Funtionally, this app works; but it''s not secure');
      user.login('bill','bill');
      debug(session);
      assertEquals( 'bill@kungfu.fu',session.email );
