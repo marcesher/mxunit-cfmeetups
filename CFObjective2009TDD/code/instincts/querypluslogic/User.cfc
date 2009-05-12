@@ -13,6 +13,7 @@
 		<cfargument name="password" type="string" required="true"/>
 
 		<cfset var findUser = "">
+		<!--- this is a big brick wall, making it hard to  "get at" the code (logic) you really want to test--->
 		<cfquery datasource="unittest" name="findUser">
 		select count(userid) as numfound
 		from users
