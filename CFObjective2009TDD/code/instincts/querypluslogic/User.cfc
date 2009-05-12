@@ -5,6 +5,7 @@
 		<cfargument name="UserID" type="numeric" required="true"/>
 		
 		<cfset StructAppend(variables.instance,arguments)>
+		<cfreturn this>
 	</cffunction>
 	
 	<cffunction name="authenticate" output="false" access="public" returntype="boolean" hint="returns true if username/password match found">
