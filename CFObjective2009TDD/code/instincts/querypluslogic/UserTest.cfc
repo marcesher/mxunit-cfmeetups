@@ -13,7 +13,7 @@
 	
 	<!--- this one's hard: you need to know a valid username/password combination. More importantly,
 	what if the system has password-changing requirements (new passwords every 30 days)? This means
-	every 30 days, your test will start to fail and now you'll be maintaining your tests. What a hassle!' --->
+	every 30 days, your test will start to fail and now you'll be maintaining your tests. What a hassle! --->
 	<cffunction name="authenticateWithOneMatchShouldReturnTrue" returntype="void" hint="">
 		<cfset fail("authenticateWithOneMatchShouldReturnTrue not yet implemented")>
 			

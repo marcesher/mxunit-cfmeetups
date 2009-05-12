@@ -5,7 +5,7 @@
 		<cfset var pathToHere = listDeleteAt(fullpath[1].value,"#listlen(fullPath[1].value,'.')#",".")>
 		<cfset deleter = createObject("component","OldFileDeleter2")>
 		
-		<cfset fsuMock = createObject("component","mightymock.MightyMock").init("#pathToHere#.FileSystemUtility",true)>
+		<cfset fsuMock = createObject("component","mightymock.MightyMock").init("#pathToHere#.FileSystemUtility")>
 		<cfset nuMock = createObject("component","mightymock.MightyMock").init("#pathToHere#.NotificationUtility")>
 		
 		<!--- ensure all deletes are safe! --->
