@@ -7,7 +7,7 @@
 
 <!--- Create AccessReferenceMap --->
 <cfset arm = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.AccessReferenceMap') />
-<cfset user = createObject('component','User') />
+<cfset user = createObject('component','SecureUser') />
 <cfset user.login(form.username,form.password) />
 
 

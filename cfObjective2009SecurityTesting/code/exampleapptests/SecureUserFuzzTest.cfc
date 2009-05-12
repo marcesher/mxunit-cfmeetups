@@ -2,32 +2,35 @@
 
   <cffunction name="fuzzProfile">
     <cfscript>
-		firefox.get('http://dev/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
+		firefox.get('http://dev/cfobjective/code/exampleapp/moresecure/loginform.cfm');
      uname = firefox.findElement('username');
      pwd = firefox.findElement('password');
-     uname.sendKeys('bill');
-     pwd.sendKeys('bill');
+     uname.sendKeys('billys');
+     pwd.sendKeys('$billY8');
      e = firefox.findElement('submitMe');
      e.click();
-      link = firefox.findElement('Update Profile');
+     link = firefox.findElement('Update Profile');
      link.click();
      path = getDirectoryFromPath( '/home/billy/webapps/cfobjective/code/fuzzingtests/thumbs/foo.png');
-     debug(path);
-      firefox.saveScreenShot( path );
-     return;
    </cfscript>
 
-   <cfoutput query="xssVectors">
+   <cfoutput query="xssVectors" maxrows="25">
      <cfscript>
+     pName = firefox.findElement('name');
+     email = firefox.findElement('email');
+     pwd = firefox.findElement('newpwd');
+     pName.sendKeys( attack );
+     email.sendKeys( attack );
+     pwd.sendKeys( attack );
+     pName.submit();
+     failedDiv = firefox.findElement('invalid');
+     debug(failedDiv.getText());
 
-     elem = firefox.findElement('name');
-     elem.clear();
-     elem.sendKeys( attack );
-     elem.submit();
-     firefox.get('http://dev/cfobjective/code/exampleapp/lesssecure/profile.cfm');
-     firefox.saveScreenShot( getDirectoryFromPath( getCurrentTemplatePath() ) & 'thumbs' );
+     firefox.get('http://dev/cfobjective/code/exampleapp/moresecure/profile.cfm');
+
      </cfscript>
     </cfoutput>
+
    </cffunction>
 
 
@@ -39,7 +42,7 @@
   function setUp(){
     firefox = createObject('component','cfobjective.code.firefuzz.driver.WebDriver').newInstance('firefox');
     firefox.setUseExistingFireFoxInstance(true);
-    firefox.setFirefoxPath('C:/Programs/Mozilla Firefox/firefox.exe');
+   // firefox.setFirefoxPath('C:/Programs/Mozilla Firefox/firefox.exe');
 
     vectors = createObject('component','cfobjective.code.vectors.FuzzyVectors');
     xssVectors = vectors.getXSSAlertVectors();

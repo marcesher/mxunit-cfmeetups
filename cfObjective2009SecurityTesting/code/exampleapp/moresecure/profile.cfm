@@ -1,4 +1,4 @@
-<cfif not isDefined('session.user')>
+<cfif not isDefined('session.uref')>
  <cflocation url="loginform.cfm">
 </cfif>
 
