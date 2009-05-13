@@ -1,8 +1,9 @@
 <project name="EsherCFObjective2009" basedir="." default="package">
 
+	<property name="zipname" value="marc_esher_cfobjective_2009_designing_for_easy_testability.zip"/>
 	<target name="package">
-		<delete file="marc_esher_cfobjective_2009_designing_for_easy_testability.zip"/>
-		<zip file="esher_cfobjective_2009.zip">
+		<delete file="${zipname}"/>
+		<zip file="${zipname}">
 			<zipfileset dir="." includes="code/**,ppt/esher*.ppt" casesensitive="false"/>
 		</zip>
 	</target>
