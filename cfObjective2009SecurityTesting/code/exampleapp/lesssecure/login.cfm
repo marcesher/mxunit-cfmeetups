@@ -13,10 +13,7 @@
   Bad login <br />
   <a href="loginform.cfm">Try again</a>
 <cfelse>
-  <cfset session.user = user />
-
   <p><a href="profile.cfm">Update Profile</a></p>
-
   <cfdump label="Session Info" var="#session#">
   <cfdump label="Cookie Info" var="#cookie#">
   <p><hr />

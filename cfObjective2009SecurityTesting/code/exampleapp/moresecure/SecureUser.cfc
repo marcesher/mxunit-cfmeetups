@@ -11,10 +11,10 @@
 	local.user.id = '';
 	local.user.pwd = '';
 	local.user.email = '';
-	
+
 	userValidator = createObject('component','UserValidator');
 	arm = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.AccessReferenceMap');
-	userReference = ''; 
+	userReference = '';
 
   function getName(){
 	return local.user.name ;
@@ -47,11 +47,11 @@
   function setId(id){
 	local.user.id = id ;
   }
-	
+
   function setPwd(pwd){
 	local.user.pwd = pwd ;
   }
-	
+
   function setEmail(email){
 	local.user.email = email ;
   }
@@ -66,12 +66,12 @@ initUsers();
 
 
 
-<cffunction name="login" returntype="void">
+<cffunction name="login" returntype="void" hint="Still some problems, but better.">
   <cfargument name="username">
   <cfargument name="pwd">
   <cfset var q = getUserFromDb(username,pwd) />
   <cfif q.recordCount eq 0>
-    <cfthrow type="InvalidCredentialsException" message="An invalid username and/or password was provided" />  
+    <cfthrow type="InvalidCredentialsException" message="An invalid username and/or password was provided" />
   </cfif>
   <cfscript>
    setName(q.name );
@@ -79,12 +79,13 @@ initUsers();
    setEmail(q.email);
    setId(q.id);
   </cfscript>
+  <!--- This is the Trust Boundary --->
   <cfif validate()>
-   <cfset setUserSession() /> 
+   <cfset setUserSession() />
   <cfelse>
-     <cfthrow type="InvalidUserObjectException" message="The user data is not valid." /> 
-  </cfif>    
-  
+     <cfthrow type="InvalidUserObjectException" message="The user data is not valid." />
+  </cfif>
+
 </cffunction>
 
 
@@ -105,18 +106,24 @@ initUsers();
   <cfreturn userRefObject />
 </cffunction>
 
-<cffunction name="validate" access="public">        
+<cffunction name="validate" access="public">
   <cfreturn userValidator.isValidUser(this) />
 </cffunction>
 
+
+
+
+<!--------------------------------------------------------------------
+   Mocking a database of Users
+ -------------------------------------------------------------------->
 <cffunction name="getUserFromDb" access="private">
   <cfargument name="username">
   <cfargument name="pwd">
   <cfquery name="q" dbtype="query" maxrows="1">
    select *
    from users
-   where username = '#arguments.username#' and
-         password = '#arguments.pwd#'
+   where username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#"> and
+         password = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.pwd#">
   </cfquery>
   <cfreturn q />
 </cffunction>

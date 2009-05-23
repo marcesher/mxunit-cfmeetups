@@ -4,10 +4,13 @@ Big window:<br />
 <textarea name="fuzzme" cols="60" rows="10"></textarea>
 <br />
 <input type="submit" />
-</form> 
+</form>
 <hr />
 <!--- Echoes directly back to user --->
 <cfif structKeyExists(form, 'fuzzme')>
-Results: <br />  
+Results: <br />
 <cfoutput>#form.fuzzme#</cfoutput>
+
+<p><hr /></p>
+<cfoutput>#htmlEditFormat(form.fuzzme)#</cfoutput>
 </cfif>

@@ -11,6 +11,13 @@
      p.sendKeys('bill');
      u.submit();
      </cfscript>
+     ff.get('http://dev/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
+     u = ff.findElement('username');
+     p = ff.findElement('password');
+     u.sendKeys('bill');
+     p.sendKeys('bill');
+     u.submit();
+     </cfscript>
      <cfoutput query="xss" maxrows="20">
      <cfscript>
      namePrefix = name & '_' & dateFormat(now(),"mm_dd_yyy_hh_mm_ss_ms");

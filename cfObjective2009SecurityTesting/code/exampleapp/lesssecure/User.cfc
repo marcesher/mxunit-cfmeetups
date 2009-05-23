@@ -6,7 +6,7 @@
 
  --->
 <cfscript>
-    local.user = {};
+  local.user = {};
 	local.user.name = '';
 	local.user.username = '';
 	local.user.id = '';
@@ -41,7 +41,7 @@
 
 
 
-<cffunction name="login">
+<cffunction name="login" hint="Plenty of problems here!">
   <cfargument name="username">
   <cfargument name="pwd">
   <cfquery name="q" dbtype="query" maxrows="1">
@@ -56,7 +56,7 @@
    local.user.email = q.email;
    local.user.id = q.id;
    local.user.pwd = q.password;
-   
+
    //Shoot me, please, if you ever see me doing this.
    session.userName = local.user.username;
    session.personName = local.user.name;

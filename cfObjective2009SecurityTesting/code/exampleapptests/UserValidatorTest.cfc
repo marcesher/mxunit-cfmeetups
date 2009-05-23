@@ -21,11 +21,13 @@ function setUp(){
    generator = createObject('component','cfobjective.code.vectors.Generator');
    xssVectors = createObject('component','cfobjective.code.vectors.FuzzyVectors').getXSSAlertVectors();
    encoder = createObject('component','cfobjective.code.esapilite.org.owasp.esapi.Encoder').init();
-
-
   }
 
- function sanityCheck() {
+ function peepXssVectors(){
+   debug(xssVectors);
+ }
+
+ function $anityCheck() {
      debug(userValidator);
      assertIsTypeOf(userValidator,'cfobjective.code.exampleapp.moresecure.UserValidator');
   }
@@ -61,7 +63,7 @@ function setUp(){
 
  function isValidSession(){
   debug( 'checks to make sure the session is valid' );
-  
+
  }
 
 
@@ -78,8 +80,8 @@ function altPasswordChecker(){
 
 
 
- function kickCrapOutOfPwd(){
-  for(i=1;i<100;i++){
+ function kickShitOutOfPwd(){
+  for(i=1;i<=100;i++){
     pwd = generator.genRandPassword();
     debug(pwd);
     assert( userValidator.isValidPassword(pwd) ,'failed on #pwd# on iteration ' & i );
@@ -88,7 +90,7 @@ function altPasswordChecker(){
 
 </cfscript>
 
-<cffunction name="kickShitOutOfUser">
+<cffunction name="kickShitOutOfUser" hint="Tests whitelist approach">
  <cfoutput query="xssVectors">
   <cfscript>
    user.setId(attack);
@@ -98,7 +100,7 @@ function altPasswordChecker(){
    user.setPwd(attack);
   </cfscript>
   <cfif userValidator.isValidUser(user) >
-     <cfset debug( attack )>
+    <cfset debug( attack )>
     <cfthrow type="mxunit.exception.AssertionFailedError"
               message="Invalid input slipped by"
               detail="Failure at row #xssvectors.currentrow# for #xssvectors.attack#">
