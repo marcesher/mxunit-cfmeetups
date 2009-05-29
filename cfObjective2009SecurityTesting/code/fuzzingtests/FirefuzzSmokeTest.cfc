@@ -1,27 +1,27 @@
-<cfcomponent output="false" extends="mxunit.framework.TestCase">
+<cfcomponent output="false" extends="BaseTest">
 
-  <cffunction name="fuzzProfile">
+	  <cffunction name="fuzzProfile">
    <cfset fp = expandPath("/cfobjective/code/fuzzingtests/thumbs/") />
 
     <cfscript>
-     ff.get('http://dev/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
+     ff.get('http://#host#/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
      u = ff.findElement('username');
      p = ff.findElement('password');
      u.sendKeys('bill');
      p.sendKeys('bill');
      u.submit();
-     </cfscript>
-     ff.get('http://dev/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
+     ff.get('http://#host#/cfobjective/code/exampleapp/lesssecure/loginform.cfm');
      u = ff.findElement('username');
      p = ff.findElement('password');
      u.sendKeys('bill');
      p.sendKeys('bill');
      u.submit();
-     </cfscript>
+    </cfscript>
+
      <cfoutput query="xss" maxrows="20">
      <cfscript>
      namePrefix = name & '_' & dateFormat(now(),"mm_dd_yyy_hh_mm_ss_ms");
-     ff.get('http://dev/cfobjective/code/exampleapp/lesssecure/profile.cfm');
+     ff.get('http://#host#/cfobjective/code/exampleapp/lesssecure/profile.cfm');
      debug(xss.currentrow & '  ' & xss.name);
      fp = expandPath("/cfobjective/code/fuzzingtests/thumbs/report/");
      pname = ff.findElement('name');
@@ -40,9 +40,8 @@
      //sleep(100);
      </cfscript>
     </cfoutput>
-    <cfset  ff.get('http://dev/cfobjective/code/fuzzingtests/thumbs/report/') />
+    <cfset  ff.get('http://#host#/cfobjective/code/fuzzingtests/thumbs/report/') />
   </cffunction>
-
 
 <cfscript>
 
@@ -60,7 +59,7 @@
      pgSrc = ff.getPageSource();
      writeToFile( fp & 'smoke.html', pgSrc );
      //display report
-     ff.get('http://dev/cfobjective/code/fuzzingtests/thumbs/smoke');
+     ff.get('http://#host#/cfobjective/code/fuzzingtests/thumbs/smoke');
   }
 
 
@@ -81,4 +80,5 @@ function setUp(){
   <cfargument name="fileContent">
   <cffile action="write" output="#arguments.fileContent#" file="#arguments.filePath#">
 </cffunction>
+
 </cfcomponent>

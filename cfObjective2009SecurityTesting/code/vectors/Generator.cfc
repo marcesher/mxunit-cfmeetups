@@ -5,6 +5,17 @@
  authenticator = loader.create('org.owasp.esapi.ESAPI').authenticator();
 
 
+ //generate random ascii string
+ //@param1 - int, length of string - required
+ //@param2 - arrary of characters, character to set from which to g
+ //          generate strings. default is ASCII charset
+ function genRandomString(length) {
+   var charSet = variables.asciiCharset;
+   //assign optional array charset param
+   if(arguments.size() == 2) charSet = arguments[2];
+   return randomizer.getRandomString(arguments.length, charSet);
+ }
+
  //generates a rando int between min and max
  function genRandomInteger(min,max){
    return randomizer.getRandomInteger(min,max);
@@ -26,7 +37,7 @@
 	<cfset wordsPath = getDirectoryFromPath( getCurrentTemplatePath() ) & 'words.txt' />
 	<cffile action="read" file="#wordsPath#" variable="dictionary" />
 	<cf_querysim>
-	  <cfoutput>#dictionary#</cfoutput>  
+	  <cfoutput>#dictionary#</cfoutput>
 	</cf_querysim>
 	 <cfreturn words />
 </cffunction>

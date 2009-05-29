@@ -55,7 +55,7 @@ Returns true if data received from browser is valid. Only URL encoding is
   	}
   	return true;
 
-  /* Alternative way, but allows aritrarily long strings
+  /* Alternative way, but allows arbitrarily long strings
 	 temp = authenticator.generateStrongPassword();
 	 authenticator.verifyPasswordStrength(temp,password);
 	 return true;

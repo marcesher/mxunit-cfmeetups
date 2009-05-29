@@ -1,10 +1,10 @@
-<cfcomponent output="false" extends="mxunit.framework.TestCase">
+<cfcomponent output="false" extends="BaseTest">
 
   <cffunction name="fuzzMeLongTime">
      <cfoutput query="xss" maxrows="50">
      <cfscript>
      datePrefix = dateFormat(now(),"mm_dd_yyy_hh_mm_ss_ms");
-     ff.get('http://dev/cfobjective/code/exampleapp/fuzzmelongtime.cfm');
+     ff.get('http://#host#/cfobjective/code/exampleapp/fuzzmelongtime.cfm');
      element = ff.findElement('fuzzme');
      debug(xss.currentrow & '  ' & xss.name);
      element.clear();
@@ -18,7 +18,7 @@
      writeToFile( fp & '#namePrefix#.html', pgSrc );
      </cfscript>
     </cfoutput>
-   <cfset ff.get('http://dev/cfobjective/code/fuzzingtests/thumbs/longtime/index.cfm') />
+   <cfset ff.get('http://#host#/cfobjective/code/fuzzingtests/thumbs/longtime/index.cfm') />
    </cffunction>
 
 
