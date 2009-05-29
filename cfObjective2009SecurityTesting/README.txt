@@ -26,19 +26,28 @@ Where stuff is:
        http://www.owasp.org/index.php/ESAPI
               
        - /exampleapp - This has two directories - /lesssecure and /moresecure.
-         The /lesssecure has a totally vulnerable app. This is intended to
+         The /lesssecure is an intentionally vulnerable app. This is intended to
          demontrate vulnerabilities, not secure practices.
+         
+         The /moresecure app is better, but still not "secure".
+         
          The moresecure.SecureUser demonstrates an approach to validating a 
          user object, using indirect references, and to a small degree,
          session management. The UserValidator abstracts validation logic into
-         its own object and extends the Validator in esapilight.
+         its own object and extends the Validator in esapilite. You can use this
+         or role your own. I would recommend getting involved with the CF ESAPI 
+         project mentioned above.	
          
        - /exampleapptests - This is where all the tests for the above are 
-         located. The UserValidatorTest is the most interesting. It demonstrate 
+         located. The UserValidatorTest is the most interesting. It demonstrates 
          an approach to testing Validation. It uses a data generator as well as
          known XXS vulnerabilities to "attack" the Validation at its most 
          atomic level. The basic approach is a white list strategy, and as such,
-         the validation should trust only that which is allowed.
+         the validation should trust only that which is allowed. These tests show
+         how the UserValidator rejects invalid data. You want to test as many bad 
+         case scenarios as possible, because the aim is not to prove that your 
+         app works, but prove that it cannot be broken. This is the primary 
+         distinction between function testing and security testing.  
          
          - /firefuzz - This contains the engine that drives Firefox. Essentially,
            this is a ColdFusion wrapper for the Webdriver project:
@@ -52,7 +61,7 @@ Where stuff is:
          - /vectors - This contains exploit and data generators. The Generator
             component has methods for returning random strings, ints, passwords,
             and dictionary words. This is useful for fuzzing and generating
-            edge-case data for tests.
+            edge-case data for unit tests.
             
             The /vectors/FuzzyVectors.cfc component has methods that return XSS
             exploits. Use the data generated here to test your application
@@ -61,7 +70,8 @@ Where stuff is:
             alert(...) test to document.write( '&lt;div id="someknown_id"/&gt;' ) or
             some other method of writing an element to the DOM. Your tests could 
             then check the generated DOM for the element that was attempted to
-            be injected. See FuzzyVectors.getDocWriteVectors() for a small example.
+            be injected. See FuzzyVectors.getDocWriteVectors() for a small 
+            example of this.
              
                
          
