@@ -1,0 +1,106 @@
+<project name="CFUnited: Zipping your app" basedir="." default="package">
+
+	<target name="init">
+
+		<property name="app.name" value="Client1App" />
+
+		<property name="dev.root" location="DEVSERVER" />
+		<property name="locations.dev.clientroot" location="${dev.root}\${app.name}" />
+
+		<property name="locations.dev.customtags" location="${dev.root}\CustomTags" />
+
+		<!-- define two new properties: a directory for a zip file and the name of our zip file -->
+		<property name="locations.dev.deploy" location="${locations.dev.clientroot}\deploy" />
+		<property name="locations.dev.deployzip" location="${locations.dev.deploy}\${app.name}.zip" />
+
+		<!-- for creating a zip that is based on file system comparison-->
+		<property name="locations.prodcompare.clientdir" location="CurrentProdCode\${app.name}" />
+
+		<echoproperties prefix="locations" />
+	</target>
+
+	<target name="clean" depends="init">
+		<!-- ensure our deployment folder exists -->
+		<mkdir dir="${locations.dev.deploy}" />
+		<!-- delete any old files -->
+		<delete file="${locations.dev.deployzip}" />
+	</target>
+
+
+
+
+
+	<target name="package" depends="init,clean">
+
+		<zip destfile="${locations.dev.deployzip}">
+
+			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
+			<zipfileset dir="${locations.dev.clientroot}" excludes="deploy/**" prefix="${app.name}" casesensitive="false">
+			</zipfileset>
+
+		</zip>
+
+	</target>
+
+
+
+
+
+
+
+	<target name="packageTwoDirectories" depends="init,clean">
+
+		<zip destfile="${locations.dev.deployzip}">
+
+			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
+			<zipfileset dir="${locations.dev.clientroot}" excludes="deploy/**" prefix="${app.name}" casesensitive="false">
+			</zipfileset>
+
+			<zipfileset dir="${locations.dev.customtags}" includes="**/*.cfm" prefix="CustomTags" casesensitive="false">
+
+			</zipfileset>
+
+		</zip>
+
+	</target>
+
+	<target name="packageWithDifferentPrefixes" depends="init,clean">
+		<zip destfile="${locations.dev.deployzip}">
+			<!-- Zip the Client1App on the test server. use the prefix attribute to ensure the path we want inside the zip -->
+			<zipfileset dir="${locations.dev.clientroot}" excludes="deploy/**" prefix="inetpub\wwwroot\${app.name}" casesensitive="false">
+			</zipfileset>
+
+			<zipfileset dir="${locations.dev.customtags}" includes="**/*.cfm" prefix="ColdFusion8\CustomTags" casesensitive="false">
+			</zipfileset>
+		</zip>
+	</target>
+
+
+	<!--
+	
+	TEASER: create a zip file whose files are selected based on:
+	
+	1) difference between current code and copy of production code
+	2) files containing just a certain string
+	
+	-->
+
+	<target name="packageWithSelector" depends="init,clean">
+
+		<zip destfile="${locations.dev.deployzip}">
+			<zipfileset dir="${locations.dev.clientroot}" excludes="deploy/**" prefix="inetpub\wwwroot\${app.name}" casesensitive="false">
+				<!-- use the 'different' selector to zip only stuff that's different 
+				between our app on test and our copy of the current production code -->
+				<different targetdir="${locations.prodcompare.clientdir}" />
+			</zipfileset>
+
+			<zipfileset dir="${locations.dev.customtags}" includes="**/*.cfm" prefix="ColdFusion8\CustomTags" casesensitive="false">
+				<!-- only get custom tags that have the string deleteFile in them -->
+				<contains text="deleteFile" casesensitive="false" />
+			</zipfileset>
+		</zip>
+	</target>
+
+
+
+</project>

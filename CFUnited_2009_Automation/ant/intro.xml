@@ -1,0 +1,47 @@
+<!--  <project> kind of like cfcomponent -->
+<!-- use "." as basedir for relative paths. means 'this current directory' -->
+<project name="CFUnited: 5_Minute_Intro" basedir="." default="main">
+
+
+	<!-- <target> kind of like cffunction -->
+	<target name="main" description="the big enchilada" depends="">
+
+		<!-- <property> kind of like a once-and-done cfset  -->
+		<property name="dev.root" value="DEVSERVER" />
+
+		<!-- when using location attribute, creates a path relative to basedir in project element -->
+		<property name="test.root" location="TESTSERVER" />
+
+
+		<!-- <echo> is a "task". Tasks are like functions you call. 
+		ANT has LOTS of built-in tasks! See http://ant.apache.org/manual/index.html. Click on "Ant Tasks"-->
+		<echo>
+		dev.root = ${dev.root}
+		test.root = ${test.root}		
+		basedir = ${basedir} 	
+		</echo>
+
+
+
+		<echoproperties prefix="dev" />
+		<echo message=" " />
+		<echoproperties regex=".*root" />
+
+		<!-- note what happens when a property is NOT set
+		<echo>
+		src.dir = ${src.dir}
+		</echo>
+		-->
+	</target>
+
+	<target name="init" description="If I have a description attribute, it's known as an external task" depends="">
+		<!-- use properties files to set a bunch of properties at once;
+		 also used for keeping properties out of build files so that you 
+		 can swap out a properties file and keep your build files stable 
+		 (think: different developers, different properties)
+		 -->
+		<property file="build.properties" />
+		<echoproperties prefix="cfunited" />
+	</target>
+
+</project>

@@ -1,0 +1,102 @@
+<project name="SwapPDFLib" basedir="." default="SwitchToPDFLib6">
+
+
+	<target name="init">
+
+		<!-- if this file exists, it will be read and any custom settings in there will override the settings we set below! -->
+		<!-- for example, if your machine is just using cfmx, you'd set a property like this in a file
+		named MyCFSettings.properties:
+		CFService=ColdFusion MX Application Server
+		CFInstallDir=C:/CFusionMX
+		-->
+		<property file="MyCFSettings.properties" />
+
+		<property name="CFService" value="ColdFusion 8 Application Server" />
+		<property name="JRunService" value="Macromedia JRun CFusion Server" />
+		<property name="CFInstallDir" value="C:\ColdFusion8" />
+		<property name="JRunInstallDir" value="C:\JRun4\servers\cfusion\cfusion-ear\cfusion-war\WEB-INF\cfusion" />
+		<property name="System32" value="C:\Windows\System32" />
+		<property name="confirmURL" value="http://localhost/mxunit-cfmeetups/CFUnited_2009_Automation/ant/pdflibfiles/showpdflibversion.cfm" />
+
+		<condition property="InstallDir" value="${JRunInstallDir}" else="${CFInstallDir}">
+			<available file="${JRunInstallDir}" type="dir"/>
+		</condition>
+		
+		<echo message="Install Dir: ${InstallDir}"/>
+	</target>
+
+	<target name="stopCF" depends="init">
+		<!-- one of these will simply not work. no biggie -->
+		<echo message="Stopping ColdFusion" />
+		<exec executable="cmd.exe">
+			<arg value="/c" />
+			<arg value="net" />
+			<arg value="stop" />
+			<arg value="${CFService}" />
+		</exec>
+		<exec executable="cmd.exe">
+			<arg value="/c" />
+			<arg value="net" />
+			<arg value="stop" />
+			<arg value="${JRunService}" />
+		</exec>
+	</target>
+
+	<target name="startCF" depends="init">
+		<echo message="Starting ColdFusion" />
+
+		<exec executable="cmd.exe">
+			<arg value="/c" />
+			<arg value="net" />
+			<arg value="start" />
+			<arg value="${CFService}" />
+		</exec>
+		<exec executable="cmd.exe">
+			<arg value="/c" />
+			<arg value="net" />
+			<arg value="start" />
+			<arg value="${JRunService}" />
+		</exec>
+
+	</target>
+
+	<target name="SwitchToPDFLib5" depends="init,stopCF,-switch5,startCF,browse" description="Switches your machine (and CF) to use PDFLib version 5" />
+
+	<target name="SwitchToPDFLib6" depends="init,stopCF,-switch6,startCF,browse" description="Switches your machine (and CF) to use PDFLib version 6" />
+
+	<target name="SwitchToPDFLib7" depends="init,stopCF,-switch7,startCF,browse" description="Switches your machine (and CF) to use PDFLib version 7" />
+	
+	<target name="SwitchToPDFLib7_64bit" depends="init,stopCF,-switch7_64b,startCF,browse" description="Switches your machine (and CF) to use PDFLib version 7 64bit" />
+	
+	<target name="browse" depends="init">
+		<exec executable="C:\Program Files\Internet Explorer\iexplore.exe">
+			<arg value="${confirmURL}" />
+		</exec>
+	</target>
+
+	<target name="-switch5">
+		<copyPDFLib version="5" />
+	</target>
+	<target name="-switch6">
+		<copyPDFLib version="6" />
+	</target>
+	<target name="-switch7">
+		<copyPDFLib version="7" />
+	</target>
+	<target name="-switch7_64b">
+		<copyPDFLib version="7_64b" />
+	</target>
+	
+
+	<macrodef name="copyPDFLib">
+		<attribute name="version" default="5" />
+		<sequential>
+			<property name="pdflibdir" location="pdflibfiles\@{version}" />
+			<echo message="Copying version @{version} from directory ${pdflibdir} to ${System32} and ${InstallDir}" />
+			<copy file="${pdflibdir}\pdf_java.dll" todir="${System32}" overwrite="true" preservelastmodified="true" verbose="true" failonerror="true" />
+			<copy file="${pdflibdir}\pdflib.jar" todir="${InstallDir}\lib" overwrite="true" preservelastmodified="true" verbose="true" failonerror="true"/>
+		</sequential>
+	</macrodef>
+
+
+</project>
