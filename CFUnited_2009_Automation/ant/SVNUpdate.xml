@@ -1,0 +1,36 @@
+<project name="SVNUpdate" default="update">
+
+	<target name="init">
+
+		<property name="coderoot" value="c:\inetpub\wwwroot\" />
+
+		<path id="project.classpath">
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="project.classpath" />
+	</target>
+
+	<target name="update" depends="init">
+		<tstamp>
+			<format pattern="MM/dd/yyyy hh:mm aa" property="now" />
+		</tstamp>
+		<echo message="${now}"/>
+		<svn>
+			<update dir="${coderoot}\mxunit" />
+			<update dir="${coderoot}\mxunit-cfmeetups" />
+			<!-- add additional directories here -->
+		</svn>
+
+	</target>
+
+
+	<!--
+		SVNANT is here: http://subclipse.tigris.org/svnant.html
+		CFMeetup (connect presentation) demonstrating setup for SVN, FTP, and other things is here: http://coldfusion.meetup.com/17/calendar/7386772/
+		-->
+
+
+</project>

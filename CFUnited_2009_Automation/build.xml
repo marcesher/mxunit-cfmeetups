@@ -1,0 +1,50 @@
+<project name="CFUNITED 2009 -- Automation Presentation" basedir="." default="package">
+
+
+	<target name="init">
+		<property file="unames.properties" />
+
+	</target>
+
+	<target name="package" depends="init">
+		<property name="pathInZip" value="CFUnited_2009_Automation" />
+		<mkdir dir="dist" />
+		<delete file="dist/CFUnited_2009_Esher_Automation.zip" />
+
+		<!-- rename the bat files so they get through gmail -->
+		<move todir="." includeemptydirs="false">
+			<fileset dir=".">
+				<include name="**/*.bat" />
+			</fileset>
+			<mapper type="glob" from="*.bat" to="*.batrename" />
+		</move>
+
+
+		<zip destfile="dist/CFUnited_2009_Esher_Automation.zip" casesensitive="false">
+			<zipfileset dir="." includes="**/*" excludes="**/dist/**,**/tags/**,**/unames.properties,**/*.bat" prefix="${pathInZip}" casesensitive="false" />
+
+		</zip>
+
+		<!-- rename em back -->
+		<move todir="." includeemptydirs="false">
+			<fileset dir=".">
+				<include name="**/*.batrename" />
+			</fileset>
+			<mapper type="glob" from="*.batrename" to="*.bat" />
+		</move>
+	</target>
+
+	<target name="publishThisPresentation" depends="init,package">
+
+		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" remotedir="doc/zip">
+			<fileset dir="dist">
+				<include name="*.zip" />
+			</fileset>
+		</ftp>
+	</target>
+
+	<target name="cleanAll">
+		<delete dir="dist" />
+	</target>
+
+</project>
