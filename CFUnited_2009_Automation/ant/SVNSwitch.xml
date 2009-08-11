@@ -1,0 +1,44 @@
+<project name="SVNSwitch" default="switchToTrunk">
+
+	<target name="init">
+
+		<property name="coderoot" value="c:\inetpub\wwwroot\" />
+		<property name="svnrepo" value="https://mxunit.googlecode.com/svn/"/>
+		<path id="project.classpath">
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="project.classpath" />
+	</target>
+
+	
+	<!--
+	If you've ever been working on a branch and found yourself constantly switching back and forth between a
+	branch and a trunk, then ANT can really help out here. No more right click, switch..... Just type it up once
+	in an ANT script, and now you can switch back and forth with a single click
+	
+	-->
+	
+	
+	<target name="switchToTrunk" depends="init">
+		<svn>
+			<switch path="${coderoot}mxunit" url="${svnrepo}/mxunit/trunk" />
+		</svn>
+	</target>
+	
+	<target name="switchToInterceptorBranch" depends="init">
+			<svn>
+				<switch path="${coderoot}mxunit" url="${svnrepo}/mxunit/branches/marcinterceptorplay" />
+			</svn>
+	</target>
+
+
+	<!--
+		SVNANT is here: http://subclipse.tigris.org/svnant.html
+		CFMeetup (connect presentation) demonstrating setup for SVN, FTP, and other things is here: http://coldfusion.meetup.com/17/calendar/7386772/
+		-->
+
+
+</project>
