@@ -1,4 +1,4 @@
-<project name="SwapPDFLib" basedir="." default="SwitchToPDFLib6">
+<project name="SwapPDFLib" basedir="." default="SwitchToPDFLib7_64bit">
 
 
 	<target name="init">
@@ -10,10 +10,7 @@
 		CFInstallDir=C:/CFusionMX
 		-->
 		<property file="MyCFSettings.properties" />
-
-		<property name="CFService" value="ColdFusion 8 Application Server" />
 		<property name="JRunService" value="Macromedia JRun CFusion Server" />
-		<property name="CFInstallDir" value="C:\ColdFusion8" />
 		<property name="JRunInstallDir" value="C:\JRun4\servers\cfusion\cfusion-ear\cfusion-war\WEB-INF\cfusion" />
 		
 		<!-- normally this would be set to c:\windows\system32, but on 64bit vista, to move files into that directory from within a 32-bit application (like eclipse) you need to use the special c:\windows\sysnative alias --> 
@@ -26,22 +23,10 @@
 		
 		<property name="confirmURL" value="http://localhost/mxunit-cfmeetups/CFUnited_2009_Automation/ant/pdflibfiles/showpdflibversion.cfm" />
 
-		<condition property="InstallDir" value="${JRunInstallDir}" else="${CFInstallDir}">
-			<available file="${JRunInstallDir}" type="dir" />
-		</condition>
-
-		<echo message="Install Dir: ${InstallDir}" />
 	</target>
 
 	<target name="stopCF" depends="init">
-		<!-- one of these will simply not work. no biggie -->
 		<echo message="Stopping ColdFusion" />
-		<exec executable="cmd.exe">
-			<arg value="/c" />
-			<arg value="net" />
-			<arg value="stop" />
-			<arg value="${CFService}" />
-		</exec>
 		<exec executable="cmd.exe">
 			<arg value="/c" />
 			<arg value="net" />
@@ -52,13 +37,6 @@
 
 	<target name="startCF" depends="init">
 		<echo message="Starting ColdFusion" />
-
-		<exec executable="cmd.exe">
-			<arg value="/c" />
-			<arg value="net" />
-			<arg value="start" />
-			<arg value="${CFService}" />
-		</exec>
 		<exec executable="cmd.exe">
 			<arg value="/c" />
 			<arg value="net" />
@@ -97,28 +75,13 @@
 
 
 	<macrodef name="copyPDFLib">
-		<attribute name="version" default="5" />
+		<attribute name="version" default="7_64b" />
 		<sequential>
 			<property name="pdflibdir" location="pdflibfiles\@{version}" />
-			<echo message="Copying version @{version} from directory ${pdflibdir} to ${System32} and ${InstallDir}" />
+			<echo message="Copying version @{version} from directory ${pdflibdir} to ${System32} and ${JRunInstallDir}" />
 			<copy file="${pdflibdir}\pdf_java.dll" todir="${System32}" overwrite="true" preservelastmodified="true" verbose="true" failonerror="true" />
-			<copy file="${pdflibdir}\pdflib.jar" todir="${InstallDir}\lib" overwrite="true" preservelastmodified="true" verbose="true" failonerror="true" />
+			<copy file="${pdflibdir}\pdflib.jar" todir="${JRunInstallDir}\lib" overwrite="true" preservelastmodified="true" verbose="true" failonerror="true" />
 		</sequential>
 	</macrodef>
-
-
-	<target name="copyIntoSystem32" depends="init">
-		<copy file="tempfile.txt" todir="${System32}" overwrite="true" />
-	</target>
-
-	<target name="copyIntoSystem32withcmd" depends="init">
-		<exec executable="cmd.exe">
-			<arg value="/c" />
-			<arg value="copy" />
-			<arg value="tempfile.txt" />
-			<arg value="c:\windows\Sysnative" />
-		</exec>
-	</target>
-
 
 </project>

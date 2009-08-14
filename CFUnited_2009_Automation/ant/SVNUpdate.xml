@@ -9,7 +9,7 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</path>
-
+		<!-- sort of like cfinclude -->
 		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="project.classpath" />
 	</target>
 
