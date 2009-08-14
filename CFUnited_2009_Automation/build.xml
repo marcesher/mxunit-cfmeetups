@@ -2,6 +2,7 @@
 
 
 	<target name="init">
+		<!-- this file contains the ftp site, username, and password properties -->
 		<property file="unames.properties" />
 
 	</target>
