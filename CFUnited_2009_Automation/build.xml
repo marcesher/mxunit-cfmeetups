@@ -7,10 +7,7 @@
 
 	</target>
 
-	<target name="package" depends="init">
-		<property name="pathInZip" value="CFUnited_2009_Automation" />
-		<mkdir dir="dist" />
-		<delete file="dist/CFUnited_2009_Esher_Automation.zip" />
+	<target name="packageForEmail" depends="init" description="renames bat files to batrename, zips the presentation, then renames batrename back to bat">
 
 		<!-- rename the bat files so they get through gmail -->
 		<move todir="." includeemptydirs="false">
@@ -20,11 +17,8 @@
 			<mapper type="glob" from="*.bat" to="*.batrename" />
 		</move>
 
-
-		<zip destfile="dist/CFUnited_2009_Esher_Automation.zip" casesensitive="false">
-			<zipfileset dir="." includes="**/*" excludes="**/dist/**,**/tags/**,**/unames.properties,**/*.bat" prefix="${pathInZip}" casesensitive="false" />
-
-		</zip>
+		<!-- zip it -->
+		<antcall target="package" />
 
 		<!-- rename em back -->
 		<move todir="." includeemptydirs="false">
@@ -35,7 +29,18 @@
 		</move>
 	</target>
 
-	<target name="publishThisPresentation" depends="init,package">
+	<target name="package" depends="init" description="zips for publication">
+		<property name="pathInZip" value="CFUnited_2009_Automation" />
+		<mkdir dir="dist" />
+		<delete file="dist/CFUnited_2009_Esher_Automation.zip" />
+
+		<zip destfile="dist/CFUnited_2009_Esher_Automation.zip" casesensitive="false">
+			<zipfileset dir="." includes="**/*" excludes="**/dist/**,**/tags/**,**/unames.properties" prefix="${pathInZip}" casesensitive="false" />
+		</zip>
+	</target>
+
+
+	<target name="publishThisPresentation" depends="init,package" description="pushes to ftp site">
 
 		<ftp server="${ftp.server}" userid="${ftp.username}" password="${ftp.password}" remotedir="doc/zip">
 			<fileset dir="dist">
