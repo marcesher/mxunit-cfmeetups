@@ -1,0 +1,1 @@
+Hudson: to install as service, need .net 2.0 or later. to get that, i had to install sp2 in my winxp vm. duh.
