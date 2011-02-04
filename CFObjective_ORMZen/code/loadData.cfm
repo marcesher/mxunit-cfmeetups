@@ -4,14 +4,15 @@ in cfadmin, for this datasource, click "advanced" and then add allowMultiQueries
 
 
 <cfquery datasource="events" name="load">
+delete from eventcomment;
 delete from j_events_attendees;
 delete from event;
 delete from attendee;
-delete from user where modifiedby is not null;
-delete from user;
+delete from administrator where modifiedby is not null;
+delete from administrator;
 
 
-insert into user(username,firstname,lastname)
+insert into administrator(administratorname,firstname,lastname)
 values
 	('mesher', 'marc', 'esher')
 	,('bob', 'bob', 'israd')
@@ -23,25 +24,43 @@ values
 	,('attendee2', 'mcgillicuddy', 'lameco')
 </cfquery>
 
-<cfquery datasource="events" name="getUserID">
-select min(id) as id from user
+<cfquery datasource="events" name="getadministratorID">
+select min(id) as id from administrator
 </cfquery>
-<cfset userID = getUserID.id>
+<cfset administratorID = getadministratorID.id>
 
-<cfquery datasource="events" name="updateUsers">
-update user set modifiedby = #userID#
-where id != #userID#
+<cfquery datasource="events" name="getAttendee">
+select min(id) as id from attendee
+</cfquery>
+<cfset attendeeID = getAttendee.id>
+
+<cfquery datasource="events" name="updateadministrators">
+update administrator set modifiedby = #administratorID#
+where id != #administratorID#
 </cfquery>
 
 <cfquery datasource="events" name="load">
 insert into event(eventname, eventdate, modifiedby)
 values
-	('event1', #now()#, #userID#)
-	,('event2', #dateAdd('d', 5, now())#, #userID#)
-	,('event3', #now()#, #userID#)
+	('event1', #now()#, #administratorID#)
+	,('event2', #dateAdd('d', 5, now())#, #administratorID#)
+	,('event3', #now()#, #administratorID#)
 </cfquery>
 
 <cfquery datasource="events" name="getEventID">
 select min(id) as id from event
 </cfquery>
 <cfset eventID = getEventID.id>
+
+<cfquery datasource="events" name="load">
+insert into j_events_attendees(eventid, attendeeid)
+values
+	(#eventID#,#attendeeID#);
+
+insert into eventcomment(eventid, attendeeid, Comment, CreateDate)
+values
+	(#eventID#,#attendeeID#, 'This event rocked!', <cfqueryparam value="#now()#" cfsqltype="cf_sql_date" />);
+insert into eventcomment(eventid, attendeeid, Comment, CreateDate)
+values
+	(#eventID#,#attendeeID#, 'This event was lame!', <cfqueryparam value="#now()#" cfsqltype="cf_sql_date" />);
+</cfquery>

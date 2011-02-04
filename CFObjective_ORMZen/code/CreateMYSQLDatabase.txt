@@ -37,13 +37,23 @@ CREATE TABLE  `events`.`attendee` (
 
 DROP TABLE IF EXISTS `events`.`j_events_attendees`;
 CREATE TABLE  `events`.`j_events_attendees` (
-  `EventID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `EventID` int(10) unsigned NOT NULL,
   `AttendeeID` varchar(45) NOT NULL,
   `IsVIP` bit(1) DEFAULT b'0',
   `SignupDate` datetime DEFAULT NULL,
   PRIMARY KEY (`EventID`,`AttendeeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `events`.`eventcomment` ;
+CREATE TABLE  `events`.`eventcomment` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Comment` varchar(8000) NOT NULL,
+  `CreateDate` datetime NOT NULL,
+  `IsVisible` bit(1) NOT NULL DEFAULT b'1',
+  `EventID` int(10) unsigned NOT NULL,
+  `AttendeeID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 
 
