@@ -28,7 +28,7 @@ if( not event.hasAttendee(attendee)){
 	event.addAttendee(attendee);
 }
 
-
+/* NOTE: if this still errors, it's because "cascade=all" is still not set on the Event.cfc's "attendees property"*/
 transaction{
 	entitySave(event);
 }
