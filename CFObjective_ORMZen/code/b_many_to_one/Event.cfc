@@ -3,6 +3,8 @@ component  persistent="true" accessors="true"{
 	property name="eventName";
 	property name="eventDate";
 	property name="isActive";
-	
-	property name="ModifiedBy" fieldtype="many-to-one" fkcolumn="ModifiedBy" cfc="Administrator";
+
+	// 1. Turn this into a many-to-one relationship with an Administrator object
+
+	property name="ModifiedBy"; // fieldtype="many-to-one" fkcolumn="ModifiedBy" cfc="Administrator";
 }
