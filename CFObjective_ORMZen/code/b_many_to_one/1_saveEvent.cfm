@@ -24,6 +24,8 @@ Root cause :org.hibernate.HibernateException: The value for property java.lang.S
 event.setModifiedBy(7);
 //event.setModifiedBy(admin);
 
+// 3. Open Administrator.cfc and change its "modifiedBy" to a many-to-one
+
 transaction{
 	entitySave( event );
 }

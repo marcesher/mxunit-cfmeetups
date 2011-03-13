@@ -2,6 +2,7 @@
 
 ormreload();
 
+// 3. Change Administrator's 'modifiedBy' to a Many-to-One
 administrators = entityLoad("Administrator");
 writeDump( var = administrators, top = 3, label="Administrators");
 
@@ -15,7 +16,7 @@ writeDump( var = attendees, top = 3, label="Attendees");
 
 
 
-//how would you ask: "what events were administered by administratorID X?
+// 4. how would you ask: "what events were administered by administratorID X?
 
 //this is an Administrator Object
 someAdmin = administrators[1];
