@@ -1,8 +1,13 @@
+
+<!--- Get a single administrator ID --->
 <cfquery datasource="events" name="getAdminID" maxrows=1>
 select id from administrator
 </cfquery>
 
 <cfscript>
+//When in doubt, ormReload()!
+//But... Don't be surprised if ormReload() doesn't work 
+//and you need to restart CF
 ormReload();
 
 event = new Event();
