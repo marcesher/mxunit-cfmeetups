@@ -12,28 +12,28 @@
 	event.addEventComment(comment);
 
 	/**
-	* 1. LOOK AT THE CONSOLE OUTPUT... SEE THE INSERT, AND THEN THE UPDATE, IF YOU DON'T USE INVERSE=TRUE
+	* LOOK AT THE CONSOLE OUTPUT... SEE THE INSERT, AND THEN THE UPDATE, IF YOU DON'T USE INVERSE=TRUE
 	*/
 	transaction{
 		entitySave(event);
 	}
 
-/* 
-	2. Does absence of inverse=true have any effect on updates? UnComment to find out
+
 	comment.setComment("The more I think about it, the more I did not like it");
 	transaction{
 		entitySave(event);
 	}
-*/
 
-/*
-	3. Uncomment this, ensuring inverse=true is not on. BOOM. coldfusion.orm.hibernate.HibernateSessionException: Column 'EventID' cannot be null.
+	
+	
+
+/* IF inverse is not set to true, This will error! */
 	event.removeEventComment(comment);
 	comment.setEvent(javacast("null",""));
 	transaction{
 		entitySave(event);
 	}
-*/
+
 
 
 	//writedump( var = comment, top = 5 );
