@@ -10,10 +10,13 @@ event.setIsActive(1);
 
 event.setModifiedBy(admin);
 
+// NOTICE: We didn't need to add anything into the Administrator object to get the 
+// collection of administered Events to show up... that's because this is the 
+// simplest possible bi-di relationship. We'll see more complex ones soon
 transaction{
 	entitySave( event );
 }
 
-writeDump( var = event, top = 3 );
+writeDump( var = event, top = 10 );
 
 </cfscript>
