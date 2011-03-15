@@ -20,11 +20,15 @@ component  persistent="true" accessors="true"{
 		singularname="attendee"
 		cascade="all-delete-orphan";
 
-	/* 5. here's your "rich" link... 
+	/* 4. here's your "rich" link... 
 	
 		no linktable, because the EventComment is more than simply an EventID and a CommentID
 		and thus we need an object to represent all the data and the relationships
 	
+	
+		5. ensure inverse=true is commented out. open saveNewEventCommentVia_EventObject.cfm and run
+		
+		6. uncomment inverse=true and run again. What's going on here? 
 	 */
 	property name="eventComments" fieldtype="one-to-many" cfc="EventComment"
 		fkcolumn="EventID"
