@@ -1,0 +1,12 @@
+<project name="OrmZen" basedir="." default="package">
+
+	<property name="zipname" value="marc_esher_cfobjective_2011_orm_zen.zip"/>
+	<target name="package">
+		<delete file="${zipname}"/>
+		<zip file="${zipname}">
+			<zipfileset dir="." includes="code/**,preso/*.pptx" casesensitive="false"/>
+		</zip>
+	</target>
+
+	
+</project>
