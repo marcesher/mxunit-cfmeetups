@@ -13,11 +13,12 @@ if( arrayLen(potentialAttendee) ){
 	attendee.setLastName(formStruct.lastName);
 	attendee.setCompany(formStruct.company);
 
-	/* This is one way of getting around the error below*/
+	/* 1. This is one way of getting around the error below, but often we might not want to do this, 
+			so we need to learn how to properly handle 'transient' joined entities
 	transaction{
 		entitySave(attendee);
 	}
-
+	*/
 
 }
 
@@ -34,8 +35,6 @@ if( not event.hasAttendee(attendee)){
 * The root cause of this exception was: coldfusion.orm.hibernate.HibernateSessionException: object references an unsaved transient instance - save the transient instance before flushing: Attendee.
 *
 */
-
-
 
 transaction{
 	entitySave(event);

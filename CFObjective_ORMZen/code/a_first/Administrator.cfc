@@ -3,5 +3,4 @@ component  persistent="true" accessors="true"{
 	property name="administratorName";
 	property name="firstName";
 	property name="lastName";
-	property name="ModifiedBy";
 }

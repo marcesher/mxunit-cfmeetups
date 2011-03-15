@@ -13,9 +13,6 @@ attendees = entityLoad("Attendee");
 writeDump( var = attendees, top = 3, label="Attendees");
 
 
-
-
-
 // 4. how would you ask: "what events were administered by administratorID X?
 
 //this is an Administrator Object
