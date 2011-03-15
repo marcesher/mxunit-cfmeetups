@@ -20,7 +20,12 @@ component  persistent="true" accessors="true"{
 		singularname="attendee"
 		cascade="all-delete-orphan";
 
-
+	/* 5. here's your "rich" link... 
+	
+		no linktable, because the EventComment is more than simply an EventID and a CommentID
+		and thus we need an object to represent all the data and the relationships
+	
+	 */
 	property name="eventComments" fieldtype="one-to-many" cfc="EventComment"
 		fkcolumn="EventID"
 		singularname="eventComment"
