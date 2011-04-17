@@ -11,5 +11,6 @@ component  persistent="true" accessors="true"{
 	//many-to-one properties are ALWAYS a single object, not a collection. 
 		//The "one" in "many-to-one" indicates "one" object
 
-	property name="ModifiedBy"; // fieldtype="many-to-one" fkcolumn="ModifiedBy" cfc="Administrator";
+	property name="ModifiedBy"
+		; // fieldtype="many-to-one" fkcolumn="ModifiedBy" cfc="Administrator";
 }
