@@ -25,7 +25,7 @@ if( arrayLen(potentialAttendee) ){
 //load the event the attendee wants to view. pretend this is an object returned from a search
 event = entityLoad("Event", {}, {maxresults=1})[1];
 
-if( not event.hasAttendee(attendee)){
+if( not event.hasAttendee(attendee) ){
 	event.addAttendee(attendee);
 }
 
