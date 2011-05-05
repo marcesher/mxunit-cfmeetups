@@ -2,7 +2,7 @@
 
 ormreload();
 
-// 3. Change Administrator's 'modifiedBy' to a Many-to-One
+// 3. Event's 'modifiedBy' should already be changed to a Many-to-One
 administrators = entityLoad("Administrator");
 writeDump( var = administrators, top = 3, label="Administrators");
 
