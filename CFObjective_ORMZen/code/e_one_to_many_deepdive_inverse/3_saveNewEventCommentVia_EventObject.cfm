@@ -25,6 +25,7 @@
 
 /* 
 	2. Does absence of inverse=true have any effect on updates? UnComment to find out
+	
 	comment.setComment("The more I think about it, the more I did not like it");
 	transaction{
 		entitySave(event);
@@ -33,6 +34,7 @@
 
 /*
 	3. Uncomment this, ensuring inverse=true is not on. BOOM. coldfusion.orm.hibernate.HibernateSessionException: Column 'EventID' cannot be null.
+	
 	event.removeEventComment(comment);
 	comment.setEvent(javacast("null",""));
 	transaction{
