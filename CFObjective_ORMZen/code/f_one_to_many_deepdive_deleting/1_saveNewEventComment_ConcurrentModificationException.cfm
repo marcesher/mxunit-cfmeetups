@@ -3,12 +3,14 @@
 
 	event = entityLoad("Event", {}, {maxresults=1} )[1];
 	attendee = entityLoad("Attendee", {}, {maxresults=1} )[1];
+	
 	comment = new EventComment();
 	comment.setComment("We loved it! #getTickCount()#");
 	comment.setCreateDate(now());
 
 	comment.setAttendee(attendee);
 	comment.setEvent(event);
+	
 	event.addEventComment(comment);
 
 	
@@ -25,6 +27,7 @@
 	}
 	
 	/* 2. Uncomment this and see how to delete without error 
+	
 	comments = event.getEventComments();
 	writeOutput("Found #arrayLen(comments)# comments");
 	for( c = 1; c <= arrayLen(comments); c++ ){
@@ -41,6 +44,7 @@
 	}
 	
 	/* 3. For fun... why doesn't this work?
+	
 	comments = event.getEventComments();
 	writeOutput("Found #arrayLen(comments)# comments");
 	for( c = 1; c <= arrayLen(comments); c++ ){
@@ -49,7 +53,8 @@
 				entityDelete( comments[c] );
 			}
 		}
-	}*/
+	}
+	*/
 	
 
 </cfscript>
