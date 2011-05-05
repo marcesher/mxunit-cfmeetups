@@ -41,5 +41,5 @@
 */
 
 
-	//writedump( var = comment, top = 5 );
+	writedump( var = comment, top = 5 );
 </cfscript>
