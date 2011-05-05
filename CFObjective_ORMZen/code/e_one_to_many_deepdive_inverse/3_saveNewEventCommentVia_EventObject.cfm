@@ -10,6 +10,7 @@
 
 	comment.setAttendee(attendee);
 	comment.setEvent(event);
+	
 	event.addEventComment(comment);
 
 	/**
