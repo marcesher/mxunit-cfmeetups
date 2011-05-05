@@ -3,6 +3,7 @@
 
 	event = entityLoad("Event", {}, {maxresults=1} )[1];
 	attendee = entityLoad("Attendee", {}, {maxresults=1} )[1];
+	
 	comment = new EventComment();
 	comment.setComment("We loved it! #getTickCount()#");
 	comment.setCreateDate(now());
