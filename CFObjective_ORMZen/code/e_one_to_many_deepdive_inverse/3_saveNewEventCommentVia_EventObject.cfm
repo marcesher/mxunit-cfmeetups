@@ -8,6 +8,7 @@
 	comment.setComment("We loved it! #getTickCount()#");
 	comment.setCreateDate(now());
 
+	//NOTE: we're setting *both* sides of the relationship
 	comment.setAttendee(attendee);
 	comment.setEvent(event);
 	
