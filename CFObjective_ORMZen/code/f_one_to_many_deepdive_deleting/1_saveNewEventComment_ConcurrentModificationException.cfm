@@ -18,14 +18,14 @@
 		entitySave(event);
 	}
 
-	/* 1. Run this and see the concurrentModificationException 
+	/* 1. Run this and see the concurrentModificationException */
 	
 	for( comment in event.getEventComments() ){
 		if( true ){ // in real life this would be replaced by some logic determining whether to remove the object
 			event.removeEventComment(comment);
 		}
 	}
-	*/
+	
 	
 	/* 2. Uncomment this and see how to delete without error 
 	
