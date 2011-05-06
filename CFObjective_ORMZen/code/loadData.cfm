@@ -53,9 +53,9 @@ select min(id) as id from event
 <cfset eventID = getEventID.id>
 
 <cfquery datasource="events" name="load">
-insert into j_events_attendees(eventid, attendeeid)
+insert into j_events_attendees(eventid, attendeeid, isVIP, SignupDate)
 values
-	(#eventID#,#attendeeID#);
+	(#eventID#,#attendeeID#,1, <cfqueryparam value="#now()#" cfsqltype="cf_sql_date" /> );
 
 insert into eventcomment(eventid, attendeeid, Comment, CreateDate)
 values

@@ -37,8 +37,9 @@ CREATE TABLE  `events`.`attendee` (
 
 DROP TABLE IF EXISTS `events`.`j_events_attendees`;
 CREATE TABLE  `events`.`j_events_attendees` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `EventID` int(10) unsigned NOT NULL,
-  `AttendeeID` varchar(45) NOT NULL,
+  `AttendeeID` int(10) NOT NULL,
   `IsVIP` bit(1) DEFAULT b'0',
   `SignupDate` datetime DEFAULT NULL,
   PRIMARY KEY (`EventID`,`AttendeeID`)
