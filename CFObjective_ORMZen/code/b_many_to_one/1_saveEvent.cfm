@@ -24,9 +24,8 @@ Root cause :org.hibernate.HibernateException: The value for property java.lang.S
 event.setModifiedBy(7);
 //event.setModifiedBy(admin);
 
-transaction{
-	entitySave( event );
-}
+entitySave( event );
+transaction{}
 
 writeDump( var = event, top = 3 );
 
