@@ -10,13 +10,9 @@ component  persistent="true" accessors="true"{
 
 	//one-to-many: This object can have many objects of this property's type
 	//one-to-many properties are ALWAYS a collection. The "many" in a "one-to-many" indicates "many" objects
-	//when using a linktable -- which you can ONLY realistically use when you have a simple 2-column join table,
-	//you must specify the fkcolumn and the inversejoincolumn
-	//for fun: remove "inversejoincolumn" and see what error you get when trying to add an attendee
-	property name="attendees" fieldtype="one-to-many" cfc="Attendee"
-		linktable="J_Events_Attendees"
+	//Not using "linktable" because our relationship requires more data... (isVIP, signupDate)
+	property name="attendees" fieldtype="one-to-many" cfc="Attendance"
 		fkcolumn="EventID"
-		inversejoincolumn="AttendeeID"
 		singularname="attendee"
 		;//cascade="all-delete-orphan";
 }
