@@ -12,6 +12,8 @@ if( arrayLen(potentialAttendee) ){
 	attendee.setFirstName(formStruct.firstName);
 	attendee.setLastName(formStruct.lastName);
 	attendee.setCompany(formStruct.company);
+	entitySave(attendee);
+	transaction{};
 }
 
 //load the event the attendee wants to view. pretend this is an object returned from a search
@@ -21,37 +23,33 @@ event = entityLoad("Event", {}, {maxresults=1})[1];
 attendance = new Attendance();
 attendance.setIsVIP(true);
 attendance.setSignupDate(now());
-attendance.setAttendee(attendee);
 attendance.setEvent(event);
 
+//set BOTH sides of the relationship!
+attendance.setAttendee(attendee);
+attendee.addAttendance(attendance);
 
-/* 1. SUFFERING!
+/* 1. This is one way of getting around the error below, but often we might not want to do this, 
+			so we need to learn how to properly handle 'transient' joined entities
 
-	1A: "unsaved transient instance?"
-	1B: Cannot be null?
+entitySave(attendance);
+transaction{}
+*/	
 
-		
-transaction{
-	entitySave(attendance);
-}
-*/
-
-
-
-if( not event.hasAttendee(attendance) ){
-	event.addAttendee(attendance);
-}
 
 /**
+
+	2. SUFFERING!
+
 * Oh Joy:
 *
 * The root cause of this exception was: coldfusion.orm.hibernate.HibernateSessionException: object references an unsaved transient instance - save the transient instance before flushing: Attendee.
 *
-*/
 
+*/
 transaction{
-	entitySave(event);
+	entitySave(attendee);
 }
 
-writeDump( var = event, top = 3 );
+writeDump( var = attendee, top = 3 );
 </cfscript>
