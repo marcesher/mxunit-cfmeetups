@@ -13,7 +13,7 @@ if( arrayLen(potentialAttendee) ){
 	attendee.setLastName(formStruct.lastName);
 	attendee.setCompany(formStruct.company);
 	entitySave(attendee);
-	transaction{};
+	transaction{}
 }
 
 //load the event the attendee wants to view. pretend this is an object returned from a search
@@ -47,9 +47,8 @@ transaction{}
 *
 
 */
-transaction{
-	entitySave(attendee);
-}
+entitySave(attendee);
+transaction{}
 
 writeDump( var = attendee, top = 3 );
 </cfscript>

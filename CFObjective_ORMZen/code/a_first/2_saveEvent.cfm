@@ -17,9 +17,8 @@ event.setIsActive(1);
 
 event.setModifiedBy(getAdminID.id);
 
-transaction{
-	entitySave( event );
-}
+entitySave( event );
+transaction{}
 
 writeDump( var = event, top = 3 );
 
