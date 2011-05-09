@@ -4,55 +4,43 @@
 	event = entityLoad("Event", {}, {maxresults=1} )[1];
 	attendee = entityLoad("Attendee", {}, {maxresults=1} )[1];
 	
-	comment = new EventComment();
-	comment.setComment("We loved it! #getTickCount()#");
-	comment.setCreateDate(now());
-
-	comment.setAttendee(attendee);
-	comment.setEvent(event);
+	attendance = new Attendance();
+	attendance.setIsVIP(true);
+	attendance.setSignupDate(now());
+	attendance.setEvent(event);
 	
-	event.addEventComment(comment);
-
+	//set BOTH sides of the relationship!
+	attendance.setAttendee(attendee);
+	attendee.addAttendance(attendance);
 	
-	transaction{
-		entitySave(event);
-	}
+	entitySave(attendee);
+	transaction{}
 
 	/* 1. Run this and see the concurrentModificationException 
 	
-	for( comment in event.getEventComments() ){
+	for( attendance in attendee.getAttendances() ){
 		if( true ){ // in real life this would be replaced by some logic determining whether to remove the object
-			event.removeEventComment(comment);
+			//always set both sides! See what happens when you don't by commenting the null set
+			attendance.setAttendee(javacast("null",""));
+			attendee.removeAttendance(attendance);
 		}
 	}
 	*/
 	
 	/* 2. Uncomment this and see how to delete without error 
-	
-	comments = event.getEventComments();
-	writeOutput("Found #arrayLen(comments)# comments");
-	for( c = 1; c <= arrayLen(comments); c++ ){
-		if( c mod 2 eq 0 ){
-			arrayDeleteAt( comments, c );
+	*/
+	//loop from the bottom and unlink if a currently linked event is no longer selected
+	for( i = arrayLen( attendee.getAttendances() ); i > 0; i-- ){
+		thisAttendance = attendee.getAttendances()[i];
+		if( i mod 2 eq 0 ){
+			//unset both sides!
+			thisAttendance.setAttendee( javacast("null","") );
+			attendee.removeAttendance( thisAttendance );
 		}
 	}
-	*/
-	transaction{
-		entitySave(event);
-	}
 	
-	/* 3. For fun... why doesn't this work?
-	
-	comments = event.getEventComments();
-	writeOutput("Found #arrayLen(comments)# comments");
-	for( c = 1; c <= arrayLen(comments); c++ ){
-		if( c mod 2 eq 0 ){
-			transaction{
-				entityDelete( comments[c] );
-			}
-		}
-	}
-	*/
+	entitySave(attendee);
+	transaction{}
 	
 
 </cfscript>

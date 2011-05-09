@@ -7,7 +7,7 @@ component  persistent="true" accessors="true"{
 	property name="attendances" fieldtype="one-to-many" cfc="Attendance"
 		fkcolumn="AttendeeID"
 		singularname="attendance"
-		//inverse=true
-		cascade="all";
+		inverse=true
+		cascade="all-delete-orphan";
 
 }
