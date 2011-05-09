@@ -20,7 +20,6 @@
 	
 	for( attendance in attendee.getAttendances() ){
 		if( true ){ // in real life this would be replaced by some logic determining whether to remove the object
-			//always set both sides! See what happens when you don't by commenting the null set
 			attendance.setAttendee(javacast("null",""));
 			attendee.removeAttendance(attendance);
 		}
@@ -28,8 +27,12 @@
 	*/
 	
 	/* 2. Uncomment this and see how to delete without error 
+	
+	loop from the bottom and unlink if a currently linked event is no longer selected
+	
 	*/
-	//loop from the bottom and unlink if a currently linked event is no longer selected
+	writeOutput("Found #arrayLen(attendee.getAttendances())# attendances");
+	
 	for( i = arrayLen( attendee.getAttendances() ); i > 0; i-- ){
 		thisAttendance = attendee.getAttendances()[i];
 		if( i mod 2 eq 0 ){
