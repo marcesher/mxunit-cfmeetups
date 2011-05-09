@@ -4,6 +4,7 @@ in cfadmin, for this datasource, click "advanced" and then add allowMultiQueries
 
 
 <cfquery datasource="events" name="load">
+use events;
 delete from eventcomment;
 delete from j_events_attendees;
 delete from event;
