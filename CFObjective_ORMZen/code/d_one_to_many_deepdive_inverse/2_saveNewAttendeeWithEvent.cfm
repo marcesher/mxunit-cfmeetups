@@ -40,11 +40,15 @@ transaction{}
 	coldfusion.orm.hibernate.HibernateSessionException: 
 	object references an unsaved transient instance - 
 	save the transient instance before flushing: Attendee.
-*
 
 */
 entitySave(attendee);
 transaction{}
+
+/**
+*  3. Uncomment 'cascade', remove 'inverse' -- check CMD for strange behavior
+*
+*/
 
 
 
