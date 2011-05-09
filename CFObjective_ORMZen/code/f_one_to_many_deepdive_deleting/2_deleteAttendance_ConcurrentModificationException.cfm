@@ -17,14 +17,14 @@
 	transaction{}
 
 	/* 1. Run this and see the concurrentModificationException 
-	
+	*/
 	for( attendance in attendee.getAttendances() ){
 		if( true ){ // in real life this would be replaced by some logic determining whether to remove the object
 			attendance.setAttendee(javacast("null",""));
 			attendee.removeAttendance(attendance);
 		}
 	}
-	*/
+	
 	
 	/* 2. Uncomment this and see how to delete without error 
 	
