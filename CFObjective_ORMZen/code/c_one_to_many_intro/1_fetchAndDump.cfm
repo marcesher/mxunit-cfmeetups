@@ -12,7 +12,4 @@ ormreload();
 administrators = entityLoad("Administrator");
 writeDump( var = administrators, top = 3, label="Administrators");
 
-
-
-
 </cfscript>
