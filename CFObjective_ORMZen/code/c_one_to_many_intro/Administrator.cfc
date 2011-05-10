@@ -12,7 +12,9 @@ component  persistent="true" accessors="true"{
 	//one-to-many properties are ALWAYS a collection. 
 		//The "many" in a "one-to-many" indicates "many" objects
 	
-	property name="administeredEvents" persistent="false";// fieldtype="one-to-many" fkcolumn="ModifiedBy" cfc="Event" singlarName="administeredEvent";
+	property name="administeredEvents" 
+		persistent="false"
+		;// fieldtype="one-to-many" fkcolumn="ModifiedBy" cfc="Event" singlarName="administeredEvent";
 
 	function init(){
 		// 2. I always init any one-to-many properties with an empty array
