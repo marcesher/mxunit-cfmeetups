@@ -6,6 +6,7 @@
 		<zip file="${zipname}">
 			<zipfileset dir="." includes="code/**,preso/*.pptx" casesensitive="false"/>
 		</zip>
+		<copy file="${zipname}" todir="C:\Users\marc\Documents\My Dropbox\CFObjective 2011"/>
 	</target>
 
 	
