@@ -1,0 +1,14 @@
+defaultTasks 'zip'
+
+task zip << {
+	zip.zipname = 'marc_esher_cfobjective_2011_orm_zen.zip'
+	ant.delete(file: zip.zipname)
+	
+	ant.zip( destfile: zip.zipname ){
+		fileset( dir: '.', includes: 'build.xml, build.gradle, code/**,preso/*.pptx,preso/*.pdf', casesensitive: false )
+	}
+	copy { 
+		from zip.zipname
+		into 'C:/Users/marc/Documents/My Dropbox/CFObjective 2011'
+	}
+}
