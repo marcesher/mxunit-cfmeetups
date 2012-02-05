@@ -1,0 +1,15 @@
+gotta use the betty white photo.
+
+maybe put labels on the oldsters like "Threads", "ThreadGroup" (or whatever it is), "ThreadLocal"
+
+and put a label near betty like "java concurrency framework"
+
+
+Big Picture:
+---------------
+
+ColdFusion Concurrency: A Presentation on Suffering and Enlightenment, in Two Parts
+
+1) Shared Mutable Scope is suffering ... as demonstrated by Application-scoped data
+
+2) CFThread is suffering.... And the JCF is your path to enlightenment
