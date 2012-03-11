@@ -1,9 +1,3 @@
-gotta use the betty white photo.
-
-maybe put labels on the oldsters like "Threads", "ThreadGroup" (or whatever it is), "ThreadLocal"
-
-and put a label near betty like "java concurrency framework"
-
 
 Big Picture:
 ---------------

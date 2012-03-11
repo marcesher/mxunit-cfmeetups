@@ -1,0 +1,33 @@
+** creates a zip file of photos in a thread. Needs to ensure no duplication of effort, i.e. if user clicks the "do it" button repeatedly
+
+I have a link that will allow users to click it and it fetches a zip file of photos. If the zip file doesn't exist, 
+it then starts a thread to create the zip and displays a message back to the user that the photos are currently being 
+processed.
+
+What I'm trying to avoid is a user clicking the link repeatedly and setting off a whole mass of threads that will try 
+create/update the zip file. The zip file processing is quite system resource intensive so I only want to allow the 
+application to generate one zip at a time. If one is busy being compiled, it should just do nothing and queue the 
+requests.
+
+Currently how I am handling it is with a cflock around the thread:
+
+<cflock name="createAlbumZip" type="exclusive" timeout="30" throwontimeout="no">
+  <cfthread action="run" albumId="#arguments.albumId#" name="#CreateUUID()#">
+    ....
+What I am hoping occurs here (it seems to be working if I test it) is that it will check if there is currently a 
+thread running using a lock called 'createAlbumZip'. If there is, it will queue the request for 30 seconds after 
+which it should timeout without any error. If it wasn't able to create it within the 30 seconds that is fine.
+
+So - this seems to be working, but my question is: Is this the best way to handle a scenario like this? 
+Is locking the right approach? Are there any shortcomings that could arise from this approach that I don't see?
+
+http://stackoverflow.com/questions/9625037/coldfusion-performance-and-locking-optimisation
+
+
+
+
+
+** process uploaded images in a thread
+	-- virus scan?
+	-- thumbnails?
+	-- send to other photo service?
