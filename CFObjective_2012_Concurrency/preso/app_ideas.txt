@@ -31,3 +31,8 @@ http://stackoverflow.com/questions/9625037/coldfusion-performance-and-locking-op
 	-- virus scan?
 	-- thumbnails?
 	-- send to other photo service?
+	
+	
+	
+	
+	JUNE 21, 2011 -- Mark Mandel's fix to javaloader
