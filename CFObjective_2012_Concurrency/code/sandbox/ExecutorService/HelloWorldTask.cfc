@@ -7,7 +7,8 @@ component{
 		return this;
 	}
 
-	// MUST be named call()
+	// MUST be named call() if API expects a Callable; 
+	// must be named run() and return void if API expects a Runnable
 	public any function call(){
 		try{
 			result.message = "HELLO " & variables.name;
